@@ -1,0 +1,18 @@
+AlphaBetaAgent:
+		seed: 22520109+0: Loss; -501.0; 
+		seed: 22520109+1: Loss; -501.0; 
+		seed: 22520109+2: Loss; -501.0; 
+		seed: 22520109+3: Loss; -501.0; 
+		seed: 22520109+4: Loss; -501.0; 
+ExpectimaxAgent:
+		seed: 22520109+0: Win; 532.0; 
+		seed: 22520109+1: Win; 532.0; 
+		seed: 22520109+2: Loss; -502.0; 
+		seed: 22520109+3: Win; 532.0; 
+		seed: 22520109+4: Win; 532.0; 
+MinimaxAgent:
+		seed: 22520109+0: Loss; -501.0; 
+		seed: 22520109+1: Loss; -501.0; 
+		seed: 22520109+2: Loss; -501.0; 
+		seed: 22520109+3: Loss; -501.0; 
+		seed: 22520109+4: Loss; -501.0; 

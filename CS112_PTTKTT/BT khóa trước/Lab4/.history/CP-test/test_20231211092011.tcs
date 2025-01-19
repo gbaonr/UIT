@@ -1,0 +1,4 @@
+int n 1 5
+int m 1 5
+loop lp n
+    rarray_m t 0 1

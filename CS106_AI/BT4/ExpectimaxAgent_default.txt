@@ -1,0 +1,38 @@
+Expectimax
+
+	capsuleClassic: 
+		seed: 22520109+0: Loss; -498.0; 
+		seed: 22520109+1: Loss; -487.0; 
+		seed: 22520109+2: Loss; -444.0; 
+		seed: 22520109+3: Loss; -120.0; 
+		seed: 22520109+4: Loss; -315.0; 
+	contestClassic: 
+		seed: 22520109+0: Loss; -300.0; 
+		seed: 22520109+1: Win; 2023.0; 
+		seed: 22520109+2: Loss; 758.0; 
+		seed: 22520109+3: Loss; -180.0; 
+		seed: 22520109+4: Loss; 501.0; 
+	mediumClassic: 
+		seed: 22520109+0: Win; 1033.0; 
+		seed: 22520109+1: Win; 1482.0; 
+		seed: 22520109+2: Loss; -168.0; 
+		seed: 22520109+3: Win; 1021.0; 
+		seed: 22520109+4: Win; 945.0; 
+	minimaxClassic: 
+		seed: 22520109+0: Win; 507.0; 
+		seed: 22520109+1: Loss; -494.0; 
+		seed: 22520109+2: Win; 515.0; 
+		seed: 22520109+3: Win; 508.0; 
+		seed: 22520109+4: Win; 511.0; 
+	trappedClassic:	
+    		seed: 22520109+0: Win; 532.0; 
+		seed: 22520109+1: Win; 532.0; 
+		seed: 22520109+2: Loss; -502.0; 
+		seed: 22520109+3: Win; 532.0; 
+		seed: 22520109+4: Win; 532.0; 
+	openClassic:
+		seed: 22520109+0: - ; -vc; 
+		seed: 22520109+1: - ; -vc;
+		seed: 22520109+2: - ; -vc;
+		seed: 22520109+3: - ; -vc;
+		seed: 22520109+4: - ; -vc;

@@ -1,0 +1,1005 @@
+\documentclass[20pt]{article}
+\usepackage[utf8]{vietnam}
+\setlength{\baselineskip}{50pt}
+\usepackage{tocloft}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{minted}
+\usepackage{tkz-tab}
+\usepackage{listing} 
+\usepackage{subfiles} 
+\usepackage[top=3cm, bottom=3.5cm, left=3.5cm, right=2cm] {geometry} 
+\usepackage{fancybox} 
+\usepackage{latexsym,amsfonts,amssymb,amsthm}
+\usepackage{setspace}
+\usepackage{physics}
+\usepackage{amsmath}
+\usepackage{tikz}
+\usepackage{mathdots}
+\usepackage{yhmath}
+\usepackage{cancel}
+\usepackage{color}
+\usepackage{siunitx}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{amssymb}
+\usepackage{gensymb}
+\usepackage{tabularx}
+\usepackage{extarrows}
+\usepackage{booktabs}
+\usetikzlibrary{fadings}
+\usetikzlibrary{patterns}
+\usetikzlibrary{shadows.blur}
+\usetikzlibrary{shapes}
+\setlength{\cftbeforesecskip}{3em} 
+
+\usepackage{hyperref}
+\setlength{\parindent}{0pt}
+
+\usepackage{setspace}
+\usepackage[a4paper,left=20mm,right=20mm,top=20mm,bottom=20mm]{geometry}
+\vspace{1cm}
+\renewcommand{\thesubsection}{\thesection.\alph{subsection}}
+
+
+\begin{document}
+\newgeometry{top=2cm, bottom=2cm, left=2cm, right=2cm}
+\subfile{cover}
+\tableofcontents
+\Large
+
+% ---- START HERE ------------------------------- 
+
+
+\section{Bài 1: }
+
+Thành lập phương trình đệ quy, kèm giải thích cách thành lập. Không giải phương trình:
+
+\subsection{} 
+
+Gọi $\displaystyle T(n)$ là số tiền có được sau $\displaystyle n$ năm, khi đó ta có:
+\begin{equation*}
+	T(n) =\begin{cases}
+	1000 & if\ n=0\\
+	T(n-1) \times 1.12 & if\ n >0
+	\end{cases}
+\end{equation*}
+\begin{itemize}
+	\item $\displaystyle T(0) =1000$ là số tiền khi người đó vừa gửi ngân hàng $\displaystyle (n\ =\ 0)$
+	\item $\displaystyle T(n) =T(n-1) \ \times \ 1.12$ là số tiền người đó có được sau khi gửi $\displaystyle n$ năm sẽ là số tiền có được từ $\displaystyle (n-1)$ năm trước đó và nhận thêm $\displaystyle 12\%$ nhờ vào lãi suất.
+\end{itemize}
+
+
+\subsection{}
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=\columnwidth]{b.png}
+\end{figure}
+
+\begin{itemize}
+	\item Gọi $\displaystyle T(n)$ là chi phí thực thi hàm:
+\end{itemize}
+\begin{equation*}
+	Fibo(n) =\begin{cases}
+	1 & n=0\ or\ n=1\\
+	Fibo(n-1) +Fibo(n-2) & n\ else
+	\end{cases}
+\end{equation*}
+\begin{itemize}
+	\item Khi đó chi phí $\displaystyle T(n)$ có giá trị là 
+\end{itemize}
+\begin{equation*}
+	T(n) =\begin{cases}
+	C_{1} & if\ n\ \in \ \{0,\ 1\}\\
+	T(n-1) +T(n-2) +C_{2} & if\ n\ \notin \ \{0,\ 1\}
+	\end{cases}
+\end{equation*}
+\begin{itemize}
+	\item Giải thích:
+	      \begin{itemize}
+	      	\item Khi $\displaystyle n=0$ hoặc $\displaystyle n=1$, chi phí là hằng số $\displaystyle C_{1}$ vì chỉ cần $\displaystyle return\ 1$
+	      	\item Khi $\displaystyle n\neq 0$ và $\displaystyle n\neq 1$, chi phí sẽ là tổng của chi phí tính $\displaystyle Fibo(n-1)$ và $\displaystyle Fibo(n-2$) và hằng số $\displaystyle C_{2}$ là chi phí thực hiện các phép cộng, gán, .. thì thực hiện lệnh \ $\displaystyle return\ Fibo(n-1) \ +\ Fibo(n-2)$
+	      \end{itemize}
+\end{itemize}
+
+	
+\subsection{}
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=\columnwidth]{c.png}
+\end{figure}
+
+\begin{itemize}
+	\item Gọi $\displaystyle T(n)$ là chi phí thực thi hàm
+\end{itemize}
+\begin{equation*}
+	g(n) =\begin{cases}
+	2 & if\ n=1\\
+	3\times g\left(\frac{n}{2}\right) +g\left(\frac{n}{2}\right) +5 & if\ n\neq 1
+	\end{cases}
+\end{equation*}
+\begin{itemize}
+	\item Khi đó chi phí $\displaystyle T(n)$ có giá trị là:
+\end{itemize}
+\begin{equation*}
+	T(n) =\begin{cases}
+	C_{1} & if\ n=1\\
+	2T\left(\frac{n}{2}\right) +C_{2} & if\ n\neq 1
+	\end{cases}
+\end{equation*}
+\begin{itemize}
+	\item Giải thích:
+	      \begin{itemize}
+	      	\item Khi $\displaystyle n=0$, chi phí là hằng số $\displaystyle C_{1}$ vì chỉ cần $\displaystyle return\ 2$
+	      	\item Khi $\displaystyle n\neq 0$, chi phí sẽ là tổng của $\displaystyle 2$ lần thực hiện hàm $\displaystyle g\left(\frac{n}{2}\right)$ và hằng số $\displaystyle C_{2}$ là chi phí thực hiện các phép cộng gán khi thực hiện lệnh $\displaystyle return\ 3\times g\left(\frac{n}{2}\right) +g\left(\frac{n}{2}\right) +5$
+	      \end{itemize}
+\end{itemize}
+
+\subsection{}
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=\columnwidth]{d.png}
+\end{figure}
+
+\begin{itemize}
+	\item Gọi $\displaystyle T(n)$ là chi phí thực thi hàm:
+\end{itemize}
+\begin{equation*}
+	xn(n) =\begin{cases}
+	1 & if\ n=0\\
+	\sum _{i=1}^{n} i^{2} \times xn(n-i) & if\ n\neq 0
+	\end{cases}
+\end{equation*}
+\begin{itemize}
+	\item Khi đó chi phí $\displaystyle T(n)$ có giá trị là 
+\end{itemize}
+\begin{equation*}
+	T(n) =\begin{cases}
+	C_{1} & if\ n=0\\
+	\sum _{i=1}^{n}[ 1+T(n-i)] +C_{2} & if\ n\neq 0
+	\end{cases}
+\end{equation*}
+\begin{itemize}
+	\item Giải thích:
+	      \begin{itemize}
+	      	\item Khi $\displaystyle n=0$, chi phí là hằng số $\displaystyle C_{1}$ vì chỉ cần $\displaystyle return\ 1$
+	      	\item Khi $\displaystyle n\neq 0$, chi phí sẽ là tổng của 
+	      	      \begin{itemize}
+	      	      	\item $\displaystyle C_{2}$: Là hằng số chi phí, với mỗi lần gọi $\displaystyle xn(n)$ luôn có thực hiện lệnh $\displaystyle long\ s=0$, và các phép tính cộng, gán, return ... 
+	      	      	\item $\displaystyle \sum _{i=1}^{n}[ 1+T(n-i)]$ với mỗi lần gọi $\displaystyle xn(n)$ vòng $\displaystyle for$ chạy từ $\displaystyle i=1\rightarrow n$, với mỗi giá trị $\displaystyle i$ sẽ thực hiện chi phí là $\displaystyle 1$ - chí phi thực hiện lệnh $\displaystyle return$ \textbf{và }$\displaystyle T(n-1)$ - chi phí thực hiện $\displaystyle xn(n-i)$
+	      	      \end{itemize}
+	      \end{itemize}
+\end{itemize}
+\subsection{}
+\begin{itemize}
+	
+	\begin{figure}[ht]
+		\centering
+		\includegraphics[width=\columnwidth]{e.png}
+	\end{figure}
+	
+	\item Gọi $\displaystyle T(n)$ là chi phí thực thi hàm:
+\end{itemize}
+\begin{equation*}
+	Draw(n) =\begin{cases}
+	0 & if\ n< 1\\
+	Draw(n-3) & if\ n\geqslant 1
+	\end{cases}
+\end{equation*}
+\begin{itemize}
+	\item Khi đó chi phí $\displaystyle T(n)$ có giá trị là:
+\end{itemize}
+\begin{equation*}
+	T(n) =\begin{cases}
+	C_{1} & if\ n< 1\\
+	T(n-3) +n^{2} +C_{2} & if\ n\geqslant 1
+	\end{cases}
+\end{equation*}
+\begin{itemize}
+	\item Giải thích:
+	      \begin{itemize}
+	      	
+	      	\item Khi $\displaystyle n< 1$, chi phí là $\displaystyle C_1$ vì chỉ cần $\displaystyle return\ 0$
+	      	\item Khi $\displaystyle n\geqslant 1$, hàm $\displaystyle Draw(n)$ sẽ thực hiện hai vòng lặp $\displaystyle i=1\rightarrow n$ với mỗi giá trị $\displaystyle i$ sẽ thực hiện vòng lặp $\displaystyle j=1\rightarrow n$, do đó chi phí cho lệnh $\displaystyle print("*")$ là $\displaystyle n^{2}$, cộng với $\displaystyle T(n-3)$ là chi phí để thực hiện lệnh gọi $\displaystyle Draw(n-3)$ và chi phí hằng số $\displaystyle C_{2}$ cho các thao tác cộng, gán, ...
+	      \end{itemize}
+\end{itemize}
+
+
+\subsection{}
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=\columnwidth]{f.png}
+\end{figure}
+
+\begin{itemize}
+	\item Gọi $\displaystyle T(n)$ là số phép cộng cần thực hiện khi thực thi hàm $\displaystyle Zeta(n)$, khi đó ta có:
+\end{itemize}
+\begin{equation*}
+	T(n) =\begin{cases}
+	0 & if\ n=0\\
+	\sum _{k=0}^{n-1}[ 2+T(k)] & if\ n\neq 0
+	\end{cases}
+\end{equation*}
+\begin{itemize}
+	\item Giải thích:
+	      \begin{itemize}
+	      	\item Khi $\displaystyle n=0$ hàm chỉ thực hiện mỗi câu lệnh $\displaystyle Zet=6$
+	      	\item Khi $\displaystyle n\neq 0$, có vòng lặp $\displaystyle k=0\rightarrow n-1$ với mỗi giá trị $\displaystyle k$ sẽ thực thi hai phép cộng $\displaystyle k=k+1$ và $\displaystyle Ret=Ret+Zeta(k)$ trong đó $\displaystyle Zeta(k)$ sẽ gọi lại hàm $\displaystyle Zeta$ với tham số là $\displaystyle k$, do đó với mỗi giá trị của $\displaystyle k$ số phép cộng thực hiện là $\displaystyle 2+T(k)$ 
+	      \end{itemize}
+\end{itemize}
+
+
+
+\subsection{}
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=\columnwidth]{g.png}
+\end{figure}
+
+
+Đề bài ta có:
+\begin{equation*}
+	XY=AC\times 10^{n} +[(A-B)(D-C) +AC+BD] \times 10^{\frac{n}{2}} +BD
+\end{equation*}
+\begin{itemize}
+	\item Gọi $\displaystyle T(n)$ là độ phức tạp khi thực hiện phép nhân $\displaystyle X,\ Y$ có $\displaystyle n$ chứ số
+\end{itemize}
+
+
+\begin{itemize}
+	\item \textbf{Trường hợp 1:} Trong mã giả có $\displaystyle 2$ lời gọi hàm $\displaystyle Multi(A,C)$, khi đó $\displaystyle T(n)$ có giá trị là:
+\end{itemize}
+\begin{equation*}
+	T(X,Y,n) =\begin{cases}
+	C_{1} & if\ n=1\\
+	2T\left(A,C,\frac{n}{2}\right) +2T\left(B,D,\frac{n}{2}\right) +C_{2} & if\ n >1
+	\end{cases}
+\end{equation*}
+\begin{itemize}
+	\item Giải thích:
+	      \begin{itemize}
+	      	\item Khi $\displaystyle n=0$, chi phí tính toán là hằng số $\displaystyle C_{1}$ vì chỉ cần thực hiện các phép nhân và trà về kết quả
+	      	\item Khi $\displaystyle n\neq 0$, để cần tính $\displaystyle XY$ cần phải tính $\displaystyle 2$ lần phép nhân $\displaystyle AC$ và $\displaystyle 2$ lần phép nhân $\displaystyle BD$ và $\displaystyle C_{2}$ các chi phí khác cho phép cộng, trừ giữa các kết quả tính được
+	      \end{itemize}
+\end{itemize}
+
+ 
+\begin{itemize}
+	\item \textbf{Trường hợp 2: }Trong mã giả có lời gọi hàm $\displaystyle Multi(A,C)$ và lưu lại kết quả vừa tính:
+\end{itemize}
+\begin{equation*}
+	T(X,Y,n) =\begin{cases}
+	C_{1} & if\ n=1\\
+	T\left(A,C,\frac{n}{2}\right) +T\left(B,D,\frac{n}{2}\right) +C_{2} & if\ n >1
+	\end{cases}
+\end{equation*}
+\begin{itemize}
+	\item Giải thích:
+	      \begin{itemize}
+	      	\item Khi $\displaystyle n=0$, chi phí tính toán là hằng số $\displaystyle C_{1}$ vì chỉ cần thực hiện các phép nhân và trà về kết quả
+	      	\item Khi $\displaystyle n\neq 0$, để cần tính $\displaystyle XY$ cần phải tính $\displaystyle 1$ lần phép nhân $\displaystyle AC$ và $\displaystyle 1$ lần phép nhân $\displaystyle BD$ và $\displaystyle C_{2}$ các chi phí khác cho phép cộng, trừ giữa các kết quả tính được, chi phí lưu kết quả giữa các phép tính
+	      \end{itemize}
+\end{itemize}
+
+
+
+
+\section{Bài 2:}
+\subsection{$\displaystyle T(n) =T(n-1) +n\ ,\ T(1) =1$}
+\begin{gather}
+	T(n) =T(n-1) +n\ ,\ T(1) =1 \notag\\
+	Ta\ có\ :\ T(n-1) \ =\ T(n-2) +n-1 \notag\\
+	\\
+	\begin{aligned}
+		\Longrightarrow T(n) \&=\ [ T(n-2) +n-1] +n &                               \\
+		                       & =T(n-3) +3n-1-2               \\
+		                       & =T(n-4) +4n-1-2-3             \\
+		                       & =T(n-5) +5n-1-2-3-4           \\
+		                       & =T(n-i) +in-\frac{(i-1) i}{2} 
+	\end{aligned} \notag
+\end{gather}
+Quá trình dừng lại khi $\displaystyle i=n-1$:
+
+
+
+\begin{equation*}
+	\begin{aligned}
+		T(n) & =T(1) +(n-1) n-\frac{(n-2)(n-1)}{2}   \\
+		     & =\ \ \frac{1}{2}\left(n^{2} +n\right) 
+	\end{aligned}
+\end{equation*}		
+\subsection{$\displaystyle T(n) =2(T(n/2) +n) ,\ T(1) =1$}
+\begin{gather*}
+	T(n) =2T(n/2) +n,\ T(1) =1\\
+	Ta\ có:\ T(n/2) =2T(n/4) +n/2\\
+	\begin{aligned}
+		T(n) & =2[ 2T(n/4) +n/2] +n                     \\
+		     & =4T(n/4) +n+n                            \\
+		     & =4[ 2T(n/8) +n/4] +n+n                   \\
+		     & =8[ 2T(n/16) +n/8] +n+n+n                \\
+		     & =2^{i+1} T\left(n/2^{i+1}\right) +n(i+1) 
+	\end{aligned}
+\end{gather*}
+Quá trình dừng lại khi $\displaystyle n/2^{i+1} =1$:
+
+
+\begin{align*}
+	\Longrightarrow & \frac{n}{2^{i+1}} =1\ \Longleftrightarrow i=\log_{2} n-1 
+\end{align*}
+
+\begin{align*}
+	\Longrightarrow T(n) & =2^{\log_{2} n} T\left(\frac{n}{2^{\log_{2} n}}\right) +n\log_{2} n \\
+	                     & =n(1 +\log_{2} n)                                                   
+\end{align*}
+\subsection{$\displaystyle T(n) =2T(n/2) +n^{2}$$\displaystyle ,\ T(1) =1$}
+\begin{gather*}
+	T(n) =2T(n/2) +n^{2} ,\ T(1) =1\\
+	Ta\ có:\ T(n/2) =2T(n/4) +n^{2} /4\\
+	\begin{aligned}
+		T(n) & =2\left[ 2T(n/4) +n^{2} /4\right] +n^{2}                            \\
+		     & =4T(n/4) +n^{2} /2+n^{2}                                            \\
+		     & =4\left[ 2T(n/8) +n^{2} /16\right] +n^{2} /2+n^{2}                  \\
+		     & =8\left[ 2T(n/16) +n^{2} /256\right] +n^{2} /4+n^{2} /2+n^{2}       \\
+		     & =2^{i} T\left(n/2^{i}\right) +n^{2}\sum _{k=1}^{i}\frac{1}{2^{k-1}} 
+	\end{aligned}
+\end{gather*}
+Quá trình dừng lại khi $\displaystyle n/2^{i} =1$:
+\begin{align*}
+	\Longrightarrow & \frac{n}{2^{i}} =1\ \Longleftrightarrow i=\log_{2} n 
+\end{align*}
+
+\begin{align*}
+	\Longrightarrow T(n) & =2^{\log_{2} n} T\left(\frac{n}{2^{\log_{2} n}}\right) +2n^{2}\sum _{k=1}^{\log_{2} n}\frac{1}{2^{k}} \\
+	                     & =n+n^{2}\frac{1-\left(\frac{1}{2}\right)^{\log_{2} n}}{1-\frac{1}{2}}                                 \\
+	                     & =n+n^{2}\left(1-n^{-1}\right)                                                                         
+\end{align*}
+\subsection{$\displaystyle T(n) =2T\left(\frac{n}{2}\right) +\log n,\ T(1) =1$}
+\begin{gather*}
+	T(n) =2T\left(\frac{n}{2}\right) +\log n,\ T(1) =1\\
+	Ta\ có:\ T\left(\frac{n}{2}\right) =2T\left(\frac{n}{4}\right) +\log n-\log 2\\
+	\begin{aligned}
+		\Longrightarrow T(n) & =2\left[ 2T\left(\frac{n}{4}\right) +\log n-\log 2\right] +\log n                                                \\
+		                     & =4\left[ 2T\left(\frac{n}{8}\right) +\log n-\log \ 2^{2}\right] +\log n+2\log n-\log 2^{2}                       \\
+		                     & =8\left[ 2T\left(\frac{n}{16}\right) +\log n-\log 2^{3}\right] +\log n+2\log n+4\log n-\log 2-4\log 2^{2}        \\
+		                     & =16\left[ 2T\left(\frac{n}{32}\right) +\log n-\log 2^{4}\right] +7\log n+8\log n-\log 2-4\log 2^{2} -8\log 2^{3} \\
+		                     & =2^{i} T\left(\frac{n}{2^{i}}\right) +\log n\sum _{k=1}^{i} 2^{k-1} +\log 2\sum _{j=1}^{i} j2^{j}                
+	\end{aligned}
+\end{gather*}
+Quá trình dừng lại khi $\displaystyle n/2^{i} =1$:
+\begin{align*}
+	\Longrightarrow & \frac{n}{2^{i}} =1\ \Longleftrightarrow i=\log_{2} n 
+\end{align*}
+\begin{align*}
+	\Longrightarrow T(n) & =2^{\log_{2} n} T\left(\frac{n}{2^{\log_{2} n}}\right) +(\log n)\left(2^{n} −1\right) +[(\log_{2} n-1) 2n +2]\log 2 \\
+	                     & =n+(\log n)\left(2^{n} −1\right) +[(\log_{2} n-1) n +1]\log 4                                                       
+\end{align*}
+\subsection{$\displaystyle T(n) =8T(n/2) +n^{3} ,\ T(1) =1$}
+\begin{gather*}
+	T(n) =8T(n/2) +n^{3} ,\ T(1) =1\\
+	Ta\ có:\ T\left(\frac{n}{2}\right) =8T\left(\frac{n}{4}\right) +\frac{n^{3}}{8}\\
+	\begin{aligned}
+		\Longrightarrow T(n) & =8\left[ 8T\left(\frac{n}{4}\right) +\frac{n^{3}}{8}\right] +n^{3}                    \\
+		                     & =64\left[ 8T\left(\frac{n}{8}\right) +\frac{n^{3}}{64}\right] +n^{3} +n^{3}           \\
+		                     & =512\left[ 8T\left(\frac{n}{16}\right) +\frac{n^{3}}{512}\right] +n^{3} +n^{3} +n^{3} \\
+		                     & =8^{i} T\left(\frac{n}{2^{i}}\right) +in^{3}                                          
+	\end{aligned}
+\end{gather*}
+Quá trình dừng lại khi $\displaystyle n/2^{i} =1$:
+\begin{align*}
+	\Longrightarrow & \frac{n}{2^{i}} =1\ \Longleftrightarrow i=\log_{2} n 
+\end{align*}
+\begin{align*}
+	\Longrightarrow T(n) & =8^{\log_{2} n} T\left(\frac{n}{2^{\log_{2} n}}\right) +n^{3}\log_{2} n \\
+	                     & =n^{3} +n^{3}\log_{2} n                                                 \\
+	                     & =n^{3}(1+\log_{2} n)                                                    
+\end{align*}
+\subsection{$\displaystyle T(n) =4T(n/3) +n,\ T(1) =1$}
+\begin{gather*}
+	T(n) =4T(n/3) +n,\ T(1) =1\\
+	Ta\ có:\ T\left(\frac{n}{3}\right) =4T\left(\frac{n}{9}\right) +\frac{n}{3}\\
+	\begin{aligned}
+		\Longrightarrow T(n) & =4\left[ 4T\left(\frac{n}{9}\right) +\frac{n}{3}\right] +n                                \\
+		                     & =16\left[ 4T\left(\frac{n}{27}\right) +\frac{n}{9}\right] +n+\frac{4n}{3}                 \\
+		                     & =64\left[ 4T\left(\frac{n}{81}\right) +\frac{n}{27}\right] +n+\frac{4n}{3} +\frac{16n}{9} \\
+		                     & =4^{i} T\left(\frac{n}{3^{i}}\right) +n\sum _{k=1}^{i}\left(\frac{4}{3}\right)^{k-1}      
+	\end{aligned}
+\end{gather*}
+Quá trình dừng lại khi $\displaystyle n/3^{i} =1$:
+\begin{align*}
+	\Longrightarrow & \frac{n}{3^{i}} =1\ \Longleftrightarrow i=\log_{3} n 
+\end{align*}
+\begin{align*}
+	\Longrightarrow T(n) & =4^{\log_{3} n} T\left(\frac{n}{3^{\log_{3} n}}\right) +\frac{3n}{4}\sum _{k=1}^{\log_{3} n}\left(\frac{4}{3}\right)^{k} \\
+	                     & =4^{\log_{3} n} +\frac{3n}{4}\left(\frac{\left(\frac{4}{3}\right)^{\log_{3} n+1} -1}{\frac{4}{3} -1} -1\right)           \\
+	                     & =4^{\log_{3} n} +\frac{9n}{4}\left(\left(\frac{4}{3}\right)^{\log_{3} n+1} -\frac{4}{3}\right)                           
+\end{align*}
+\subsection{$\displaystyle T(n) =9T(n/3) +n^{2} ,\ T(1) =1$}
+\begin{gather*}
+	T(n) =9T(n/3) +n^{2} ,\ T(1) =1\\
+	Ta\ có:\ T\left(\frac{n}{3}\right) =9T\left(\frac{n}{9}\right) +\frac{n^{2}}{9}\\
+	\begin{aligned}
+		\Longrightarrow T(n) & =9\left[ 9T\left(\frac{n}{9}\right) +\frac{n^{2}}{9}\right] +n^{2}                    \\
+		                     & =81\left[ 9T\left(\frac{n}{27}\right) +\frac{n^{2}}{81}\right] +n^{2} +n^{2}          \\
+		                     & =729\left[ 9T\left(\frac{n}{81}\right) +\frac{n^{2}}{729}\right] +n^{2} +n^{2} +n^{2} \\
+		                     & =9^{i} T\left(\frac{n}{3^{i}}\right) +in^{2}                                          
+	\end{aligned}
+\end{gather*}
+Quá trình dừng lại khi $\displaystyle n/3^{i} =1$:
+\begin{align*}
+	\Longrightarrow & \frac{n}{3^{i}} =1\ \Longleftrightarrow i=\log_{3} n 
+\end{align*}
+\begin{align*}
+	\Longrightarrow T(n) & =9^{\log_{3} n} T\left(\frac{n}{3^{\log_{3} n}}\right) +n^{2}\log_{3} n \\
+	                     & =n^{2} +n^{2}\log_{3} n                                                 \\
+	                     & =n^{2}(1+\log_{3} n)                                                    
+\end{align*}
+\subsection{$\displaystyle T(n) =2T\left(\sqrt{n}\right) +1,\ T(2) =0$}
+\begin{gather*}
+	T(n) =2T\left(\sqrt{n}\right) +1,\ T(2) =0\\
+	Ta\ có:\ T\left(\sqrt{n}\right) =2T\left(\sqrt{n}\right) +1\\
+	\begin{aligned}
+		\Longrightarrow T(n) & =2\left[ 2T\left(\sqrt[4]{n}\right) +1\right] +1              \\
+		                     & =4\left[ 2T\left(\sqrt[8]{n}\right) +1\right] +1+2            \\
+		                     & =2^{i} T\left(\sqrt[2^{i}]{n}\right) +\sum _{k=0}^{i} 2^{k-1} 
+	\end{aligned}
+\end{gather*}
+Quá trình dừng lại khi $\displaystyle \sqrt[2^{i}]{n} =2$:
+\begin{align*}
+	\Longrightarrow & \sqrt[2^{i}]{n} =2\ \Longleftrightarrow 2{^{2}}^{i} =n\Longleftrightarrow i=\log_{2}(\log_{2} n) 
+\end{align*}
+\begin{align*}
+	\Longrightarrow T(n) & =2^{\log_{2}(\log_{2} n)} T\left(\sqrt[2^{\log_{2}(\log_{2} n)}]{n}\right) +\sum _{k=0}^{\log_{2}(\log_{2} n)} 2^{k-1} \\
+	                     & =n^{\log_{2}(\log_{2} n) +1} -1                                                                                        
+\end{align*}
+\section{Bài 3}
+\subsection{$\displaystyle \begin{cases}
+	T(0) =1\\
+	T(1) =2\\
+	T(n) =4T(n-1) -3T(n-2)
+	\end{cases}$}
+\begin{align*}
+	Ta\ có:\&T(n) =4T(n-1) -3T(n-2) &                                    \\
+	\Longleftrightarrow & T(n) -4T(n-1) +3T(n-2) =0          \\
+	\Longleftrightarrow & x^{n} -4x^{n-1} +3x^{n-2} =0       \\
+	\Longleftrightarrow & x^{n-2}\left(x^{2} -4x+3\right) =0 
+\end{align*}
+\begin{align*}
+	\Longrightarrow & \left[ \begin{array}{l l} 
+	x^{n-2} =0\\
+	x^{2} -4x+3
+	\end{array} \right. \Longrightarrow \left[ \begin{array}{l l}
+	x=0             &                           \\
+	x=1(nghiem\ don)      &                           \\
+	x=3(nghiem\ don)      &                           
+	\end{array} \right.
+\end{align*}
+$\displaystyle \Longrightarrow $Dạng của $\displaystyle T(n) =c_{1} +c_{2} 3^{n}$
+
+			
+\begin{align*}
+	Ta\ có:            & \begin{cases} 
+	T(0) =1\\
+	T(1) =2
+	\end{cases} \Longrightarrow \begin{cases}
+	T(0) =c_{1} +c_{2}  & =1            \\
+	T(1) =c_{1} +3c_{2} & =2            
+	\end{cases} \Longrightarrow \begin{cases}
+	c_{1} =\frac{1}{2}\\
+	c_{2} =\frac{1}{2}
+	\end{cases}
+\end{align*}
+\begin{equation*}
+	\Longrightarrow T(n) =\frac{1}{2}\left(1+3^{n}\right)
+\end{equation*}
+\subsection{$\displaystyle \begin{cases}
+	T(0) =0\\
+	T(1) =1\\
+	T(2) =2\\
+	T(n) =4T(n-1) -5T(n-2) +2T(n-3)
+	\end{cases}$}
+
+Ta có: 
+
+	
+\begin{align*}
+	                    & T(n) =4T(n-1) -5T(n-2) +2T(n-3)            \\
+	\Longleftrightarrow & T(n) -4T(n-1) +5T(n-2) -2T(n-3) =0         \\
+	\Longleftrightarrow & x^{n} -4x^{n-1} +5x^{n-2} -2x^{n-3} =0     \\
+	\Longleftrightarrow & x^{n-3}\left(x^{3} -4x^{2} +5x-2\right) =0 
+\end{align*}
+\begin{align*}
+	\Longrightarrow & \left[ \begin{array}{l l} 
+	x^{n-3} =0\\
+	x^{3} -4x^{2} +5x-2
+	\end{array} \right. \Longrightarrow \left[ \begin{array}{l l}
+	x=0             &                           \\
+	x=1\ (nghiem\ kep)     &                           \\
+	x=2\ (nghiem\ don)    &                           
+	\end{array} \right.
+\end{align*}
+$\displaystyle \Longrightarrow $Dạng của $\displaystyle T(n) =2^{n} c_{1} +c_{2} +c_{3} n$
+
+			
+\begin{align*}
+	Ta\ có:                    & \begin{cases} 
+	T(0) =0\\
+	T(1) =1\\
+	T(2) =2
+	\end{cases} \Longrightarrow \begin{cases}
+	T(0) =c_{1} +c_{2}          & =0            \\
+	T(1) =2c_{1} +c_{2} +c_{3}  & =1            \\
+	T(2) =4c_{1} +c_{2} +2c_{3} & =2            
+	\end{cases} \Longrightarrow \begin{cases}
+	c_{1} =0\\
+	c_{2} =0\\
+	c_{3} =1
+	\end{cases}
+\end{align*}
+\begin{equation*}
+	\Longrightarrow T(n) =n
+\end{equation*}
+\subsection{$\displaystyle \begin{cases}
+	T(0) =1\\
+	T(1) =1\\
+	T(n) =T(n-1) +T(n-2)
+	\end{cases}$}
+\begin{align*}
+	Ta\ có:\&T(n) =T(n-1) +T(n-2) &                                    \\
+	\Longleftrightarrow & T(n) -T(n-1) -T(n-2) =0            \\
+	\Longleftrightarrow & x^{n} -x^{n-1} -x^{n-2} =0         \\
+	\Longleftrightarrow & x^{n-2}\left(x^{2} -x -1\right) =0 
+\end{align*}
+\begin{align*}
+	\Longrightarrow                  & \left[ \begin{array}{l l} 
+	x^{n-2} =0\\
+	x^{2} -x -1=0
+	\end{array} \right. \Longrightarrow \left[ \begin{array}{l l}
+	x=0                              &                           \\
+	x=\frac{1+\sqrt{5}}{2} \ (nghiem don) &                           \\
+	x=\frac{1-\sqrt{5}}{2} \ (nghiem don) &                           
+	\end{array} \right.
+\end{align*}
+$\displaystyle \Longrightarrow $Dạng của $\displaystyle T(n) = c_{1}\left(\frac{1+\sqrt{5}}{2}\right)^{n} +c_{2}\left(\frac{1-\sqrt{5}}{2}\right)^{n}$
+
+			
+\begin{align*}
+	Ta\ có:                                                     & \begin{cases} 
+	T(0) =0\\
+	T(1) =1
+	\end{cases} \Longrightarrow \begin{cases}
+	T(0) =c_{1} +c_{2}                                           & =1            \\
+	T(1) =\frac{1+\sqrt{5}}{2} c_{1} +\frac{1-\sqrt{5}}{2} c_{2} & =1            
+	\end{cases} \Longrightarrow \begin{cases}
+	c_{1} =\frac{5+\sqrt{5}}{10}\\
+	c_{2} =\frac{5-\sqrt{5}}{10}
+	\end{cases}
+\end{align*}
+\begin{equation*}
+	\Longrightarrow T(n) =\frac{5+\sqrt{5}}{10}\left(\frac{1+\sqrt{5}}{2}\right)^{n} +\frac{5-\sqrt{5}}{10}\left(\frac{1-\sqrt{5}}{2}\right)^{n}
+\end{equation*}
+\section{Bài 4}
+\subsection{$\displaystyle T(n) =\begin{cases}
+	1 & ,if\ n=0\\
+	2T(n-1) +7 & ,if\ n >0
+	\end{cases}$}
+
+Ta có hàm sinh dãy vô hạn $\displaystyle \{T(n)\}_{n=0}^{\infty }$ là:
+\begin{align*}
+	f(x) = & \sum _{n=0}^{\infty } T(n) x^{n}                                                    \\
+	f(x) = & \sum _{n=1}^{\infty }[ 2T(n-1) +7] x^{n} +T(0) x^{0}                                \\
+	f(x) = & 2\sum _{n=1}^{\infty } T(n-1) x^{n} +7\sum _{n=1}^{\infty } x^{n} +1                \\
+	f(x) = & 2\sum _{n=1}^{\infty } T(n-1) x^{n} +7\left(\frac{1}{1-x} -1\right) +1              \\
+	f(x) = & 2\left(T(0) x+T(1) x^{2} +T(2) x^{3} +...\right) +7\left(\frac{1}{1-x} -1\right) +1 \\
+	f(x) = & 2x\left(T(0) +T(1) x+T(2) x^{2} +...\right) +\frac{7}{1-x} -6                       \\
+	f(x) = & 2x\sum _{n=0}^{\infty } T(n) x^{n} +7\left(\frac{1}{1-x} -1\right)                  \\
+	f(x) = & 2xf(x) +7\left(\frac{1}{1-x} -1\right)                                              \\
+	f(x) = & \frac{7}{(1-x)(1-2x)} -\frac{6}{1-2x}                                               \\
+	f(x) = & \frac{-7}{1-x} +\frac{8}{1-2x}                                                      \\
+	f(x) = & -7\sum _{n=0}^{\infty } x^{n} +8\sum _{n=0}^{\infty }(2x)^{n}                       \\
+	f(x) = & \sum _{n=0}^{\infty }\left(8.2^{n} -7\right) x^{n}                                  
+\end{align*}
+Từ (1) và (2), ta có:
+\begin{align*}
+	\begin{cases}
+	f(x) =      & \sum _{n=0}^{\infty }\left(8.2^{n} -7\right) x^{n} \\
+	f(x) =      & \sum _{n=0}^{\infty } T(n) x^{n}                   
+	\end{cases} & \Longrightarrow T(n) =8.2^{n} -7                   
+\end{align*}
+
+
+
+\subsection{$\displaystyle T(n) =\begin{cases}
+	1 & ,if\ n=0\\
+	2 & ,if\ n=1\\
+	7T(n-1) -12T(n-2) & ,if\ n\geq 2
+	\end{cases}$}
+
+Ta có hàm sinh dãy vô hạn $\displaystyle \{T(n)\}_{n=0}^{\infty }$ là:
+\begin{align*}
+	f(x) = & \sum _{n=0}^{\infty } T(n) x^{n}                                                \\
+	f(x) = & \sum _{n=2}^{\infty }[ 7T(n-1) -12T(n-2)] x^{n} +T(0) x^{0} +T(1) x             \\
+	f(x) = & 7\sum _{n=2}^{\infty } T(n-1) x^{n} -12\sum _{n=2}^{\infty } T(n-2) x^{n} +1+2x 
+\end{align*}
+Đặt $\displaystyle A=\sum _{n=2}^{\infty } T(n-1) x^{n} ,\ B=\sum _{n=2}^{\infty } T(n-2) x^{n}$:
+\begin{align*}
+	A & =\sum _{n=2}^{\infty } T(n-1) x^{n}               \\
+	  & =T(1) x^{2} +T(2) x^{3} +T(3) x^{4} +...          \\
+	  & =x\left(T(1) x+T(2) x^{2} +T(3) x^{4} +...\right) 
+\end{align*}
+Từ (1) và (3), ta có:
+\begin{align*}
+	\Longrightarrow A & =x(f(x) -T(0)) \\
+	                  & =xf(x) -x      
+\end{align*}
+Ta có:
+\begin{align*}
+	B & =\sum _{n=2}^{\infty } T(n-2) x^{n}             \\
+	  & =T(0) x^{2} +T(1) x^{3} +T(2) x^{4} +...        \\
+	  & =x^{2}\left(T(0) +T(1) x+T(2) x^{2} +...\right) 
+\end{align*}
+Từ (1) và (5), ta có:
+\begin{align*}
+	\Longrightarrow B & =x^{2} f(x) 
+\end{align*}
+Từ (2), (4) và (6), ta có:
+\begin{align*}
+	f(x) = & 7(xf(x) -x) -12x^{2} f(x) +1+2x                               \\
+	f(x) = & 7xf(x) -7x-12x^{2} f(x) +1+2x                                 \\
+	f(x) = & f(x)\left(7x-12x^{2}\right) +1-5x                             \\
+	f(x) = & \frac{1-5x}{1-7x+12x^{2}}                                     \\
+	f(x) = & \frac{1-5x}{(3x-1)(4x-1)}                                     \\
+	f(x) = & \frac{2}{1-3x} -\frac{1}{1-4x}                                \\
+	f(x) = & 2\sum _{n=0}^{\infty }(3x)^{n} -\sum _{n=0}^{\infty }(4x)^{n} \\
+	f(x) = & \sum _{n=0}^{\infty }\left(2.3^{n} -4^{n}\right) x^{n}        
+\end{align*}
+Từ (1) và (7), ta có:
+\begin{align*}
+	\begin{cases}
+	f(x) =      & \sum _{n=0}^{\infty }\left(2.3^{n} -4^{n}\right) x^{n} \\
+	f(x) =      & \sum _{n=0}^{\infty } T(n) x^{n}                       
+	\end{cases} & \Longrightarrow T(n) =2.3^{n} -4^{n}                   
+\end{align*}
+\subsection{$\displaystyle T(n+1) =T(n) +2(n+2) ,\ T(0) =3$}
+
+Ta có: $\displaystyle T(n+1) =T(n) +2(n+2) \Longleftrightarrow T(n) =T(n-1) +2(n+1)$ 
+
+Ta có hàm sinh dãy vô hạn $\displaystyle \{T(n)\}_{n=0}^{\infty }$ là:
+\begin{align*}
+	f(x) = & \sum _{n=0}^{\infty } T(n) x^{n}                                                         \\
+	f(x) = & \sum _{n=1}^{\infty }[ T(n-1) +2(n+1)] x^{n} +T(0) x^{0}                                 \\
+	f(x) = & \sum _{n=1}^{\infty } T(n-1) x^{n} +2\sum _{n=1}^{\infty } (n+1) x^{n} +3                \\
+	f(x) = & \left(T(0) x+T(1) x^{2} +T(2) x^{3} +...\right) +2\left(\frac{1}{(1-x)^{2}} -1\right) +3 \\
+	f(x) = & x\left(T(0) +T(1) x+T(2) x^{2} +...\right) +2\left(\frac{2x-x^{2}}{(1-x)^{2}}\right) +3  \\
+	f(x) = & xf(x) +2\left(\frac{1}{(1-x)^{2}} -1\right) +3                                           \\
+	f(x) = & \frac{\frac{2}{(1-x)^{2}} +1}{1-x}                                                       \\
+	f(x) = & \frac{2}{(1-x)^{3}} +\frac{1}{1-x}                                                       
+\end{align*}
+Ta có: $\displaystyle \frac{1}{(1-x)^{k}} =\sum _{\ n=0}^{\infty } C_{n+k-1}^{n} x^{n} \Longrightarrow \frac{1}{(1-x)^{3}} =\sum _{\ n=0}^{\infty } C_{n+2}^{n} x^{n}$ 
+\begin{align*}
+	\Longrightarrow f(x) =     & \frac{2}{(1-x)^{3}} +\frac{1}{1-x}                                        \\
+	\Longleftrightarrow f(x) = & 2\sum _{\ n=0}^{\infty } C_{n+2}^{n} x^{n} +\sum _{\ n=0}^{\infty } x^{n} \\
+	f(x) =                     & \sum _{\ n=0}^{\infty }\left(2C_{n+2}^{n} +1\right) x^{n}                 
+\end{align*}
+Từ (1) và (2), ta có:
+\begin{align*}
+	\begin{cases}
+	f(x) =      & \sum _{n=0}^{\infty }\left(2C_{n+2}^{n} +1\right) x^{n} \\
+	f(x) =      & \sum _{n=0}^{\infty } T(n) x^{n}                        
+	\end{cases} & \Longrightarrow T(n) =2C_{n+2}^{n} +1                   
+\end{align*}
+\section{Bài 5}
+
+\subsection{}
+\begin{equation*}
+\begin{cases}
+T( 1) =C_{1} & \\
+T( n) =4T\left(\frac{n}{2}\right) +n & if\ n\geqslant 2
+\end{cases}
+\end{equation*}
+Một người dùng phương pháp đoán nghiệm để giải phương trình đệ quy trên. Giá sử anh ta lần lượt đoán 3 nghiệm như sau:
+\begin{itemize}
+\item $\displaystyle f( n) =an^{3}$
+\item $\displaystyle f( n) =an^{2}$
+\item $\displaystyle f( n) =an^{2} -bn$
+\end{itemize}
+
+
+
+\textbf{Xét các nghiệm mà anh ta đoán:}
+
+
+
+$\displaystyle f( n) =an^{3}$
+\begin{itemize}
+\item Với $\displaystyle n=1\rightarrow T( 1) =C_{1}$ và $\displaystyle f( 1) =a$ . Để $\displaystyle T( 1) \leqslant f( 1)$ thì ta chọn $\displaystyle C_{1} \leqslant a$ 
+\item Giả sử $\displaystyle T( k) \leqslant f( k) ,\ \forall k< n$, khi đó để dự đoán là đúng, thì ta cần chứng minh
+\end{itemize}
+\begin{equation*}
+T( n) \leqslant f( n) \ \forall n
+\end{equation*}
+\begin{itemize}
+\item Với $\displaystyle k=\frac{n}{2} \ ( n\geqslant 2)$ khi đó ta có 
+\end{itemize}
+\begin{gather*}
+T\left(\frac{n}{2}\right) \leqslant f\left(\frac{n}{2}\right) =\frac{1}{8} an^{3} .\\
+\\
+T( n) =4T\left(\frac{n}{2}\right) +n\leqslant \frac{1}{2} an^{3} +n=an^{3}\left(\frac{1}{2} +\frac{1}{an^{2}}\right) =f( n)\left(\frac{1}{2} +\frac{1}{an^{2}}\right)\\
+\end{gather*}
+\begin{itemize}
+\item Khi $\displaystyle \left(\frac{1}{2} +\frac{1}{an^{2}}\right) \leqslant 1$ ta được $\displaystyle T( n) \leqslant f( n)\left(\frac{1}{2} +\frac{1}{an^{2}}\right) \leqslant f( n)$, do đó
+\end{itemize}
+\begin{equation*}
+\frac{1}{an^{2}} \leqslant \frac{1}{2} \Longrightarrow an^{2} \geqslant 2\Longrightarrow a\geqslant \frac{2}{n^{2}}
+\end{equation*}
+\begin{itemize}
+\item Vì $\displaystyle a$ phụ thuộc vào $\displaystyle n$, nên $\displaystyle f( n) =an^{3}$ không phải là nghiệm đúng 
+\end{itemize}
+
+
+
+
+
+$\displaystyle f( n) =an^{2}$
+\begin{itemize}
+\item Với $\displaystyle n=1\rightarrow T( 1) =C_{1}$ và $\displaystyle f( 1) =a$ . Để $\displaystyle T( 1) \leqslant f( 1)$ thì ta chọn $\displaystyle C_{1} \leqslant a$ 
+\item Giả sử $\displaystyle T( k) \leqslant f( k) ,\ \forall k< n$, khi đó để dự đoán là đúng, thì ta cần chứng minh
+\end{itemize}
+\begin{equation*}
+T( n) \leqslant f( n) \ \forall n
+\end{equation*}
+\begin{itemize}
+\item Với $\displaystyle k=\frac{n}{2} \ ( n\geqslant 2)$ khi đó ta có 
+\end{itemize}
+\begin{gather*}
+T\left(\frac{n}{2}\right) \leqslant f\left(\frac{n}{2}\right) =\frac{1}{4} an^{2} .\\
+\\
+T( n) =4T\left(\frac{n}{2}\right) +n\leqslant an^{2} +n=f( n) +n
+\end{gather*}
+\begin{itemize}
+\item Khi $\displaystyle n< 0$ ta được 
+\end{itemize}
+\begin{equation*}
+T( n) \leqslant f( n) +n\leqslant f( n)
+\end{equation*}
+\begin{itemize}
+\item nhưng vì $\displaystyle n\geqslant 2$, nên không tồn tại giá trị $\displaystyle n$ để $\displaystyle T( n) \leqslant f( n) \ \forall n$
+\end{itemize}
+
+
+
+$\displaystyle f( n) =an^{2} -bn$
+\begin{itemize}
+\item Với $\displaystyle n=1\rightarrow T( 1) =C_{1}$ và $\displaystyle f( 1) =a-b$ . Để $\displaystyle T( 1) \leqslant f( 1)$ thì ta chọn $\displaystyle C_{1} \leqslant a-b$ 
+\item Giả sử $\displaystyle T( k) \leqslant f( k) ,\ \forall k< n$, khi đó để dự đoán là đúng, thì ta cần chứng minh
+\end{itemize}
+\begin{equation*}
+T( n) \leqslant f( n) \ \forall n
+\end{equation*}
+\begin{itemize}
+\item Với $\displaystyle k=\frac{n}{2} \ ( n\geqslant 2)$ khi đó ta có:
+\end{itemize}
+\begin{gather*}
+T\left(\frac{n}{2}\right) \leqslant f\left(\frac{n}{2}\right) =\frac{1}{4} an^{2} -\frac{1}{2} bn\\
+T( n) =4T\left(\frac{n}{2}\right) +n\leqslant an^{2} -2bn+n=an^{2} -bn-bn+n\\
+T( n) \leqslant f( n) -bn+n=f( n) +n( 1-b)
+\end{gather*}
+\begin{itemize}
+\item Khi
+\end{itemize}
+\begin{equation*}
+n( 1-b) \leqslant 0
+\end{equation*}
+\begin{itemize}
+\item Ta được:
+\end{itemize}
+\begin{equation*}
+T( n) \leqslant f( n) +n( 1-b) \leqslant f( n)
+\end{equation*}
+\begin{itemize}
+\item Vì $\displaystyle n\geqslant 2$ nên
+\end{itemize}
+\begin{equation*}
+n( 1-b) \leqslant 0\Longrightarrow 1-b\leqslant 0\Longrightarrow b\geqslant 1
+\end{equation*}
+\begin{itemize}
+\item Đề tìm $\displaystyle a,\ b$ cần giải bất phương trình
+\end{itemize}
+\begin{equation*}
+\begin{cases}
+a-b\geqslant C_{1}\\
+b\geqslant 1
+\end{cases} \Longrightarrow \begin{cases}
+a\geqslant C_{1} +1\\
+b\geqslant 1
+\end{cases}
+\end{equation*}
+\begin{itemize}
+\item Suy ra $\displaystyle a=C_{1} +1$ và $\displaystyle b=1$, ta được:
+\end{itemize}
+\begin{equation*}
+T( n) \leqslant f( n) =( C_{1} +1) n^{2} +n\ \forall n
+\end{equation*}
+\begin{itemize}
+\item Vậy dự đoán nghiệm này là đúng
+\end{itemize}
+\subsection{Dự đoán $\displaystyle f( n) =an^{2} +b$ là đúng không}
+\begin{equation*}
+T( n) =\begin{cases}
+1 & if\ n=1\\
+3T\left(\frac{n}{2}\right) +n^{2} & if\ n >1
+\end{cases}
+\end{equation*}
+
+\begin{itemize}
+\item Với $\displaystyle n=1$, ta có: $\displaystyle \begin{cases}
+T( 1) =1\\
+f( 1) =a+b
+\end{cases}$ để $\displaystyle T( 1) \leqslant f( 1)$ thì ta chọn $\displaystyle a+b\geqslant 4$
+\item Giả sử $\displaystyle T( k) \leqslant f( k) \ \forall k< n$, khi đó để dự đoán là đúng thì ta cần chứng minh: 
+\end{itemize}
+\begin{equation*}
+T( n) \leqslant f( n) \ \forall n
+\end{equation*}
+\begin{itemize}
+\item Với $\displaystyle k=\frac{n}{2} \ ( n >1)$, ta có:
+\end{itemize}
+\begin{gather*}
+T\left(\frac{n}{2}\right) \leqslant f\left(\frac{n}{2}\right) =\frac{1}{4} an^{2} +b\\
+\\
+T( n) =3T\left(\frac{n}{2}\right) +n^{2} \leqslant \frac{3}{4} an^{2} +3b+n^{2}\\
+T( n) \leqslant an^{2} +b-\frac{1}{4} an^{2} +2b+n^{2} =f( n) -\frac{1}{4} an^{2} +2b+n^{2}
+\end{gather*}
+\begin{itemize}
+\item Khi:
+\end{itemize}
+\begin{equation*}
+-\frac{1}{4} an^{2} +2b+n^{2} \leqslant 0\ 
+\end{equation*}
+\begin{itemize}
+\item Ta có:
+\end{itemize}
+\begin{equation*}
+T( n) \leqslant f( n) -\frac{1}{4} an^{2} +2b+n^{2} \leqslant f( n)
+\end{equation*}
+\begin{itemize}
+\item Để tìm $\displaystyle a,\ b$ cần giải hệ phương trình:
+\end{itemize}
+\begin{equation*}
+\begin{cases}
+a+b\geqslant 4\\
+\frac{-1}{4} an^{2} +2b+n^{2} \leqslant 0
+\end{cases} \Longrightarrow \begin{cases}
+b\geqslant 4-a\\
+\frac{-1}{4} an^{2} +2b+n^{2} \leqslant 0
+\end{cases}
+\end{equation*}
+\begin{itemize}
+\item Xét bất phương trình: 
+\end{itemize}
+\begin{gather*}
+\frac{-1}{4} an^{2} +2b+n^{2} \leqslant 0\\
+\frac{-1}{4} an^{2} +8-2a+n^{2} \leqslant \frac{-1}{4} an^{2} +2b+n^{2} \leqslant 0\\
+\frac{-1}{4} an^{2} +8-2a+n^{2} \leqslant 0\\
+n^{2}\left( 1-\frac{1}{4} a\right) +8\left( 1-\frac{1}{4} a\right) \leqslant 0\\
+\left( n^{2} +8\right)\left( 1-\frac{1}{4} a\right) \leqslant 0
+\end{gather*}
+\begin{itemize}
+\item Vì $\displaystyle n >0$ do đó nghiệm $\displaystyle a,\ b$ cần tìm thỏa:
+\end{itemize}
+\begin{equation*}
+\begin{cases}
+b\geqslant 4-a\\
+1-\frac{1}{4} a\leqslant 0
+\end{cases} \Leftrightarrow \begin{cases}
+b\geqslant 4-a\\
+a\geqslant 4
+\end{cases} \Leftrightarrow \begin{cases}
+b\geqslant 4-a\\
+a\geqslant 4
+\end{cases} \Leftrightarrow \begin{cases}
+b\geqslant 4-a\\
+a\geqslant 4
+\end{cases}
+\end{equation*}
+\begin{itemize}
+\item Chọn 
+\end{itemize}
+\begin{equation*}
+\begin{cases}
+b=0\\
+a=4
+\end{cases}
+\end{equation*}
+\begin{itemize}
+\item Khi đó ta có $\displaystyle f( n) =4n^{2}$ và $\displaystyle T( n) \leqslant 4n^{2} \ \forall n$ \rightarrow  $\displaystyle T( n) =O\left( n^{2}\right)$
+\end{itemize}
+
+\subsection{}
+\begin{gather*}
+	T(n) =T\left(\frac{n}{2}\right) +T\left(\frac{n}{4}\right) +n\\
+	T(n) =1\ với\ n\leqslant 5
+\end{gather*}
+
+\begin{itemize}
+	\item Với $\displaystyle f(n) =an+b$
+	\item Với $\displaystyle n=\frac{1}{4}$, ta có: $\displaystyle \begin{cases}
+	      T\left(\frac{1}{4}\right) =1\\
+	      f\left(\frac{1}{4}\right) =\frac{1}{4} a+b
+	\end{cases}$ để $\displaystyle T\left(\frac{1}{4}\right) \leqslant f\left(\frac{1}{4}\right)$, ta chọn $\displaystyle \frac{1}{4} a+b\geqslant 1\Longrightarrow b\geqslant 1-\frac{1}{4} a$
+	\item Giả sử $\displaystyle T(k) \leqslant f(k) \ \forall k< n$, khi đó để dự đoán là đúng thì ta cần chứng minh: 
+\end{itemize}
+\begin{equation*}
+	T(n) \leqslant f(n) \ \forall n
+\end{equation*}
+\begin{itemize}
+	\item Với $\displaystyle k=\frac{n}{2}$, $\displaystyle k=\frac{n}{4}$ $\displaystyle (n\geqslant 5)$, ta có:
+\end{itemize}
+\begin{gather*}
+	T\left(\frac{n}{2}\right) \leqslant f\left(\frac{n}{2}\right) =\frac{1}{2} an+b\\
+	T\left(\frac{n}{4}\right) \leqslant f\left(\frac{n}{4}\right) =\frac{1}{4} an+b\\
+	\\
+	T(n) =T\left(\frac{n}{2}\right) +T\left(\frac{n}{4}\right) +n\leqslant \frac{1}{2} an+b+\frac{1}{4} an+b+n\\
+	T(n) \leqslant \frac{3}{4} an+2b+n=f(n) -\frac{1}{4} an+b+n
+\end{gather*}
+\begin{itemize}
+	\item Khi
+\end{itemize}
+\begin{equation*}
+	-\frac{1}{4} an+b+n\leqslant 0
+\end{equation*}
+\begin{itemize}
+	\item Ta được:
+\end{itemize}
+\begin{equation*}
+	T(n) \leqslant f(n) -\frac{1}{4} an+b+n\leqslant f(n) \ \forall n
+\end{equation*}
+\begin{itemize}
+	\item Để tìm $\displaystyle a,\ b$ ta cần giải bất phương trình:
+\end{itemize}
+\begin{equation*}
+	\begin{cases}
+		\frac{1}{4} a+b\geqslant 1     \\
+		\frac{-1}{4} an+b+n\leqslant 0 
+	\end{cases} \Leftrightarrow \begin{cases}
+	4b\geqslant 4-a\\
+	4b-an+4n\leqslant 0
+	\end{cases}
+\end{equation*}
+\begin{itemize}
+	\item Xét bất phương trình:
+\end{itemize}
+\begin{gather*}
+	4b-an+4n\leqslant 0\\
+	4-a-an+4n\leqslant 4b-an+4n\leqslant 0\\
+	4-a-an+4n\leqslant 0\\
+	-a(1+n) +4(n+1) \leqslant 0\\
+	(n+1)(4-a) \leqslant 0
+\end{gather*}
+\begin{itemize}
+	\item Vì $\displaystyle n >0$ do đó nghiệm $\displaystyle a,\ b$ cần tìm thỏa:
+\end{itemize}
+\begin{equation*}
+	\begin{cases}
+		4b\geqslant 4-a \\
+		a\geqslant 4    
+	\end{cases} \Leftrightarrow \begin{cases}
+	b\geqslant 0\\
+	a\geqslant 4
+	\end{cases}
+\end{equation*}
+\begin{itemize}
+	\item Chọn 
+\end{itemize}
+\begin{equation*}
+	\begin{cases}
+		b=0 \\
+		a=4 
+	\end{cases}
+\end{equation*}
+\begin{itemize}
+	\item Khi đó ta có $\displaystyle f(n) =4n$ và $\displaystyle T(n) \leqslant 4n\ \forall n$ \rightarrow $\displaystyle T(n) =O(n)$
+\end{itemize}
+
+\end{document}

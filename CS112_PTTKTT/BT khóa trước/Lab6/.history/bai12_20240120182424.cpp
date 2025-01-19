@@ -1,0 +1,60 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int n;
+vector<int> a;
+
+int partition(int left, int right)
+{
+    // chon phan tu cuoi cung lam pivot
+    int mid = a[right], temp = left;
+
+    // dua cac phan tu nho hon mid ve ben trai
+    // cac phan tu lon hon mid ve ben phai
+    for (int i = left; i < right; i++)
+        if (a[i] <= mid)
+            swap(a[temp++], a[i]);
+
+    // luc nay chi swap a[right] voi a[temp] la 
+    // ta co mang a duoc chia thanh 2 phan
+    return swap(a[temp], a[right]), temp
+
+    // chi so cua pivot
+}
+
+int search(int k, int l, int r)
+{
+    // neu l == r, tuc la chi con 1 phan tu
+    // tra ve phan tu do
+    if (l == r)
+        return a[l];
+
+    // chia mang thanh 2 phan
+    // pivot la phan tu chia mang thanh 2 phan
+    int pivot = partition(l, r);
+
+    if (pivot - l == k - 1)
+        return a[pivot];
+
+    if (k - 1 < pivot - l)
+        return search(k, l, pivot - 1);
+
+    return search(k - pivot + l - 1, pivot + 1, r);
+}
+
+int main()
+{
+    // nhap n va k
+    int k;
+    cin >> n >> k;
+
+    // nhap cac gia tri a[i]
+    a.assign(n, 0);
+    for (auto& v : a)
+        cin >> v;
+
+    k = n - k + 1;
+
+    auto res = search(k, 0, n - 1);
+    cout << res;
+}

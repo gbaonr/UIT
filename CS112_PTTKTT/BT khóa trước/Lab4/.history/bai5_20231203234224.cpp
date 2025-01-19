@@ -1,0 +1,29 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+vector<vector<int>> matrix, res;
+int n, m;
+
+void find(int i, int j)
+{
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < n; ++j) {
+            if (matrix[i][j] == num) {
+            }
+        }
+    }
+}
+
+int main()
+{
+    cin >> n >> m;
+
+    matrix.assign(n, vector<int>(m, 0));
+    res.assign(n, vector<int>(m, -1));
+
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < m; ++j) {
+            cin >> matrix[i][j];
+        }
+    }
+}

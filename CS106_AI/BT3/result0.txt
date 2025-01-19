@@ -1,0 +1,390 @@
+00Uncorrelated/n00050/R01000/s005.kp
+   Capacities = [11922]
+   Total weight: 11921
+   Total value: 19780
+   Elapsed time: 0.0
+
+00Uncorrelated/n00100/R01000/s005.kp
+   Capacities = [28462]
+   Total weight: 28455
+   Total value: 42224
+   Elapsed time: 0.0
+
+00Uncorrelated/n00200/R01000/s005.kp
+   Capacities = [47601]
+   Total weight: 47601
+   Total value: 86024
+   Elapsed time: 0.0
+
+00Uncorrelated/n00500/R01000/s005.kp
+   Capacities = [120137]
+   Total weight: 120129
+   Total value: 202400
+   Elapsed time: 0.0
+
+00Uncorrelated/n01000/R01000/s005.kp
+   Capacities = [243749]
+   Total weight: 243745
+   Total value: 403106
+   Elapsed time: 0.0
+
+01WeaklyCorrelated/n00050/R01000/s005.kp
+   Capacities = [12719]
+   Total weight: 12715
+   Total value: 14125
+   Elapsed time: 0.0
+
+01WeaklyCorrelated/n00100/R01000/s005.kp
+   Capacities = [24642]
+   Total weight: 24637
+   Total value: 27933
+   Elapsed time: 0.0
+
+01WeaklyCorrelated/n00200/R01000/s005.kp
+   Capacities = [53104]
+   Total weight: 53102
+   Total value: 57753
+   Elapsed time: 0.0
+
+01WeaklyCorrelated/n00500/R01000/s005.kp
+   Capacities = [123199]
+   Total weight: 123199
+   Total value: 135595
+   Elapsed time: 0.0
+
+01WeaklyCorrelated/n01000/R01000/s005.kp
+   Capacities = [243336]
+   Total weight: 243336
+   Total value: 268214
+   Elapsed time: 0.0
+
+02StronglyCorrelated/n00050/R01000/s005.kp
+   Capacities = [12719]
+   Total weight: 12719
+   Total value: 16219
+   Elapsed time: 0.024619102478027344
+
+02StronglyCorrelated/n00100/R01000/s005.kp
+   Capacities = [24642]
+   Total weight: 24642
+   Total value: 31842
+   Elapsed time: 0.000997781753540039
+
+02StronglyCorrelated/n00200/R01000/s005.kp
+   Capacities = [53104]
+   Total weight: 53104
+   Total value: 66904
+   Elapsed time: 0.03410935401916504
+
+02StronglyCorrelated/n00500/R01000/s005.kp
+   Capacities = [123199]
+   Total weight: 122931
+   Total value: 158131
+   Elapsed time: 9.998393297195435
+
+02StronglyCorrelated/n01000/R01000/s005.kp
+   Capacities = [243336]
+   Total weight: 243116
+   Total value: 313916
+   Elapsed time: 9.997896909713745
+
+03InverseStronglyCorrelated/n00050/R01000/s005.kp
+   Capacities = [15194]
+   Total weight: 15194
+   Total value: 13594
+   Elapsed time: 0.09602880477905273
+
+03InverseStronglyCorrelated/n00100/R01000/s005.kp
+   Capacities = [29592]
+   Total weight: 29592
+   Total value: 26592
+   Elapsed time: 0.0
+
+03InverseStronglyCorrelated/n00200/R01000/s005.kp
+   Capacities = [63005]
+   Total weight: 62977
+   Total value: 56477
+   Elapsed time: 9.996318817138672
+
+03InverseStronglyCorrelated/n00500/R01000/s005.kp
+   Capacities = [147951]
+   Total weight: 147951
+   Total value: 132251
+   Elapsed time: 10.000740051269531
+
+03InverseStronglyCorrelated/n01000/R01000/s005.kp
+   Capacities = [292841]
+   Total weight: 292748
+   Total value: 261648
+   Elapsed time: 9.995144605636597
+
+04AlmostStronglyCorrelated/n00050/R01000/s005.kp
+   Capacities = [12719]
+   Total weight: 12719
+   Total value: 16204
+   Elapsed time: 0.014944791793823242
+
+04AlmostStronglyCorrelated/n00100/R01000/s005.kp
+   Capacities = [24642]
+   Total weight: 24641
+   Total value: 31891
+   Elapsed time: 0.0
+
+04AlmostStronglyCorrelated/n00200/R01000/s005.kp
+   Capacities = [53104]
+   Total weight: 53104
+   Total value: 66890
+   Elapsed time: 0.0010006427764892578
+
+04AlmostStronglyCorrelated/n00500/R01000/s005.kp
+   Capacities = [123199]
+   Total weight: 123027
+   Total value: 158217
+   Elapsed time: 10.000507116317749
+
+04AlmostStronglyCorrelated/n01000/R01000/s005.kp
+   Capacities = [243336]
+   Total weight: 243253
+   Total value: 314071
+   Elapsed time: 9.99926495552063
+
+05SubsetSum/n00050/R01000/s005.kp
+   Capacities = [12719]
+   Total weight: 12719
+   Total value: 12719
+   Elapsed time: 0.0
+
+05SubsetSum/n00100/R01000/s005.kp
+   Capacities = [24642]
+   Total weight: 24642
+   Total value: 24642
+   Elapsed time: 0.0
+
+05SubsetSum/n00200/R01000/s005.kp
+   Capacities = [53104]
+   Total weight: 53104
+   Total value: 53104
+   Elapsed time: 0.0
+
+05SubsetSum/n00500/R01000/s005.kp
+   Capacities = [123199]
+   Total weight: 123199
+   Total value: 123199
+   Elapsed time: 0.0
+
+05SubsetSum/n01000/R01000/s005.kp
+   Capacities = [243336]
+   Total weight: 243336
+   Total value: 243336
+   Elapsed time: 0.0
+
+06UncorrelatedWithSimilarWeights/n00050/R01000/s005.kp
+   Capacities = [2476436]
+   Total weight: 2401442
+   Total value: 19503
+   Elapsed time: 0.0039958953857421875
+
+06UncorrelatedWithSimilarWeights/n00100/R01000/s005.kp
+   Capacities = [4953340]
+   Total weight: 4902512
+   Total value: 39025
+   Elapsed time: 0.0
+
+06UncorrelatedWithSimilarWeights/n00200/R01000/s005.kp
+   Capacities = [9905740]
+   Total weight: 9904796
+   Total value: 79002
+   Elapsed time: 0.0
+
+06UncorrelatedWithSimilarWeights/n00500/R01000/s005.kp
+   Capacities = [24764470]
+   Total weight: 24711907
+   Total value: 186275
+   Elapsed time: 10.002622604370117
+
+06UncorrelatedWithSimilarWeights/n01000/R01000/s005.kp
+   Capacities = [49529307]
+   Total weight: 49523855
+   Total value: 369485
+   Elapsed time: 0.3670835494995117
+
+07SpannerUncorrelated/n00050/R01000/s005.kp
+   Capacities = [9808]
+   Total weight: 9808
+   Total value: 7728
+   Elapsed time: 2.9320268630981445
+
+07SpannerUncorrelated/n00100/R01000/s005.kp
+   Capacities = [21063]
+   Total weight: 21022
+   Total value: 16562
+   Elapsed time: 9.96744966506958
+
+07SpannerUncorrelated/n00200/R01000/s005.kp
+   Capacities = [41847]
+   Total weight: 41847
+   Total value: 32977
+   Elapsed time: 10.003810405731201
+
+07SpannerUncorrelated/n00500/R01000/s005.kp
+   Capacities = [104142]
+   Total weight: 104125
+   Total value: 82075
+   Elapsed time: 10.003910064697266
+
+07SpannerUncorrelated/n01000/R01000/s005.kp
+   Capacities = [210868]
+   Total weight: 210827
+   Total value: 166173
+   Elapsed time: 10.002387523651123
+
+08SpannerWeaklyCorrelated/n00050/R01000/s005.kp
+   Capacities = [7688]
+   Total weight: 7683
+   Total value: 18104
+   Elapsed time: 2.424017906188965
+
+08SpannerWeaklyCorrelated/n00100/R01000/s005.kp
+   Capacities = [16528]
+   Total weight: 16527
+   Total value: 38960
+   Elapsed time: 9.997826099395752
+
+08SpannerWeaklyCorrelated/n00200/R01000/s005.kp
+   Capacities = [32786]
+   Total weight: 32763
+   Total value: 77262
+   Elapsed time: 10.000373601913452
+
+08SpannerWeaklyCorrelated/n00500/R01000/s005.kp
+   Capacities = [81588]
+   Total weight: 81539
+   Total value: 192286
+   Elapsed time: 10.001893043518066
+
+08SpannerWeaklyCorrelated/n01000/R01000/s005.kp
+   Capacities = [165198]
+   Total weight: 165155
+   Total value: 389470
+   Elapsed time: 9.999151229858398
+
+09SpannerStronglyCorrelated/n00050/R01000/s005.kp
+   Capacities = [7814]
+   Total weight: 7813
+   Total value: 21313
+   Elapsed time: 0.06446290016174316
+
+09SpannerStronglyCorrelated/n00100/R01000/s005.kp
+   Capacities = [16600]
+   Total weight: 16592
+   Total value: 44492
+   Elapsed time: 10.003594875335693
+
+09SpannerStronglyCorrelated/n00200/R01000/s005.kp
+   Capacities = [32802]
+   Total weight: 32761
+   Total value: 90261
+   Elapsed time: 10.021563053131104
+
+09SpannerStronglyCorrelated/n00500/R01000/s005.kp
+   Capacities = [81687]
+   Total weight: 81672
+   Total value: 225472
+   Elapsed time: 10.001438856124878
+
+09SpannerStronglyCorrelated/n01000/R01000/s005.kp
+   Capacities = [165436]
+   Total weight: 165430
+   Total value: 457030
+   Elapsed time: 10.005448341369629
+
+10MultipleStronglyCorrelated/n00050/R01000/s005.kp
+   Capacities = [12714]
+   Total weight: 12713
+   Total value: 20813
+   Elapsed time: 0.001003265380859375
+
+10MultipleStronglyCorrelated/n00100/R01000/s005.kp
+   Capacities = [24642]
+   Total weight: 24642
+   Total value: 40642
+   Elapsed time: 0.01352238655090332
+
+10MultipleStronglyCorrelated/n00200/R01000/s005.kp
+   Capacities = [53100]
+   Total weight: 53100
+   Total value: 84200
+   Elapsed time: 10.000629186630249
+
+10MultipleStronglyCorrelated/n00500/R01000/s005.kp
+   Capacities = [123198]
+   Total weight: 123198
+   Total value: 201698
+   Elapsed time: 9.995501518249512
+
+10MultipleStronglyCorrelated/n01000/R01000/s005.kp
+   Capacities = [243336]
+   Total weight: 243336
+   Total value: 399336
+   Elapsed time: 0.39219164848327637
+
+11ProfitCeiling/n00050/R01000/s005.kp
+   Capacities = [12719]
+   Total weight: 12718
+   Total value: 12708
+   Elapsed time: 0.051995038986206055
+
+11ProfitCeiling/n00100/R01000/s005.kp
+   Capacities = [24642]
+   Total weight: 24640
+   Total value: 24627
+   Elapsed time: 2.5236032009124756
+
+11ProfitCeiling/n00200/R01000/s005.kp
+   Capacities = [53104]
+   Total weight: 53103
+   Total value: 53082
+   Elapsed time: 10.00178861618042
+
+11ProfitCeiling/n00500/R01000/s005.kp
+   Capacities = [123199]
+   Total weight: 123199
+   Total value: 123153
+   Elapsed time: 10.010447978973389
+
+11ProfitCeiling/n01000/R01000/s005.kp
+   Capacities = [243336]
+   Total weight: 243334
+   Total value: 243240
+   Elapsed time: 9.999755382537842
+
+12Circle/n00050/R01000/s005.kp
+   Capacities = [12719]
+   Total weight: 12719
+   Total value: 268001
+   Elapsed time: 0.06486916542053223
+
+12Circle/n00100/R01000/s005.kp
+   Capacities = [24642]
+   Total weight: 24642
+   Total value: 519231
+   Elapsed time: 0.06852126121520996
+
+12Circle/n00200/R01000/s005.kp
+   Capacities = [53104]
+   Total weight: 53104
+   Total value: 1118954
+   Elapsed time: 10.00383734703064
+
+12Circle/n00500/R01000/s005.kp
+   Capacities = [123199]
+   Total weight: 123199
+   Total value: 2595920
+   Elapsed time: 2.666550874710083
+
+12Circle/n01000/R01000/s005.kp
+   Capacities = [243336]
+   Total weight: 243336
+   Total value: 5127320
+   Elapsed time: 10.000583171844482
+

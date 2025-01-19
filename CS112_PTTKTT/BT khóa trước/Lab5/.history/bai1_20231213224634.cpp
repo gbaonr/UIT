@@ -1,0 +1,102 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+pair<vector<int>, vector<int>> dijkstra(int n, map<string, map<string, int>>& g, string s, string d, vector<string>& vertices)
+{
+    // vector<int> res(n, INT_MAX);
+    // vector<int> trace(n);
+    map<string, int> res;
+    map<string, string> trace;
+
+    for (int i = 0; i < n; ++i) {
+        res[vertices[i]] = INT_MAX;
+        trace[vertices[i]] = "";
+    }
+
+    // [dist, node]
+    priority_queue<pair<int, string>, vector<pair<int, string>>, greater<pair<int, string>>> pq;
+
+    res[s] = 0;
+    pq.push({ 0, s });
+
+    while (!pq.empty()) {
+        string u = pq.top().second;
+        int dist = pq.top().first;
+        pq.pop();
+
+        // neu node chuan bi xet < dist thuc te => nghia la node nay da duoc them vao pq voi dist nho hon
+        if (dist > res[u])
+            continue;
+
+        // for (auto edge : g[u]) {
+        for (auto v : vertices) {
+            int w = g[u][v];
+
+            if (res[v] > dist + w) {
+                res[v] = dist + w;
+                pq.push({ res[v], v });
+                trace[v] = u;
+            }
+        }
+    }
+
+    return {
+        res,
+        trace
+    };
+}
+
+int main()
+{
+    int n, q;
+    cin >> n >> q;
+
+    // vector<vector<pair<int, int>>> g(n, vector<pair<int, int>>());
+    vector<string> vertices;
+    map<string, map<string, int>> edges;
+
+    for (int i = 0; i < n; ++i) {
+        string s;
+        cin >> s;
+        vertices.push_back(s);
+    }
+
+    for (int i = 0; i < q; ++i) {
+        for (int j = 0; j < n; ++j) {
+            int w;
+            cin >> w;
+            edges[vertices[i]][vertices[j]] = w;
+        }
+    }
+
+    int q;
+    cin >> q;
+    for (int i = 0; i < q; ++i) {
+        string u, v;
+        cin >> u >> v;
+
+        int t = v;
+
+        auto ret = dijkstra(n, g, u);
+        auto dist = ret.first;
+        auto trace = ret.second;
+
+        if (dist[v] == INT_MAX) {
+            cout << "no_path\n";
+            continue;
+        }
+
+        vector<int> path;
+        while (v != u) {
+            path.push_back(v);
+            v = trace[v];
+        }
+        path.push_back(u);
+
+        for (int i = path.size() - 1; i >= 0; --i) {
+            cout << id2label[path[i]] << " ";
+        }
+
+        cout << dist[t] << endl;
+    }
+}

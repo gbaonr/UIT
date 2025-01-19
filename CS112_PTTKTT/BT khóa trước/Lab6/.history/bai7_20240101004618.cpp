@@ -1,0 +1,31 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int n, x;
+vector<int> page, price;
+
+int find(int i, int cur)
+{
+    if (i == n)
+        return 0;
+    int res = 0;
+
+    if (cur + price[i] <= x)
+        res = page[i] + find(i + 1, cur + price[i]);
+
+    res = max(res, find(i + 1, cur));
+}
+
+int main()
+{
+    cin >> n >> x;
+
+    price.resize(n + 1);
+    page.resize(n + 1);
+
+    for (auto& v : price)
+        cin >> v;
+
+    for (auto& v : page)
+        cin >> v;
+}

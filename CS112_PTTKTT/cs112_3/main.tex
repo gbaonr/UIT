@@ -1,0 +1,2956 @@
+\documentclass[20pt]{article}
+\usepackage[utf8]{vietnam}
+\setlength{\baselineskip}{50pt}
+\usepackage{tocloft}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{minted}
+\usepackage{tkz-tab}
+\usepackage{listing} 
+\usepackage{subfiles} 
+\usepackage[top=3cm, bottom=3.5cm, left=3.5cm, right=2cm] {geometry} 
+\usepackage{fancybox} 
+\usepackage{latexsym,amsfonts,amssymb,amsthm}
+\usepackage{setspace}
+\usepackage{physics}
+\usepackage{amsmath}
+\usepackage{tikz}
+\usepackage{mathdots}
+\usepackage{yhmath}
+\usepackage{cancel}
+\usepackage{color}
+\usepackage{siunitx}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{amssymb}
+\usepackage{gensymb}
+\usepackage{tabularx}
+\usepackage{extarrows}
+\usepackage{booktabs}
+\usepackage{listingsutf8}
+\usetikzlibrary{fadings}
+\usetikzlibrary{patterns}
+\usetikzlibrary{shadows.blur}
+\usetikzlibrary{shapes}
+\setlength{\cftbeforesecskip}{3em} 
+
+\usepackage{hyperref}
+\setlength{\parindent}{0pt}
+
+\usepackage{setspace}
+\usepackage[a4paper,left=20mm,right=20mm,top=20mm,bottom=20mm]{geometry}
+\vspace{1cm}
+\renewcommand{\thesubsection}{\thesection.\alph{subsection}}
+
+
+\usepackage{xcolor}
+\usepackage[vietnamese.licr]{babel}
+\usepackage{listings}
+\usepackage{tvietlistings}
+\lstset{
+    language=C, %% Troque para PHP, C, Java, etc... bash é o padrão
+    basicstyle=\ttfamily\small,
+    numberstyle=\footnotesize,
+    numbers=left,
+    backgroundcolor=\color{gray!10},
+    frame=single,
+    tabsize=2,
+    rulecolor=\color{black!30},
+    title=\lstname,
+    escapeinside={\%*}{*)},
+    breaklines=true,
+    breakatwhitespace=true,
+    framextopmargin=2pt,
+    framexbottommargin=2pt,
+    extendedchars=true,
+    inputencoding=utf8
+}
+
+\begin{document}
+\newgeometry{top=2cm, bottom=2cm, left=2cm, right=2cm}
+\subfile{cover}
+\tableofcontents
+\Large
+
+% ---- START HERE ------------------------------- 
+
+\section{Bài 1: [D&A]Graph coloring. Color selection (Step2) }
+\subsection{Phân tích ý tưởng giải quyết}
+\subsubsection{Mô tả bài toán} 
+\hspace{1cm} Cho một đồ thị vô hướng G có v đỉnh và e cạnh. Mỗi đỉnh có thể được tô màu hoặc không tô màu. Một số đỉnh đã được tô màu và một số đỉnh khác chưa được tô màu. Nhiệm vụ của bạn là tô màu cho các đỉnh sao cho không có hai đỉnh kề nhau có cùng màu.
+\subsubsection{Mô hình hóa bài toán}
+
+\hspace*{1cm} \textbf{Input:} số lượng đỉnh (v), số lượng cạnh (e), số lượng truy vấn (n), danh sách các đỉnh, danh sách các cạnh, màu của các đỉnh.
+\newline
+\hspace*{1cm} \textbf{Output:} Ứng với mỗi đỉnh cần xem xét thực hiện yêu cầu sau:
+Nếu đỉnh đã có màu, kiểm tra màu đó có trùng với màu của các đỉnh lân cận hay không. Nếu không trùng xuất ra chuỗi TRUE trên một dòng. Nếu đỉnh chưa có màu hoặc đã có nhưng màu đó trùng với màu của một hoặc nhiều đỉnh lân cận thì chọn màu cho đỉnh theo đúng quy tắc và xuất ra màu đó trên một dòng.
+\subsection{Trình bày thuật toán}
+\subsubsection{Ý tưởng}
+Ý tưởng giải bài toán này là dùng tham lam.
+\begin{itemize}
+    \item Sử dụng một map để lưu trữ màu của các đỉnh.
+    \item Sử dụng một map để lưu trữ danh sách các đỉnh kề với nhau.
+    \item Sử dụng một set để lưu trữ các màu đã được sử dụng.
+    \item Duyệt qua danh sách các truy vấn.
+    \begin{itemize}
+        \item Đối với mỗi truy vấn, kiểm tra xem đỉnh u đã được tô màu chưa.
+        \item Nếu đỉnh u đã được tô màu và tất cả các đỉnh kề với u đều có màu khác với u, hãy trả lời "TRUE".
+        \item Nếu đỉnh u chưa được tô màu hoặc có ít nhất một đỉnh kề với u có cùng màu với u, hãy gán cho u một màu mới sao cho tất cả các đỉnh kề với u đều có màu khác với u (hàm findColor). Sau đó, in ra màu mới này.
+    \end{itemize}
+\end{itemize}
+\subsubsection{Mã giả (Code)}
+\begin{lstlisting}[language=C++, fontsize=\small, numbers=left]
+#include <bits/stdc++.h>
+// khởi tạo map colors với các khóa là chuỗi và giá trị là số nguyên
+map<string, int> colors;
+
+// khởi tạo map g lưu trữ đồ thị 
+map<string, vector<string>> g;
+
+// khởi tạo set usedColors là tập hợp các màu đã dùng
+set<int> usedColors;
+
+// định nghĩa hàm findColor(u) trả về màu dùng được
+int findColor(string u) {
+    // khởi tạo tập hợp occupied là tập hợp các màu không dùng được
+    set<int> occupied;
+
+    // duyệt qua từng x trong g[u]
+    for (auto x : g[u]) {
+        // nếu colors[x] khác -1, nghĩa đỉnh đã có màu
+        if (colors[x] != -1) {
+            // thêm colors[x] vào occupied
+            occupied.insert(colors[x]);
+        }
+    }
+
+    // duyệt qua từng x trong usedColors, xem màu nào dùng lại được
+    for (auto x : usedColors) {
+        // nếu x không có trong occupied
+        if (!occupied.count(x)) {
+            // trả về x, là màu dùng được
+            return x;
+        }
+    }
+
+    // vòng lặp vô hạn tìm màu mới
+    for (int i = 0;; i++) {
+        // nếu i không có trong occupied, nghĩa là màu này dùng được
+        if (!occupied.count(i)) {
+            // trả về màu 
+            return i;
+        }
+    }
+}
+
+// định nghĩa hàm solve()
+void solve() {
+    // đọc v, e, n từ đầu vào
+    int v, e, n;
+    cin >> v >> e >> n;
+
+    // khởi tạo danh sách vertex
+    vector<string> vertex;
+
+    // vòng lặp từ 0 đến v - 1
+    for (int i = 0; i < v; i++) {
+        // đọc s từ đầu vào
+        string s;
+        cin >> s;
+
+        // thêm s vào vertex
+        vertex.push_back(s);
+    }
+
+    // vòng lặp từ 0 đến e - 1
+    for (int i = 0; i < e; i++) {
+        // đọc s1, s2 từ đầu vào
+        string s1, s2;
+        cin >> s1 >> s2;
+
+        // thêm s2 vào g[s1]
+        g[s1].push_back(s2);
+
+        // thêm s1 vào g[s2]
+        g[s2].push_back(s1);
+    }
+
+    // vòng lặp từ 0 đến v - 1
+    for (int i = 0; i < v; i++) {
+        // đọc temp từ đầu vào
+        int temp;
+        cin >> temp;
+
+        // gán colors[vertex[i]] bằng temp
+        colors[vertex[i]] = temp;
+
+        // nếu temp khác -1, nghĩa là đỉnh chưa được tô màu
+        if (temp != -1) {
+            // thêm màu vào usedColors
+            usedColors.insert(temp);
+        }
+    }
+
+    // vòng lặp từ 0 đến n - 1
+    for (int i = 0; i < n; ++i) {
+        // đọc s từ đầu vào
+        string s;
+        cin >> s;
+
+        // nếu colors[s] khác -1 và tất cả các phần tử trong g[s] đều có colors khác colors[s]
+        if (colors[s] != -1 && all_of(g[s].begin(), g[s].end(), [&](auto x) { return colors[x] != colors[s]; })) {
+            // in "TRUE"
+            cout << "TRUE" << endl;
+        } else {
+            // tìm newColor bằng cách gọi findColor(s)
+            int newColor = findColor(s);
+
+            // in newColor
+            cout << newColor << endl;
+        }
+    }
+}
+
+// định nghĩa hàm main()
+int main() {
+    // gọi solve()
+    solve();
+
+    // trả về 0
+    return 0;
+}
+\end{lstlisting}
+\subsubsection{Ví dụ}
+\begin{lstlisting}
+Input:                                                Output:
+5 6 2
+I K L G H
+I H
+I K
+I G                                                   1
+K L                                                   1
+H K
+L I
+0 -1 0 -1 -1
+H G
+\end{lstlisting}
+\begin{itemize}
+    \item 1.1 Bắt đầu chạy thuật toán với đỉnh H. Đỉnh H chưa được tô màu do đó sẽ được tìm màu bằng hàm findColor().
+    \item 1.2 Ta tìm các màu đã được sử dụng bởi cách đỉnh kề của H và đưa vào $set<int> occupied$. Sau bước này thì : occupied = [0]
+    \item 1.3 Ta xét từng màu trong usedColor xem có xuất hiện trong occupied không, chọn màu không xuất hiện trong occupied. Ở đây thì màu 0 đã xuất hiện trong occupied, ta qua bước tìm màu mới cho đỉnh.
+    \item 1.4 Tạo một vòng lặp vô hạn với $i=0$, nếu $i$ xuất hiện trong occupied rồi thì $i++$, tiếp cho tới khi $i$ không xuất hiện trong occupied. Ta chọn $i$ này, ở đây thì $i=1$.
+    \item 1.5 Xuất $i$
+    \item 2.1 Tiếp tục với đỉnh G, đỉnh H chưa được tô màu do đó sẽ được tìm màu bằng hàm findColor().
+    \item 2.2 Ta tìm các màu đã được sử dụng bởi cách đỉnh kề của G và đưa vào $set<int> occupied$. Sau bước này thì : occupied = [0]
+    \item 2.3 Ta xét từng màu trong usedColor(lưu ý là usedColor không đổi). Như bước trên 
+    \item 2.4 Tạo một vòng lặp vô hạn với $i=0$, nếu $i$ xuất hiện trong occupied rồi thì $i++$, tiếp cho tới khi $i$ không xuất hiện trong occupied. Ta chọn $i$ này, ở đây thì $i=1$.
+    \item 2.5 Xuất $i$
+\end{itemize}
+\subsection{Độ phức tạp}
+\hspace*{1cm}Ta có hàm findColor() có độ phức tạp là $O(v)$ vì nó phải duyệt qua tất cả các đỉnh của đồ thị để tìm màu. (các vòng lặp còn lại chắc chắn nhỏ hơn $v$ vì là các vòng lặp qua các màu đã dùng, tìm màu mới, và trong trường hợp tệ nhất thì là mỗi đỉnh 1 màu $\longrightarrow$ độ phức tạp cao nhất là $O(3v)=O(v)$.\\
+\hspace*{1cm}Ta có hàm solve() có độ phức tạp là $O(n*v^2)$, vì có vòng lặp từ 0->n-1 $(n)$, và mỗi lần vòng lặp này đều có lặp qua các đỉnh kề của đỉnh đang xét $\longrightarrow$ tệ nhất là vòng lặp từ 0->v-1 $(v)$ \\
+\hspace*{1cm} $\longrightarrow O(n*v^2)$ 
+
+
+
+
+
+%-----------------------------------------------------------------
+
+
+
+
+
+\section{Bài 2: [D&A] Graph coloring.Heuristic algorithm }
+\subsection{Phân tích ý tưởng giải quyết}
+\subsubsection{Mô tả bài toán} 
+\hspace{1cm} Cho một đồ thị vô hướng và một tập hợp các đỉnh của đồ thị. Tìm một cách tô màu cho các đỉnh của đồ thị sao cho không có hai đỉnh kề nhau nào có cùng màu.
+\subsubsection{Mô hình hóa bài toán}
+
+\hspace*{1cm} \textbf{Input:} 
+\begin{itemize}
+    \item Dòng đầu tiên chứa 02 số v, e, đây lần lượt là số đỉnh, số cạnh của đồ thị
+    \item Dòng tiếp theo chứa v chuỗi, mỗi chuỗi bao một hoặc nhiều ký tự hoa trong bảng chữ cái Tiếng Anh và cách nhau bởi khoảng trắng. Đây là danh sách tên các đỉnh của đồ thị.
+    \item e dòng tiếp theo, mỗi dòng chứa 02 chuỗi u và i (cách nhau bởi khoảng trắng), thể hiện việc có một cạnh nối giữa đỉnh u và đỉnh i trong đồ thị.
+\end{itemize}
+\newline
+\hspace*{1cm} \textbf{Output:} Xuất ra trên một dòng dãy v số nguyên, tương ứng là màu cho các đỉnh. Số đầu tiên tương ứng là màu cho đỉnh đầu tiên trong danh sách chuỗi các đỉnh ở dòng thứ 2 của input.
+
+\subsection{Trình bày thuật toán}
+\subsubsection{Ý tưởng}
+\hspace*{1cm} Ý tưởng giải quyết bài toán là sử dụng tham lam.
+\begin{itemize}
+    \item Sử dụng một map để lưu trữ màu của các đỉnh.
+    \item Sử dụng một map để lưu trữ danh sách các đỉnh kề với nhau.
+    
+    \item Duyệt qua các đỉnh:
+    \begin{itemize}
+        \item Sử dụng một set để lưu trữ các màu đã được sử dụng.
+        \item Xét các đỉnh kề, nếu đỉnh kề có màu thì thêm vào set
+        \item Chạy 1 vòng lặp vơi j = 0 -> $\infty$, với mỗi lần lặp kiểm tra xem có j tồn tại trong set không, nếu không có thì tô màu cho đỉnh đang xét
+    \end{itemize}
+\end{itemize}
+\subsubsection{Mã giả (Code)}
+\textbf{Mã giả}
+\begin{lstlisting}[language=C++, fontsize=\small, numbers=left]
+Nhập số đỉnh (v) và số cạnh (e) của đồ thị
+Khởi tạo vector chứa tên các đỉnh (vertex)
+Khởi tạo đồ thị dưới dạng danh sách kề (g)
+Khởi tạo map để lưu trữ màu của từng đỉnh (m)
+Nhập input các thứ
+
+// Gán màu cho từng đỉnh
+for i = 1 to v:
+    Tạo một set để lưu trữ các màu đã sử dụng cho các đỉnh kề (usedColor)
+    
+    // Duyệt qua tất cả các đỉnh kề của đỉnh hiện tại
+    for j = 1 to số đỉnh kề của vertex[i]
+        Nếu m[g[vertex[i]][j]] khác -1, thêm màu vào usedColor
+    
+    // Tìm một màu chưa được sử dụng cho đỉnh hiện tại
+    for j = 0 to INFINITY
+        Nếu j không thuộc usedColor
+            Gán m[vertex[i]] = j
+            Thoát khỏi vòng lặp
+
+// In ra màu của từng đỉnh
+for i = 1 to v:
+    In màu của vertex[i] + " "
+\end{lstlisting}
+\begin{lstlisting}[language=C++, fontsize=\small, numbers=left]
+#include <bits/stdc++.h>
+using namespace std;
+
+int main()
+{
+    // Nhập số đỉnh và số cạnh của đồ thị
+    int v, e;
+    cin >> v >> e;
+
+    // Khai báo một vector chứa tên các đỉnh
+    vector<string> vertex;
+
+    // Khai báo đồ thị dưới dạng danh sách kề
+    map<string, vector<string>> g;
+
+    // Khai báo một map để lưu trữ màu của từng đỉnh (-1 nghĩa là chưa được tô màu)
+    map<string, int> m;
+
+    // Nhập tên các đỉnh và khởi tạo mảng màu
+    for (int i = 0; i < v; i++) {
+        string s;
+        cin >> s;
+        vertex.push_back(s);
+        m[vertex[i]] = -1;
+    }
+
+    // Nhập các cạnh của đồ thị và xây dựng danh sách kề
+    for (int i = 0; i < e; i++) {
+        string u, v;
+        cin >> u >> v;
+        g[u].push_back(v);
+        g[v].push_back(u);
+    }
+
+    // Gán màu cho từng đỉnh
+    for (int i = 0; i < v; ++i) {
+        // Tạo một set để lưu trữ các màu đã sử dụng cho các đỉnh kề
+        set<int> usedColor;
+
+        // Duyệt qua tất cả các đỉnh kề của đỉnh hiện tại
+        for (int j = 0; j < g[vertex[i]].size(); ++j) {
+            // Nếu đỉnh kề đã được tô màu, thêm màu vào set
+            if (m[g[vertex[i]][j]] != -1) {
+                usedColor.insert(m[g[vertex[i]][j]]);
+            }
+        }
+
+        // Tìm một màu chưa được sử dụng cho đỉnh hiện tại
+        for (int j = 0;; j++)
+            if (!usedColor.count(j)) {
+                // Gán màu cho đỉnh và thoát khỏi vòng lặp
+                m[vertex[i]] = j;
+                break;
+            }
+    }
+
+    // In ra màu của từng đỉnh
+    for (int i = 0; i < v; i++) {
+        cout << m[vertex[i]] << " ";
+    }
+
+    return 0;
+}
+\end{lstlisting}
+\subsubsection{Ví dụ}
+\begin{lstlisting}
+Input:                                                Output:
+4 5
+A B C D
+A B
+B D                                                   0 1 2 2
+A C
+C B
+A D
+\end{lstlisting}
+\begin{enumerate}
+\item Khởi tạo các cấu trúc dữ liệu cần thiết
+\item Xét đỉnh A
+\begin{itemize}
+    \item Khởi tạo set các màu đã được sử dụng
+    \item Gán màu 0 cho đỉnh A    
+\end{itemize}
+
+\item Xét đỉnh B
+\begin{itemize}
+    \item Khởi tạo set các màu đã được sử dụng
+    \item Thêm màu 0 vào set các màu đã được sử dụng
+    \item Màu 0 đã được sử dụng
+    \item Gán màu 1 cho đỉnh B
+\end{itemize}
+
+\item Xét đỉnh C
+\begin{itemize}
+    \item Khởi tạo set các màu đã được sử dụng
+    \item Thêm màu 0 vào set các màu đã được sử dụng
+    \item Thêm màu 1 vào set các màu đã được sử dụng
+    \item Màu 0 đã được sử dụng
+    \item Màu 1 đã được sử dụng
+    \item Gán màu 2 cho đỉnh C
+\end{itemize}
+
+\item Xét đỉnh D
+\begin{itemize}
+    \item Khởi tạo set các màu đã được sử dụng
+    \item Thêm màu 0 vào set các màu đã được sử dụng
+    \item Thêm màu 1 vào set các màu đã được sử dụng
+    \item Màu 0 đã được sử dụng
+    \item Màu 1 đã được sử dụng
+    \item Gán màu 2 cho đỉnh D
+\end{itemize}
+    \item Xuất kết quả: 0 1 2 2 
+\end{enumerate}
+\subsection{Độ phức tạp}
+\hspace*{1cm} Độ phức tạp thời gian của thuật toán là $O(v + e)$, vì có 1 vòng lặp từ 0->$v$ xét từng đỉnh, và mỗi lần lặp lại thực hiện 1 vòng lặp xét cách đỉnh kề của đỉnh đang xét, trong trường hợp tệ nhất là đỉnh này có đường đi đến tất cả các đỉnh khác là sẽ lặp tối đa 0->$e$. Do đó độ phức tạp là $O(v + e)$
+
+
+
+
+%-----------------------------------------------------------------
+
+
+
+
+
+\section{Bài 3: [D&A] Graph coloring.Exact algorithm }
+Not Done Yet
+
+
+
+
+%-----------------------------------------------------------------
+
+
+
+
+
+
+\section{Bài 4: [D&A][DP] Xí ngầu xí ngô }
+\subsection{Phân tích ý tưởng giải quyết}
+\subsubsection{Mô tả bài toán} 
+\hspace{1cm} Bài toán đếm số cách lắc viên xí ngầu sao cho tổng số chấm xuất hiện trên tất cả các lần gieo bằng s. Hay tính số cách chia một số nguyên dương s thành tổng của các số từ 1 đến 6.
+\subsubsection{Mô hình hóa bài toán}
+
+\hspace*{1cm} \textbf{Input:} Một số nguyên dương s.
+\newline
+\hspace*{1cm} \textbf{Output:} Số cách chia s thành tổng của các số từ 1 đến 6.
+
+\subsection{Trình bày thuật toán}
+\subsubsection{Ý tưởng}
+\hspace*{1cm} Ý tưởng giải quyết bài toán là sử dụng dynamic programming để tính số cách chia s thành tổng của các số từ 1 đến 6.
+\begin{itemize}
+    \item Sử dụng một mảng dp có kích thước s + 1 để lưu số cách chia tương ứng với mỗi giá trị s.
+    \item Khởi tạo dp[0] = 1, tức là khi s = 0, có một cách chia là không chọn số nào.
+    \item Dùng hai vòng lặp for để tính dp[i] cho mỗi giá trị i từ 1 đến s.
+    \item Trong mỗi vòng lặp, duyệt qua các giá trị j từ 1 đến 6 để tạo tổng i. Nếu i - j >= 0, tức là có thể chọn số j để tạo tổng i, thì cập nhật dp[i] bằng cách cộng dp[i] với dp[i-j].
+    \item Cuối cùng, trả về giá trị dp[s] là số cách chia s thành tổng của các số từ 1 đến 6.
+\end{itemize}
+\subsubsection{Mã giả (Code)}
+\begin{lstlisting}[language=C++, fontsize=\small, numbers=left]
+#include<bits/stdc++.h>
+
+using namespace std;
+
+// Hàm dp() sử dụng Dynamic Programing để tính số cách gieo xúc xắc sao cho tổng số chấm trên các mặt của xúc xắc bằng s.
+int dp(int s) {
+    // khởi tạo mod để chia lấy dư như đề bài đòi
+    int mod = 1e9 + 7;
+
+    // Tạo một vector dp để lưu trữ số cách gieo xúc xắc
+    vector<int> dp(s + 1, 0);
+
+    // dp[0] bằng 1, vì có một cách duy nhất để gieo xúc xắc n lần sao cho tổng số chấm trên các mặt của xúc xắc bằng 0, đó là không gieo xúc xắc.
+    dp[0] = 1;
+    
+    // Lặp qua các giá trị của i từ 1 đến s.
+    for (int i = 1; i <= s; i++) {
+        // Lặp qua các giá trị của j từ 1 đến 6, vì xúc xắc có 6 mặt.
+        for (int j = 1; j <= 6; j++) {
+            // Nếu i - j lớn hơn hoặc bằng 0, điều đó có nghĩa là có thể đạt được tổng số chấm i bằng cách gieo xúc xắc j lần và sau đó gieo xúc xắc i - j lần.
+            if (i - j >= 0) {
+                // Cập nhật giá trị của dp[i] bằng cách cộng thêm giá trị của dp[i-j] vào dp[i].
+                // % mod vì đề bài đòi
+                dp[i] = (dp[i] + dp[i-j]) % mod;
+            }
+        }
+    }
+    
+    // Trả về giá trị của dp[s], vì dp[s] là số cách gieo xúc xắc n lần sao cho tổng số chấm trên các mặt của xúc xắc bằng s.
+    return dp[s];
+}
+int main() {
+    int n;
+    cin >> n;
+    
+    int result = dp(n);
+    cout << result << endl;
+    
+    return 0;
+}
+\end{lstlisting}
+\subsubsection{Ví dụ}
+\begin{lstlisting}
+Input:                                                Output:
+7                                                     63
+\end{lstlisting}
+\begin{itemize}
+    \item 1. Khởi tạo mảng dp có độ dài 8 và giá trị ban đầu $dp[0] = 1, dp[1] = dp[2] = ... = dp[7] = 0$.
+    \item 2.1 Vòng lặp $i = 1$:
+    \begin{itemize}
+        \item Vòng lặp $j = 1: dp[1] = dp[1] + dp[1-1] = dp[1] + dp[0] = 0 + 1 = 1$
+        \item Vòng lặp $j = 2: dp[1]$ không thỏa mãn điều kiện $i - j >= 0$, không thay đổi giá trị.
+        \item ...\
+        \item Vòng lặp $j = 6: dp[1]$ không thỏa mãn điều kiện $i - j >= 0$, không thay đổi giá trị.
+    \end{itemize}
+    
+    
+    \item 2.2 Vòng lặp $i = 2$:
+    \begin{itemize}
+        \item Vòng lặp $j = 1: dp[2] = dp[2] + dp[2-1] = dp[2] + dp[1] = 0 + 1 = 1$
+        \item Vòng lặp $j = 2: dp[2] = dp[2] + dp[2-2] = dp[2] + dp[0] = 1 + 1 = 2$
+        \item ...
+        \item Vòng lặp $j = 6: dp[2]$ không thỏa mãn điều kiện $i - j >= 0$, không thay đổi giá trị.
+    \end{itemize}
+    .\\
+    .\\
+    .\\
+    Qua các bước tương tự, ta tính được $dp[3] = 4, dp[4] = 8, dp[5] = 16, dp[6] = 32, dp[7] = 63$.
+    Kết quả cuối cùng là $dp[7] = 63$.
+\end{itemize}
+\subsection{Độ phức tạp}
+\hspace*{1cm} Độ phức tạp của thuật toán là $O(n)$, với $n$ là tổng cần đạt được. Vì vòng lặp for chạy từ $1->s$ và bên trong vòng lặp không có 1 vòng lặp hằng $1->6$.
+Do đó, độ phức tạp của thuật toán này là $O(n)$.
+
+
+
+
+
+%-----------------------------------------------------------------
+
+
+
+
+
+\section{Bài 5: [D&A][DP] Đường đi an toàn }
+\subsection{Phân tích ý tưởng giải quyết}
+\subsubsection{Mô tả bài toán} 
+\hspace{1cm} Đề bài yêu cầu tính số lượng đường đi từ góc trên trái của ma trận kích thước $n*n$ đến góc dưới phải của ma trận, chỉ di chuyển sang phải hoặc xuống dưới. Mỗi ô trong ma trận có giá trị 0 hoặc 1, trong đó 0 đại diện cho ô trống, 1 đại diện cho ô có cảnh sát đang ăn trực.
+\subsubsection{Mô hình hóa bài toán}
+
+\hspace*{1cm} \textbf{Input:} Ma trận a có kích thước $n*n$ với các phần tử là 0 hoặc 1.
+\newline
+\hspace*{1cm} \textbf{Output:} Số lượng đường đi từ góc trên trái của ma trận đến góc dưới phải, chỉ di chuyển sang phải hoặc xuống dưới.
+
+\subsection{Trình bày thuật toán}
+\subsubsection{Ý tưởng}
+\hspace*{1cm} Ý tưởng giải quyết bài toán là sử dụng dynamic programming để tính số cách chia s thành tổng của các số từ 1 đến 6.
+\begin{itemize}
+    \item Khởi tạo một ma trận dp có kích thước nxn, ban đầu tất cả các phần tử đều được gán giá trị là 0.
+    \item Gán giá trị dp[0][0] = 1, đại diện cho việc có một đường đi duy nhất từ góc trên trái đến chính nó.
+    \item Nếu ô đầu tiên của ma trận a là 1, tức là có chướng ngại vật, trả về 0.
+    \item Nếu kích thước ma trận là 1 và ô đầu tiên là 0, tức là không có chướng ngại vật và ma trận chỉ có một ô, trả về 1.
+    \item Dùng vòng lặp i chạy từ 0 đến $n^2 - 1$ (tổng số ô trong ma trận):
+    \begin{itemize}
+        \item Dùng vòng lặp j chạy từ 0 đến 1 (đại diện cho các hướng di chuyển: phải và xuống dưới):
+        \begin{itemize}
+            \item Tính toán vị trí (x, y) mới dựa trên vị trí (i/n, i\%n) hiện tại và hướng di chuyển j.
+            \item Nếu (x, y) nằm trong ma trận và ô (x, y) không có chướng ngại vật (a[x][y] == 0), cập nhật giá trị dp[x][y] bằng tổng dp[i/n][i\%n] và dp[x][y] (lấy theo modulo mod vì đề đòi).
+        \end{itemize}
+    \end{itemize}
+    \item Trả về giá trị dp[n-1][n-1], đại diện cho số lượng đường đi từ góc trên trái đến góc dưới phải của ma trận.
+\end{itemize}
+\subsubsection{Mã giả (Code)}
+\begin{lstlisting}[language=C++, fontsize=\small, numbers=left]
+#include<bits/stdc++.h>
+
+using namespace std;
+// các hướng di chuyển, chỉ có sang phải hoặc đi xuống
+int dx[] = {1, 0}; 
+int dy[] = {0, 1};
+
+int dp(int n, vector<vector<int>> a) {
+    // Tạo mảng 2 chiều để lưu số đường đi đến mỗi ô
+    vector<vector<int>> dp(n, vector<int>(n, 0));
+
+    // Khởi tạo số đường đi đến (0, 0) là 1
+    dp[0][0] = 1;
+
+    // Nếu ô đầu tiên là vật cản, thì vừa bước chân ra đã bị anh cảnh xin nhẹ 200k
+    if (a[0][0] == 1) {
+        return 0;
+    }
+
+    // Nếu bản đồ là 1x1 và ô đầu tiên không phải là vật cản, thì chỉ có một đường đi
+    else if (n == 1 && a[0][0] == 0) {
+        return 1;
+    }
+
+    // Lặp qua tất cả các ô trong bản đồ
+    for (int i = 0; i < n * n; i++) {
+        // Đối với mỗi ô, thử di chuyển sang phải và xuống
+        for (int j = 0; j < 2; j++) {
+            // Tính tọa độ của ô mà chúng ta đang di chuyển đến
+            int x = dx[j] + i / n;
+            int y = dy[j] + i % n;
+
+            // Nếu ô nằm trong bản đồ và không phải là vật cản, thì cập nhật số đường đi đến ô đó
+            if (x < n && y < n && a[x][y] == 0) {
+                dp[x][y] = (dp[x][y] + dp[i / n][i % n]) % (int)(1e9 + 7);
+            }
+        }
+    }
+    // Trả về số đường đi đến ô cuối cùng
+    return dp[n - 1][n - 1];
+}
+
+int main() {
+    int n;
+    cin >> n;
+
+    // Tạo mảng 2 chiều để lưu bản đồ
+    vector<vector<int>> a(n, vector<int>(n, 0));
+
+    // Đọc bản đồ từ đầu vào
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            char temp;
+            cin >> temp;
+            if (temp == '*') {
+                a[i][j] = 1; // Vật cản
+            } else {
+                a[i][j] = 0; // Ô trống
+            }
+        }
+    }
+
+    // Tính và xuất số đường đi từ (0, 0) đến (n-1, n-1)
+    cout << dp(n, a);
+}
+}
+\end{lstlisting}
+\subsubsection{Ví dụ}
+
+\begin{lstlisting}
+Input:                                                Output:
+4
+. . . . 
+. * . *                                               6
+. . . . 
+. . . .                                               
+\end{lstlisting}
+\begin{itemize}
+    \item 1: Khởi tạo ma trận dp và gán dp[0][0]=1 : $dp=$
+\begin{bmatrix}
+1 & 0 & 0 & 0\\
+0 & 0 & 0 & 0\\
+0 & 0 & 0 & 0\\
+0 & 0 & 0 & 0
+\end{bmatrix}
+    \item 2.1 Vòng lặp $i = 0$, ta có: 
+        \begin{itemize}
+            \item int x = dx[j] + i / n;
+            \item int y = dy[j] + i % n;
+            (j là cách di chuyển)
+        \end{itemize}\\
+        là các chỉ số của ô tiếp theo, nếu a[x][y]=0, thì cập nhật dp[x][y] = (dp[x][y] + dp[i / n][i \% n]) (ô tiếp theo bằng tổng ô đang xét và ô tiếp theo).\\
+        \Longrightarrow dp=\begin{bmatrix}
+        1 & 1 & 0 & 0\\
+        1 & 0 & 0 & 0\\
+        0 & 0 & 0 & 0\\
+        0 & 0 & 0 & 0
+        \end{bmatrix}
+    
+    \item 2.2 Vòng lặp $i = 2$, tương tự như trên, ta có: \Longrightarrow dp=\begin{bmatrix}
+1 & 1 & 1 & 0\\
+1 & 0 & 0 & 0\\
+0 & 0 & 0 & 0\\
+0 & 0 & 0 & 0
+\end{bmatrix}
+    
+    .\\
+    .\\
+    .\\
+    \item 2.8 Vòng lặp $i = 8$, tương tự như trên, ta có: \Longrightarrow dp=
+    \begin{bmatrix}
+1 & 1 & 1 & 1\\
+1 & 0 & 1 & 0\\
+1 & 1 & 1 & 0\\
+1 & 0 & 0 & 0
+\end{bmatrix}\\
+
+    \item 2.9 Vòng lặp $i = 9$, tương tự như trên, ta có: \Longrightarrow dp=
+    \begin{bmatrix}
+    1 & 1 & 1 & 1\\
+    1 & 0 & 1 & 0\\
+    1 & 1 & 2 & 0\\
+    1 & 1 & 0 & 0
+    \end{bmatrix}\\
+    
+    .\\
+    .\\
+    .\\
+    \item 2.15 Vòng lặp $i = 15$, tương tự như trên, ta có: \Longrightarrow dp=\begin{bmatrix}
+1 & 1 & 1 & 1\\
+1 & 0 & 1 & 0\\
+1 & 1 & 2 & 2\\
+1 & 2 & 4 & 6
+\end{bmatrix}\\
+
+    \item 3 Xuất kết quả $dp[n-1][n-1]=6$
+\end{itemize}
+\subsection{Độ phức tạp}
+\hspace*{1cm} Độ phức tạp của thuật toán là $O(n^2)$, với $n$ là với n là kích thước của ma trận. Vì thuật toán duyệt qua tất cả các ô trong ma trận một lần.
+
+
+
+
+
+%-----------------------------------------------------------------
+
+
+
+
+
+\section{Bài 6: 
+[D&A][DP] Đồ án }
+\subsection{Phân tích ý tưởng giải quyết}
+\subsubsection{Mô tả bài toán} 
+\hspace{1cm} Cho một dãy các đồ án, mỗi đồ án có thời gian bắt đầu và kết thúc, cùng với số tín chỉ thu được nếu hoàn thành đồ án đó. Tìm cách sắp xếp các đồ án để thu được số tín chỉ tối đa.
+\subsubsection{Mô hình hóa bài toán}
+
+\hspace*{1cm} \textbf{Input:} 
+\begin{itemize}
+    \item Dòng duy nhất chứa số nguyên dương n: số lượng các đồ án
+    \item  Dãy các đồ án a, với mỗi đồ án a[i] được biểu diễn dưới dạng (start\_time, end\_time, profit), trong đó start\_time là thời gian bắt đầu, end\_time là thời gian kết thúc và profit là tín chỉ thu được nếu hoàn thành đồ án.
+
+\end{itemize}
+
+\newline
+\hspace*{1cm} \textbf{Output:} Tín chỉ tối đa thu được.
+
+\subsection{Trình bày thuật toán}
+\subsubsection{Ý tưởng}
+\hspace*{1cm} Ý tưởng giải quyết bài toán là sử dụng dynamic programming.
+\begin{itemize}
+    \item Sắp xếp các đồ án theo thời gian kết thúc tăng dần.
+
+    \item Khởi tạo biến dp với kích thước bằng số lượng đồ án, với giá trị ban đầu của tất cả các phần tử là 0.
+    \item Duyệt qua các đồ án theo thứ tự đã sắp xếp.
+    \item Đối với mỗi đồ án hiện tại, tìm đồ án trước đó không chồng chéo với đồ án hiện tại, tức là đồ án trước đó có thời gian kết thúc nhỏ hơn hoặc bằng thời gian bắt đầu của đồ án hiện tại.
+    \item Nếu tìm thấy đồ án trước đó, tính toán lợi nhuận thu được nếu hoàn thành đồ án hiện tại, bằng cách cộng lợi nhuận của đồ án hiện tại với lợi nhuận tối đa thu được từ các đồ án trước đó (tức là giá trị của phần tử dp tương ứng với đồ án trước đó).
+    \item  Cập nhật giá trị của phần tử dp tương ứng với đồ án hiện tại bằng giá trị lớn nhất giữa lợi nhuận thu được nếu hoàn thành đồ án hiện tại và lợi nhuận tối đa thu được từ các đồ án trước đó.
+    \item Sau khi duyệt qua toàn bộ các đồ án, giá trị của phần tử dp cuối cùng sẽ chứa lợi nhuận tối đa thu được.
+\end{itemize}
+\subsubsection{Mã giả (Code)}
+\textbf{Mã giả}
+\begin{lstlisting}[language=C++, fontsize=\small, numbers=left]
+// Sort theo thời gian kết thúc tăng dần
+sort(a, cmp)
+// Gán giá trị đầu tiên (đồ án kết thúc sớm nhất)
+dp[0] = a[0].second
+// lặp qua các đồ án
+for i = 1 to n - 1 do
+  prev = 0 \\ tổng số tín đạt được
+  for j = 0 to i - 1 do
+    if a[j].first.second <= a[i].first.first then
+      // nếu đồ án tại vị trí j kết thúc trước khi đồ án tại vị trí i bắt đầu
+      // thì cập nhật giá trị prev
+      prev = max(prev, dp[j])
+  // cập nhật dp[i]
+  dp[i] = max(dp[i-1], prev + a[i].second)
+return dp[n-1]
+\end{lstlisting}
+\textbf{Code}
+\begin{lstlisting}[language=C++, fontsize=\small, numbers=left]
+#include<bits/stdc++.h>
+
+using namespace std;
+
+// Hàm tính số tí lớn nhất có thể đạt được
+long long dp(long long n, vector<pair<pair<long long, long long>, long long>> a) {
+    vector<long long> dp(n, 0); // Khởi tạo vector dp với kích thước n và giá trị ban đầu là 0
+    dp[0] = a[0].second; // Giá trị dp ban đầu là giá trị của đồ án đầu tiên
+
+    for (long long i = 1; i < n; i++) {
+        long long prev = 0; // Giá trị lớn nhất có thể đạt được của đồ án trước đó mà không trùng thời gian với đồ án hiện tại
+        long long low = 0, high = i - 1; // Thiết lập khoảng tìm kiếm cho binary search
+
+        // Thực hiện binary search để tìm đồ án trước đó có thời gian kết thúc nhỏ hơn thời gian bắt đầu của đồ án hiện tại (lặp như mã giả cũng được nhưng sẽ bị TLE trên Wecode)
+        while (low <= high) {
+            long long mid = (low + high) / 2;
+            if (a[mid].first.second < a[i].first.first) {
+                prev = dp[mid]; // Cập nhật giá trị prev bằng giá trị lớn nhất có thể đạt được của đồ án trước đó mà không trùng thời gian với đồ án hiện tại
+                low = mid + 1; // Tiếp tục tìm kiếm trong khoảng mid+1 đến high
+            } else {
+                high = mid - 1; // Tiếp tục tìm kiếm trong khoảng low đến mid-1
+            }
+        }
+
+        // Cập nhật giá trị dp[i] bằng max giữa giá trị dp[i-1] (không hoàn thành đồ án i)
+        // và prev + a[i].second (hoàn thành đồ án i)
+        dp[i] = max(dp[i-1], prev + a[i].second);
+    }
+
+    return dp[n-1]; // Trả về giá trị lớn nhất có thể đạt được khi hoàn thành tất cả các đồ án
+}
+
+// Hàm so sánh hai đồ án theo thời gian kết thúc tăng dần
+bool cmp(pair<pair<long long, long long>, long long> a, pair<pair<long long, long long>, long long> b) {
+    return a.first.second < b.first.second;
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    int n;
+    cin >> n;
+
+    vector<pair<pair<long long, long long>, long long>> a(n, {{0,0},0}); // Khởi tạo vector a chứa thông tin về đồ án (thời gian bắt đầu, thời gian kết thúc và số tín)
+
+    for (long long i = 0; i < n; i++) {
+        cin >> a[i].first.first >> a[i].first.second >> a[i].second; // Nhập thông tin về đồ án
+    }
+
+    sort(a.begin(), a.end(), cmp); // Sắp xếp đồ án theo thời gian kết thúc tăng dần
+
+    cout << dp(n, a); // In ra giá trị lớn nhất có thể đạt được
+
+    return 0;
+}
+\end{lstlisting}
+\subsubsection{Ví dụ}
+\begin{lstlisting}
+Input:                                                Output:
+5
+1 3 5
+2 5 6
+4 6 5                                                 10
+6 7 4
+5 9 2                                            
+\end{lstlisting}
+\begin{itemize}
+    \item 1: Sort đồ án theo kết thúc tăng dần: a = [(1, 3, 5), (2, 5, 6), (4, 6, 5) ,(6, 7, 4), (5, 9, 2) ].
+    \item 2: Khởi tạo bảng dp có kích thước 6: dp = [0, 0, 0, 0, 0, 0].
+    \item 3.1: Vòng lặp $i = 1$, ta xét a[1] = (2, 5, 6): 
+        \begin{itemize}
+            \item Tìm đồ án a[j] (j từ 0->i-1) trước đó sao cho a[j].first.second < a[i].first.first (kết thúc phải nhỏ hơn bắt đầu). Ở code sử dụng chặt nhị phân cho bước này. 
+            \begin{itemize}
+                \item Không tìm thấy công việc nào thỏa mãn điều kiện => prev=0
+            \end{itemize}
+            \item Gán dp[1] bằng max(dp[0], prev] + p[1]): dp[1] = max(5, 0 + 6) = 6.
+        \end{itemize}
+    
+    \item 3.2: Vòng lặp $i = 2$, ta xét a[2] = (4, 6, 5): 
+        \begin{itemize}
+            \item Tìm đồ án a[j] (j từ 0->i-1) trước đó sao cho a[j].first.second < a[i].first.first (kết thúc phải nhỏ hơn bắt đầu). Ở code sử dụng chặt nhị phân cho bước này. 
+            \begin{itemize}
+                \item Công việc a[0] = (1, 3, 5) thỏa mãn điều kiện => prev = 5
+            \end{itemize}
+            \item Gán dp[2] bằng max(dp[1], prev + a[i].second: dp[2] = max(6, 5 + 5) = 10.
+        \end{itemize}
+    \item 3.3: Vòng lặp $i = 3$, ta xét a[3] = (6, 7, 4): 
+        \begin{itemize}
+            \item Tìm đồ án a[j] (j từ 0->i-1) trước đó sao cho a[j].first.second < a[i].first.first (kết thúc phải nhỏ hơn bắt đầu). Ở code sử dụng chặt nhị phân cho bước này. 
+            \begin{itemize}
+                \item Công việc a[1] = (2, 5, 6) thỏa mãn điều kiện => prev = 6
+            \end{itemize}
+            \item Gán dp[3] bằng max(dp[2], prev + a[i].second: dp[3] = max(10, 4 + 6) = 10.
+        \end{itemize}
+    \item 3.4: Vòng lặp $i = 4$, ta xét a[4] = (5, 9, 2):
+        \begin{itemize}
+            \item Tìm đồ án a[j] (j từ 0->i-1) trước đó sao cho a[j].first.second < a[i].first.first (kết thúc phải nhỏ hơn bắt đầu). Ở code sử dụng chặt nhị phân cho bước này. 
+            \begin{itemize}
+                \item Công việc a[0] = (1, 3, 5) thỏa mãn điều kiện => prev = 5
+            \end{itemize}
+            \item Gán dp[4] bằng max(dp[3], prev + a[i].second: dp[3] = max(10, 2 + 5) = 10.
+        \end{itemize}
+    \item 4: Xuất kết quả dp[n-1]=10
+\end{itemize}
+\subsection{Độ phức tạp}
+\hspace*{1cm} Độ phức tạp của thuật toán là $O(nlog(n))$, với $n$ là với n là số lượng đồ án vì thuật toán duyệt qua tất cả các đồ án 1 lần và mỗi lần thực hiện một lần chặt nhị phân để tìm đồ án phù hợp.
+
+
+
+
+%-----------------------------------------------------------------
+
+
+
+
+
+\section{Bài 7: 
+	[D&A][DP] Tiệm sách }
+\subsection{Phân tích ý tưởng giải quyết}
+\subsubsection{Mô tả bài toán} 
+\hspace{1cm} Cho một danh sách các cuốn sách, mỗi sách có số trang và giá riêng. Cần chọn một tập hợp các cuốn sách sao cho tổng giá không vượt quá số tiền cho trước và tổng số trang của tập hợp các cuốn sách đó là lớn nhất.
+\subsubsection{Mô hình hóa bài toán}
+
+\hspace*{1cm} \textbf{Input:} 
+\begin{itemize}
+    \item Dòng đầu tiên là hai số nguyên n và m lần lượt là số lượng sách và số tiền tối đa mà bạn chi.
+    \item Một danh sách các cuốn sách a[1], a[2], ..., a[n], mỗi sách a[i] có giá tiền [i].first và số trang a[i].second.
+
+\end{itemize}
+
+\newline
+\hspace*{1cm} \textbf{Output:} Một số nguyên là số lượng trang sách tối đa có thể mua được
+
+\subsection{Trình bày thuật toán}
+\subsubsection{Ý tưởng}
+\hspace*{1cm} Ý tưởng giải quyết bài toán là sử dụng dynamic programming.
+\begin{itemize}
+    \item Khởi tạo một bảng dp có kích thước (n + 1) x (m + 1), với dp[i][j] là tổng số trang lớn nhất của tập hợp các cuốn sách được chọn từ a[1], a[2], ..., a[i] có tổng giá thành không vượt quá j.
+
+    \item Duyệt qua các phần tử trong danh sách cuốn sách a từ phần tử thứ 1 đến phần tử thứ n.
+    \item Với mỗi phần tử a[i], duyệt qua các giá tiền có thể từ 0 đến m.
+    \item Nếu j >= a[i].first, thì dp[i][j] bằng giá trị lớn nhất giữa dp[i - 1][j] và dp[i - 1][j - a[i].first] + a[i].second.
+    
+    \item Trả về dp[n][m].
+\end{itemize}
+\subsubsection{Mã giả (Code)}
+\textbf{Mã giả}
+\begin{lstlisting}[language=C++, fontsize=\small, numbers=left]
+dp[0][0] = 0  // Khởi tạo giá trị của dp[0][0] bằng 0
+
+for i = 1 to n  // Duyệt qua các phần tử trong danh sách cuốn sách `a` từ phần tử thứ 1 đến phần tử thứ `n`
+    for j = 0 to m  // Duyệt qua các giá tiền có thể từ `0` đến `m`
+        dp[i][j] = dp[i - 1][j]  // Gán giá trị của `dp[i - 1][j]` cho `dp[i][j]`
+
+        if j >= a[i].first  // Nếu giá tiền `j` lớn hơn hoặc bằng giá tiền của cuốn sách `a[i]`
+            dp[i][j] = max(dp[i][j], dp[i - 1][j - a[i].first] + a[i].second)  // Cập nhật giá trị của `dp[i][j]` bằng giá trị lớn nhất giữa `dp[i][j]` và `dp[i - 1][j - a[i].first] + a[i].second`
+
+return dp[n][m]  // Trả về giá trị của `dp[n][m]`
+\end{lstlisting}
+\textbf{Code}
+\begin{lstlisting}[language=C++, fontsize=\small, numbers=left]
+#include<bits/stdc++.h>
+
+using namespace std;
+
+int dp(int n, int m, vector<pair<int, int>> a) {
+    // Khởi tạo một bảng dp có kích thước (n + 1) x (m + 1), với dp[i][j] là tổng số trang lớn nhất của tập hợp các cuốn sách được chọn từ a[1], a[2], ..., a[i] có tổng giá thành không vượt quá j.
+    vector<vector<int>> dp(n + 1, vector<int>(m + 1, 0));
+
+    // Duyệt qua các phần tử trong danh sách cuốn sách a từ phần tử thứ 1 đến phần tử thứ n.
+    for (int i = 1; i <= n; i++) {
+        // Duyệt qua các giá tiền có thể từ `0` đến `m`
+        for (int j = 1; j <= m;j++){
+            // Gán giá trị của `dp[i - 1][j]` cho `dp[i][j]`
+            dp[i][j] = dp[i - 1][j];
+
+            // Nếu giá tiền `j` lớn hơn hoặc bằng giá tiền của cuốn sách `a[i]`
+            if (j >= a[i - 1].first) {
+                // Cập nhật giá trị của `dp[i][j]` bằng giá trị lớn nhất giữa `dp[i][j]` và `dp[i - 1][j - a[i - 1].first] + a[i - 1].second`.
+                dp[i][j] = max(dp[i][j], dp[i - 1][j - a[i - 1].first] + a[i - 1].second);
+            }
+        }
+    }
+
+    // Trả về giá trị của `dp[n][m]`.
+    return dp[n][m];
+}
+
+int main() {
+    // Nhập số lượng sách `n` và tiền hiện có `m`.
+    int n, m;
+    cin >> n >> m;
+
+    // Tạo một danh sách cuốn sách `a`.
+    vector<pair<int, int>> a(n, {0, 0});
+
+    // Nhập giá thành và số trang của từng cuốn sách.
+    for (int i = 0; i < n; i++) {
+        cin >> a[i].first ;
+    }
+
+    for (int i = 0; i < n; i++) {
+        cin >> a[i].second;
+    }
+
+    // Gọi hàm `dp` để tính tổng số trang lớn nhất của tập hợp các sách được chọn.
+    int result = dp(n, m, a);
+
+    // In ra kết quả.
+    cout << result << endl;
+
+    return 0;
+}
+\end{lstlisting}
+\subsubsection{Ví dụ}
+\begin{lstlisting}
+Input:                                                Output:
+3 5
+1 2 3                                                 22
+6 10 12                                       
+\end{lstlisting}
+\begin{itemize}
+    \item 1: Khởi tạo bảng dp có kích thước 3x5: \Longrightarrow dp=\begin{bmatrix}
+0 & 0 & 0 & 0 & 0 & 0\\
+0 & 0 & 0 & 0 & 0 & 0\\
+0 & 0 & 0 & 0 & 0 & 0\\
+0 & 0 & 0 & 0 & 0 & 0
+\end{bmatrix} 
+\\
+
+    \item 2.1: Vòng lặp $i = 1$: 
+        \begin{itemize}
+            \item dp[1][1] = max(dp[0][1], dp[0][1 - 1] + giá trị của vật phẩm 1) = max(0, 0 + 6) = 6
+            \item dp[1][2] = max(dp[0][2], dp[0][2 - 1] + giá trị của vật phẩm 1) = max(0, 0 + 6) = 6
+            \item dp[1][3] = max(dp[0][3], dp[0][3 - 1] + giá trị của vật phẩm 1) = max(0, 0 + 6) = 6
+            \item dp[1][4] = max(dp[0][4], dp[0][4 - 1] + giá trị của vật phẩm 1) = max(0, 0 + 6) = 6
+            \item dp[1][5] = max(dp[0][5], dp[0][5 - 1] + giá trị của vật phẩm 1) = max(0, 0 + 6) = 6
+        \end{itemize}
+    \item 2.2: Vòng lặp $i = 2$, ta xét a[2] = (4, 6, 5): 
+        \begin{itemize}
+            \item dp[2][1] = dp[1][1] = 6 (j<a[i-1].first)
+            \item dp[2][2] = max(dp[2][2] , dp[1][2 - 2] + giá trị của vật phẩm 2) = max(6,10) = 6
+            \item dp[2][3] = max(dp[2][3] , dp[1][3 - 2] + 10) = max(6,16) = 16
+            \item dp[2][4] = max(dp[2][4] , dp[1][4 - 2] + 10) = max(6,16) = 16
+            \item dp[2][5] = max(dp[2][5] , dp[1][5 - 2] + 10) = max(6,16) = 16
+        \end{itemize}
+    \item 3.3: Vòng lặp $i = 3$, ta xét a[3] = (6, 7, 4): 
+        \begin{itemize}
+            \item dp[3][1] = dp[2][1] = 6 (j<a[i-1].first)
+            \item dp[3][2] = dp[2][2] = 10 (j<a[i-1].first)
+            \item dp[3][3] = max(dp[3][3] , dp[2][3 - 3] + 12) = max(16,12) = 16
+            \item dp[3][4] = max(dp[3][4] , dp[2][4 - 3] + 12) = max(16,18) = 18
+            \item dp[3][4] = max(dp[3][5] , dp[2][5 - 3] + 12) = max(16,22) = 22
+
+        \end{itemize}
+   
+    \item 4: Xuất kết quả dp[n][m]=22
+\end{itemize}
+\subsection{Độ phức tạp}
+\hspace*{1cm} Độ phức tạp của thuật toán là $O(n*m)$, với $n$ là với n là số lượng cuốn sách và $m$ là tổng tiền, vì thuật toán xét qua 1 lượt tất cả các cuốn sách và mỗi lượt xét đều có 1 vòng lặp xét số tiền.
+
+
+
+
+
+%-----------------------------------------------------------------
+
+
+
+
+
+\section{Bài 8: 
+	[D&A][DP] Rút thăm trúng thưởng }
+\subsection{Phân tích ý tưởng giải quyết}
+\subsubsection{Mô tả bài toán} 
+\hspace{1cm} Đây là bài toán chỉnh sửa chuỗi, là một bài toán trong đó chúng ta có hai chuỗi ký tự s1 và s2, và mục tiêu là chuyển đổi s1 thành s2 bằng cách thực hiện một số phép chỉnh sửa tối thiểu. Các phép chỉnh sửa có thể bao gồm:
+\begin{itemize}
+    \item Thêm một ký tự vào chuỗi.
+    \item Xóa một ký tự khỏi chuỗi.
+    \item Thay thế một ký tự trong chuỗi bằng một ký tự khác
+\end{itemize}
+
+\subsubsection{Mô hình hóa bài toán}
+
+\hspace*{1cm} \textbf{Input:} 
+\begin{itemize}
+    \item Hai chuỗi ký tự s1 và s2.
+\end{itemize}
+
+\newline
+\hspace*{1cm} \textbf{Output:} Số lượng phép chỉnh sửa tối thiểu cần thiết để chuyển đổi s1 thành s2.
+
+\subsection{Trình bày thuật toán}
+\subsubsection{Ý tưởng}
+\hspace*{1cm} Ý tưởng giải quyết bài toán là sử dụng dynamic programming.
+\begin{itemize}
+    \item Khởi tạo một bảng hai chiều dp với kích thước (n + 1) x (m + 1), trong đó n là độ dài của chuỗi s1 và m là độ dài của chuỗi s2.
+
+
+    \item Gán dp[0][j] = j với mọi j từ 0 đến m.
+    \item Gán dp[i][0] = i với mọi i từ 0 đến n.
+    \item Duyệt qua từng ký tự i trong chuỗi s1 từ 1 đến n:
+    \begin{itemize}
+        \item Duyệt qua từng ký tự j trong chuỗi s2 từ 1 đến m:
+        \begin{itemize}
+            \item Nếu s1[i - 1] = s2[j - 1], thì dp[i][j] = dp[i - 1][j - 1].
+            \item Nếu s1[i - 1] != s2[j - 1], thì dp[i][j] = min({dp[i][j - 1] + 1, dp[i - 1][j] + 1, dp[i - 1][j - 1] + 1}).
+        \end{itemize}
+    \end{itemize}
+    
+    \item Trả về dp[n][m].
+\end{itemize}
+\subsubsection{Mã giả (Code)}
+\textbf{Mã giả}
+\begin{lstlisting}[language=C++, fontsize=\small, numbers=left]
+Khởi tạo ma trận dp kích thước (n+1) x (m+1) với các phần tử ban đầu đều bằng 0
+
+// Khởi tạo giá trị ban đầu cho hàng đầu tiên và cột đầu tiên của ma trận dp
+for i = 0 to n:
+    dp[i][0] = i
+
+for j = 0 to m:
+    dp[0][j] = j
+
+// Tính toán các giá trị trong ma trận dp
+for i = 1 to n:
+    for j = 1 to m:
+        // Nếu ký tự tại vị trí i trong s1 và ký tự tại vị trí j trong s2 giống nhau
+        if s1[i-1] == s2[j-1]:
+            // Không cần thực hiện bất kỳ thao tác chỉnh sửa nào
+            dp[i][j] = dp[i-1][j-1]
+        else:
+            // Lấy giá trị nhỏ nhất từ ba phép toán: thêm, xóa, và thay thế
+            dp[i][j] = min(dp[i][j-1] + 1, dp[i-1][j] + 1, dp[i-1][j-1] + 1)
+
+// Trả về giá trị tại ô cuối cùng của ma trận dp
+return dp[n][m]
+\end{lstlisting}
+\textbf{Code}
+\begin{lstlisting}[language=C++, fontsize=\small, numbers=left]
+#include<bits/stdc++.h>
+
+using namespace std;
+
+// Hàm tính khoảng cách chỉnh sửa tối thiểu giữa hai chuỗi s1 và s2
+int dp(int n, int m, string s1, string s2) {
+    vector<vector<int>> dp(n + 1, vector<int>(m + 1, 0)); // Khởi tạo ma trận dp kích thước (n+1) x (m+1) và giá trị ban đầu là 0
+
+    // Khởi tạo các giá trị ban đầu của hàng đầu tiên của dp
+    for (int i = 0; i <= n; i++) {
+        dp[i][0] = i; // Khoảng cách chỉnh sửa tối thiểu giữa chuỗi không rỗng và chuỗi rỗng là độ dài của chuỗi không rỗng
+    }
+
+    // Khởi tạo các giá trị ban đầu của cột đầu tiên của dp
+    for (int j = 0; j <= m; j++) {
+        dp[0][j] = j; // Khoảng cách chỉnh sửa tối thiểu giữa chuỗi rỗng và chuỗi không rỗng là độ dài của chuỗi không rỗng
+    }
+
+    // Tính toán khoảng cách chỉnh sửa tối thiểu giữa các chuỗi con của s1 và s2
+    for (int i = 1; i <= n; i++) {
+        for (int j = 1; j <= m; j++) {
+            if (s1[i-1] == s2[j-1]) {
+                dp[i][j] = dp[i-1][j-1]; // Nếu hai ký tự tại vị trí i và j giống nhau, không cần thực hiện bất kỳ thao tác chỉnh sửa nào
+            } else {
+                // Nếu hai ký tự tại vị trí i và j khác nhau, tính toán khoảng cách chỉnh sửa tối thiểu bằng cách lấy giá trị nhỏ nhất từ ba phép toán:
+                // - Thêm một ký tự vào s1 để khớp với s2[j]
+                // - Xóa một ký tự từ s1 để khớp với s2[j]
+                // - Thay thế ký tự tại vị trí i trong s1 bằng ký tự tại vị trí j trong s2
+                dp[i][j] = min({dp[i][j-1] + 1, dp[i-1][j] + 1, dp[i-1][j-1] + 1});
+            }
+        }
+    }
+
+    return dp[n][m]; // Trả về khoảng cách chỉnh sửa tối thiểu giữa hai chuỗi s1 và s2
+}
+
+int main() {
+    string s1, s2;
+    cin >> s1 >> s2; // Nhập hai chuỗi s1 và s2
+
+    int n = s1.length(); // Độ dài của chuỗi s1
+    int m = s2.length(); // Độ dài của chuỗi s2
+
+    cout << dp(n, m, s1, s2) << endl; // Tính và in ra khoảng cách chỉnh sửa tối thiểu giữa hai chuỗi s1 và s2
+
+    return 0;
+}
+\end{lstlisting}
+\subsubsection{Ví dụ}
+\begin{lstlisting}
+Input:                                                Output:
+LOVE
+                                                      2
+MOVIE
+\end{lstlisting}
+\begin{itemize}
+    \item 1: Khởi tạo bảng dp có kích thước (len("LOVE")+1)x(len("MOVIE")+1): \Longrightarrow dp=\begin{bmatrix}
+0 & 1 & 2 & 3 & 4 & 5\\
+1 & 0 & 0 & 0 & 0 & 0\\
+2 & 0 & 0 & 0 & 0 & 0\\
+3 & 0 & 0 & 0 & 0 & 0\\
+4 & 0 & 0 & 0 & 0 & 0
+\end{bmatrix} 
+\\
+
+    \item 2.1: Vòng lặp $i = 1$: 
+        \begin{itemize}
+            \item dp[1][1] = min({dp[1][0]+1,dp[0][1]+1,dp[0][0]+1}) = min({1+1,1+1,0+1}) = 1
+            \item dp[1][2] = min({dp[1][1]+1,dp[0][2]+1,dp[0][1]+1}) = min({1+1,2+1,1+1}) = 2
+            \item dp[1][3] = min({dp[1][2]+1,dp[0][3]+1,dp[0][2]+1}) = min({2+1,3+1,2+1}) = 3
+            \item dp[1][4] = min({dp[1][3]+1,dp[0][4]+1,dp[0][3]+1}) = min({3+1,4+1,3+1}) = 4
+            \item dp[1][5] = min({dp[1][4]+1,dp[0][5]+1,dp[0][4]+1}) = min({4+1,5+1,4+1}) = 5
+        \end{itemize}
+    \item 2.2: Vòng lặp $i = 2$: 
+        \begin{itemize}
+            \item dp[2][1] = min({dp[2][0]+1,dp[1][1]+1,dp[1][0]+1}) = min({2+1,1+1,1+1}) = 2
+            \item Trùng nhau :dp[2][2] = dp[1][1] = 1
+            \item dp[2][3] = min({dp[2][2]+1,dp[1][3]+1,dp[1][2]+1}) = min({1+1,3+1,2+1}) = 2
+            \item dp[2][4] = min({dp[2][3]+1,dp[1][4]+1,dp[1][3]+1}) = min({2+1,4+1,3+1}) = 3
+            \item dp[2][5] = min({dp[2][4]+1,dp[1][5]+1,dp[1][4]+1}) = min({3+1,5+1,4+1}) = 4
+        \end{itemize}
+    \item 3.3: Vòng lặp $i = 3$: 
+        \begin{itemize}
+            \item dp[3][1] = min({dp[3][0]+1,dp[2][1]+1,dp[2][0]+1}) = min({3+1,2+1,2+1}) = 3
+            \item dp[3][2] = min({dp[3][1]+1,dp[2][2]+1,dp[2][1]+1}) = min({3+1,1+1,2+1}) = 2
+            \item Trùng nhau :dp[3][3] = dp[2][2] = 1
+            \item dp[3][4] = min({dp[3][3]+1,dp[2][4]+1,dp[2][3]+1}) = min({1+1,3+1,2+1}) = 2
+            \item dp[3][5] = min({dp[3][4]+1,dp[2][5]+1,dp[2][4]+1}) = min({2+1,4+1,3+1}) = 3
+
+        \end{itemize}
+    \item 3.4: Vòng lặp $i = 4$: 
+        \begin{itemize}
+            \item dp[4][1] = min({dp[4][0]+1,dp[3][1]+1,dp[3][0]+1}) = min({4+1,3+1,3+1}) = 4
+            \item dp[4][2] = min({dp[4][1]+1,dp[3][2]+1,dp[3][1]+1}) = min({4+1,2+1,3+1}) = 3
+            \item dp[4][3] = min({dp[4][2]+1,dp[3][3]+1,dp[3][2]+1}) = min({3+1,1+1,2+1}) = 2
+            \item dp[4][4] = min({dp[4][3]+1,dp[3][4]+1,dp[3][3]+1}) = min({2+1,2+1,1+1}) = 2
+            \item Trùng nhau :dp[4][5] = dp[3][4] = 2
+
+        \end{itemize}
+    \item 4: Xuất kết quả dp[n][m]=2
+\end{itemize}
+\subsection{Độ phức tạp}
+\hspace*{1cm} Thuật toán lập trình động để giải bài toán chỉnh sửa chuỗi có độ phức tạp thời gian là $O(n * m)$, trong đó $n$ là độ dài của s1 và $m$ là độ dài của s2. Điều này là do thuật toán cần duyệt qua từng ký tự trong s1 và từng ký tự trong s2 để tính toán giá trị tối ưu.
+
+
+
+
+
+
+%-----------------------------------------------------------------
+
+
+
+
+
+\section{Bài 9: 
+	[D&A][DP] Người giao cơm }
+\subsection{Phân tích ý tưởng giải quyết}
+\subsubsection{Mô tả bài toán} 
+\hspace{1cm} Bài toán tìm đường đi ngắn nhất giữa hai đỉnh trong một đồ thị vô hướng.
+
+\subsubsection{Mô hình hóa bài toán}
+
+\hspace*{1cm} \textbf{Input:} 
+\begin{itemize}
+    \item Dòng đầu tiên chứa 2 số nguyên n và q: Số lượng đỉnh và số lượng truy vấn.
+    \item n-1 dòng tiếp theo cho biết tồn tại đường đi giữa 2 đỉnh. Mỗi dòng chứa hai số nguyên a và b, thể hiện có đường đi giữa căn hộ a đến căn hộ b
+    \item Cuối cùng có q dòng mô tả các truy vấn khoảng cách. Mỗi dòng chứa số nguyên a và b là đỉnh cần truy vấn.
+\end{itemize}
+
+\newline
+\hspace*{1cm} \textbf{Output:} In q số nguyên, câu trả lời của mỗi truy vấn
+
+\subsection{Trình bày thuật toán}
+\subsubsection{Ý tưởng}
+\hspace*{1cm} Ý tưởng giải quyết bài toán là sử dụng thuật toán Floyd Warshall
+\begin{itemize}
+    
+\end{itemize}
+\subsubsection{Mã giả (Code)}
+\textbf{Code}
+\begin{lstlisting}[language=C++, fontsize=\small, numbers=left]
+#include<bits/stdc++.h>
+
+using namespace std;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    int n,q;
+    cin >> n >> q;
+    // Khởi tạo danh sách kề
+    vector<vector<int>> a(n);
+    int x,y;
+    for (int i=0;i<n-1;i++) {
+        // Nhập input
+        cin >> x >> y;
+        a[x-1].push_back(y-1);
+        a[y-1].push_back(x-1);
+    }
+
+    int temp1,temp2;
+    for (int i=0;i<q;i++) {
+        // nhập truy vấn
+        cin >> temp1 >> temp2;
+        // tạo vector dp
+        vector<int> dp(n,1000000);
+        // gán dp[start] = 0 
+        dp[temp1-1] = 0;
+        // Lặp qua tất cả các giá trị khoảng cách có thể có
+        for (int k = 0; k < n; k++) {
+            // Lặp qua tất cả các đỉnh của đồ thị
+            // Mỗi lần lặp i, chúng ta xem xét đỉnh i để xác định liệu nó có thuộc cấp độ khoảng cách k từ start hay không.
+            for (int i = 0; i < a.size();i++) {
+                // Vòng lặp biến lặp j chạy qua tất cả các đỉnh kề của đỉnh i (dựa trên danh sách kề a[i]).
+                // Mỗi lần lặp j, chúng ta xem xét đỉnh kề a[i][j] của đỉnh i và cập nhật khoảng cách tối thiểu từ start đến nó.
+                // Cụ thể, dòng lệnh dp[a[i][j]] = min(dp[i] + 1, dp[a[i][j]]); cập nhật khoảng cách tối thiểu từ start đến đỉnh kề a[i][j]. Nếu có một đường đi ngắn hơn từ start đến a[i][j], thì cập nhật khoảng cách đó.
+                for (int j = 0; j < a[i].size();j++) {
+                    dp[a[i][j]] = min(dp[i]+1,dp[a[i][j]]);
+                }
+            }   
+        }
+        // Xuất kết quả
+        cout << dp[temp2-1] << "\n";
+    }
+}
+\end{lstlisting}
+\subsubsection{Ví dụ}
+\begin{lstlisting}
+Input:                                                Output:
+5 3
+1 2
+1 3                                                   1
+3 4                                                   3
+3 5                                                   2
+1 3
+2 5
+1 4
+\end{lstlisting}
+\begin{itemize}
+    \item Xét khoảng cách là 0
+    \item Xét đỉnh 0
+    \item Xét đỉnh láng giềng 1
+    \item Cập nhật khoảng cách đến đỉnh a[0][0] = 1 là max(0 + 1, 1000000) = 1000000
+    \item Xét đỉnh láng giềng 2
+    \item Cập nhật khoảng cách đến đỉnh a[0][1] = 2 là max(0 + 1, 1000000) = 1000000
+    \item Xét đỉnh 1
+    \item Xét đỉnh láng giềng 0
+    \item Cập nhật khoảng cách đến đỉnh a[1][0] = 0 là max(1 + 1, 0) = 2
+    \item Xét đỉnh 2
+    \\ .
+    \\ .
+    \\ .
+    \item Duyệt cho tới khi k = n
+    \item Xuất kết quả
+\end{itemize}
+\subsection{Độ phức tạp}
+\hspace*{1cm} Đoạn code trên có độ phức tạp là $O(n^3)$ với $n$ là số đỉnh vì có 3 vòng lặp lồng nhau và mỗi vòng lặp tối đa $n$ lần.
+
+
+
+
+%-----------------------------------------------------------------
+
+
+
+
+
+\section{Bài 10: 
+	[D&A][DP] Nonsense Gen }
+\subsection{Phân tích ý tưởng giải quyết}
+\subsubsection{Mô tả bài toán} 
+\hspace{1cm} Bài toán yêu cầu tìm số lượng các giá trị khác nhau có thể tạo thành từ tổng các phần tử trong một dãy số nguyên không âm.
+
+\subsubsection{Mô hình hóa bài toán}
+
+\hspace*{1cm} \textbf{Input:} 
+\begin{itemize}
+    \item Dòng đầu tiên là một số nguyên n (số lượng đoạn NST có trong phòng thí nghiệm)
+    \item Dòng thứ hai là dãy n số nguyên, là số lượng đơn vị cấu trúc nhiễm sắc thể của từng đoạn NST tương ứng
+\end{itemize}
+
+\newline
+\hspace*{1cm} \textbf{Output:}
+\begin{itemize}
+    \item 1 số nguyên : số lượng các đoạn nhiễm sắc thể với số lượng đơn vị cấu trúc nhiễm sắc thể khác nhau.
+    \item Tiếp sau đó là dãy số nguyên theo thứ tự tăng dần, với mỗi phần tử là số lượng đơn vị cấu trúc nhiễm sắc thể của một nhiễm sắc thể có thể tạo thành.
+\end{itemize}
+
+\subsection{Trình bày thuật toán}
+\subsubsection{Ý tưởng}
+\hspace*{1cm} Ý tưởng giải quyết bài toán là sử dụng dynamic programming.
+\begin{itemize}
+    \item Sắp xếp dãy số tăng dần.
+    \item Tính tổng của toàn bộ dãy (maxSum).
+    \item Tạo một vector res với kích thước maxSum + 1, và một vector last cũng với kích thước maxSum + 1.
+    \item Dùng vòng lặp để duyệt qua từng phần tử trong dãy:
+    \begin{itemize}
+        \item Đánh dấu res[a[i]] là true.
+        \item Cập nhật last[a[i]] với chỉ số i nếu last[a[i]] là -1, ngược lại thì chọn giá trị min(last[a[i]], i).
+    \end{itemize}
+    \item Sử dụng hai vòng lặp for để tạo ma trận res và last dựa trên các tổ hợp con của dãy và tổ hợp con đã tính toán trước đó.
+    \item In ra số lượng tổ hợp con và liệt kê chúng.
+\end{itemize}
+\subsubsection{Mã giả (Code)}
+\textbf{Mã giả}
+\begin{lstlisting}[language=C++, fontsize=\small, numbers=left]
+    // Sắp xếp dãy a theo thứ tự tăng dần:
+    sort(a.begin(), a.end())
+    
+    maxSum = Tính tổng của toàn bộ dãy a:
+    maxSum = accumulate(a.begin(), a.end(), 0)
+
+    // Khởi tạo:
+    res = Mảng boolean với kích thước (maxSum + 1), tất cả giá trị ban đầu là false
+    last = Mảng số nguyên với kích thước (maxSum + 1), tất cả giá trị ban đầu là -1
+
+    for i = 0 to a.size():
+        res[a[i]] = true
+        if last[a[i]] != -1:
+            last[a[i]] = min(last[a[i]], i)
+        else lại:
+            last[a[i]] = i
+
+    Duyệt qua các giá trị từ 1 đến maxSum:
+        Duyệt qua từng phần tử j trong dãy a:
+            Nếu j > i:
+                Tiếp tục với phần tử tiếp theo
+            Nếu last[i - a[j]] < j:
+                 Tiếp tục với phần tử tiếp theo
+            Nếu res[i - a[j]] == true:
+                res[i] = true
+                last[i] = j
+                Break
+
+    count = 0
+    In ra số lượng các tổ hợp con:
+    Duyệt qua từng giá trị i từ 0 đến maxSum:
+    Nếu res[i] == true:
+        count++
+    In ra count
+
+    In ra các tổ hợp con:
+    Duyệt qua từng giá trị i từ 0 đến maxSum:
+        Nếu res[i] == true:
+            In ra i 
+\end{lstlisting}
+\textbf{Code}
+\begin{lstlisting}[language=C++, fontsize=\small, numbers=left]
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    // Nhập số lượng phần tử trong dãy
+    int n;
+    cin >> n;
+
+    // Nhập dãy số nguyên không âm
+    vector<int> a(n);
+    for (int i = 0; i < n; i++) {
+        cin >> a[i];
+    }
+
+    // Sắp xếp dãy số theo thứ tự tăng dần
+    sort(a.begin(), a.end());
+
+    // Tính tổng của toàn bộ dãy
+    int maxSum = accumulate(a.begin(), a.end(), 0);
+
+    // Khởi tạo mảng boolean res và mảng số nguyên last
+    vector<bool> res(maxSum + 1, false);
+    vector<int> last(maxSum + 1, -1);
+
+    // Duyệt qua từng phần tử trong dãy a để xây dựng res và last
+    for (int i = 0; i < a.size(); i++) {
+        res[a[i]] = true;
+
+        // Cập nhật chỉ số cuối cùng của phần tử trong dãy a mà tạo ra tổng là a[i]
+        if (last[a[i]] != -1) {
+            last[a[i]] = min(last[a[i]], i);
+        } else {
+            last[a[i]] = i;
+        }
+    }
+
+    // Duyệt qua các giá trị từ 1 đến maxSum để xác định các tổ hợp con
+    for (int i = 1; i <= maxSum; i++) {
+        for (int j = 0; j < a.size(); j++) {
+            // Nếu tổng i bé hơn giá trị của a[j], tiếp tục với phần tử tiếp theo
+            if (i < a[j]) {
+                continue;
+            }
+
+            // Nếu j nhỏ hơn hoặc bằng last[i - a[j]], tiếp tục với phần tử tiếp theo
+            if (j <= last[i - a[j]]) {
+                continue;
+            }
+
+            // Nếu tổ hợp con có tổng là i - a[j] đã được xác định trước đó
+            if (res[i - a[j]]) {
+                res[i] = true;
+                last[i] = j;
+                break;
+            }
+        }
+    }
+
+    // Đếm số lượng tổ hợp con và in ra
+    int count = 0;
+    for (int i = 0; i <= maxSum; i++) {
+        if (res[i]) {
+            count++;
+        }
+    }
+    cout << count << endl;
+
+    // In ra các tổ hợp con
+    for (int i = 0; i <= maxSum; i++) {
+        if (res[i]) {
+            cout << i << " ";
+        }
+    }
+
+    return 0;
+}
+\end{lstlisting}
+\subsubsection{Ví dụ}
+\begin{lstlisting}
+Input:                                                Output:
+3                                                     6
+1 2 3                                                 1 2 3 4 5 6
+\end{lstlisting}
+\begin{itemize}
+    \item 1.1: Tính maxSum: 6
+    \item 1.2: Khởi tạo res và last: 
+    \begin{itemize}
+        \item vector<bool> res(maxSum + 1, false): 
+        \item vector<int> last(maxSum + 1, -1): 
+    \end{itemize}
+    \item 2: Lặp qua mảng a: 
+    \item 2.1: Vòng lặp thứ 0:
+    \begin{itemize}
+        \item gán res[a[i]] = true: 
+        \item gán last[a[i]] = i vì last[a[i]] == -1: 
+    \end{itemize}
+    \item 2.2: Vòng lặp thứ 1:
+    \begin{itemize}
+        \item gán res[a[i]] = true: 
+        \item gán last[a[i]] = i vì last[a[i]] == -1: 
+    \end{itemize}
+    \item 2.3: Vòng lặp thứ 2
+    \begin{itemize}
+        \item gán res[a[i]] = true: 
+        \item gán last[a[i]] = i vì last[a[i]] == -1: 
+    \end{itemize}
+    \item 3: Vòng lặp chính: 
+    \item 3.1: Vòng lặp thứ 1:
+    \item 3.1.1: Vòng con thứ 0:
+    \item 3.1.2: Vòng con thứ 1:
+    \item 3.1.2.1: i < a[j] nên continue: 
+    \item 3.1.3: Vòng con thứ 2:
+    \item 3.1.3.1: i < a[j] nên continue: 
+    \item 3.2: Vòng lặp thứ 2:
+    \item 3.2.1: Vòng con thứ 0:
+    \\ .
+    \\ .
+    \\ .
+    \item 3.5: Vòng lặp thứ 6:
+    \item 3.5.1: Vòng con thứ 0
+    \item 3.5.1.1: j <= last[i - a[j]] nên continue: 
+    \item 3.5.2: Vòng con thứ 1
+    \item 3.5.2.1: j <= last[i - a[j]] nên continue: 
+    \item 3.5.3: Vòng con thứ 2
+    \item 3.5.3.1: res[i - a[j]] == true nên gán res[i] = true và last[i] = j: 
+    \item 4: Chạy xong vòng lặp chính, in ra kết quả: 
+    \item 4.1: Số lượng phần tử trong res: 6
+    \item 4.2: Các phần tử trong res: 1 2 3 4 5 6 
+\end{itemize}
+\subsection{Độ phức tạp}
+\hspace*{1cm} Độ phức tạp thời gian là $O(n * maxSum)$, vì có 1 vòng lặp 1->maxSum và mỗi lần lặp lại thực hiện 1 vòng lặp từ 0->n.
+
+
+
+
+
+%-----------------------------------------------------------------
+
+
+
+
+
+\section{Bài 11: 	
+[D&A][DP]Knapsack
+ }
+\subsection{Phân tích ý tưởng giải quyết}
+\subsubsection{Mô tả bài toán} 
+\hspace{1cm} Cho một danh sách n đồ vật, mỗi đồ vật có trọng lượng và giá trị riêng. Cần chọn một tập hợp các đồ vật sao cho tổng trọng lượng không vượt quá w và tổng giá trị là lớn nhất có thể.
+
+\subsubsection{Mô hình hóa bài toán}
+
+\hspace*{1cm} \textbf{Input:} 
+\begin{itemize}
+    \item Dòng đầu tiên chứa hai số nguyên dương n,w.
+
+    \item n dòng tiếp theo, dòng thứ i chứa hai số nguyên dương $w_i, v_i$
+
+\end{itemize}
+
+\newline
+\hspace*{1cm} \textbf{Output:}
+\begin{itemize}
+    \item Tổng giá trị lớn nhất của tập hợp các đồ vật được chọn sao cho tổng trọng lượng không vượt quá w.
+\end{itemize}
+
+\subsection{Trình bày thuật toán}
+\subsubsection{Ý tưởng}
+\hspace*{1cm} Ý tưởng giải quyết bài toán là sử dụng dynamic programming.
+\begin{itemize}
+    \item Khởi tạo một mảng dp có kích thước (w + 1) với tất cả các giá trị bằng 0.
+    \item Duyệt qua danh sách đồ vật từ trên xuống dưới.
+
+    \item Đối với mỗi đồ vật, duyệt từ trọng lượng w xuống đến 1.
+
+    \item Nếu trọng lượng của đồ vật hiện tại nhỏ hơn hoặc bằng trọng lượng hiện tại thì cập nhật dp[j] bằng max(dp[j], dp[j - trọng lượng của đồ vật hiện tại] + giá trị của đồ vật hiện tại)
+    
+    \item Trả về dp[w].
+\end{itemize}
+\subsubsection{Mã giả (Code)}
+\textbf{Mã giả}
+\begin{lstlisting}[language=C++, fontsize=\small, numbers=left]
+    // khởi tạo mảng dp 1 chiều với w+1 phần từ
+    dp = vetor<int> (w+1)
+    for i = 1 to n:
+        for j = w to 1:
+            if a[i].first <= j:
+                dp[j] = max(dp[j], dp[j - a[i].first] + a[i].second)
+    return dp[w]
+\end{lstlisting}
+\textbf{Code}
+\begin{lstlisting}[language=C++, fontsize=\small, numbers=left]
+#include<bits/stdc++.h>
+
+using namespace std;
+
+// Hàm dynamic programming để giải bài toán knapsack
+long long dp(int n, int w, vector<pair<int, int>> a) {
+    // Tạo một vector dp để lưu trữ giá trị tối đa có thể đạt được cho từng trọng lượng j
+    vector<long long> dp(w + 1, 0);
+
+    // Duyệt qua từng đồ vật
+    for (int i = 1; i <= n; i++) {
+        // Duyệt qua từng trọng lượng từ w đến 1
+        for (int j = w; j >= 1; j--) {
+            // Kiểm tra xem có thể chọn đồ vật thứ i không
+            if (a[i-1].first <= j) {
+                // Nếu có thể chọn, so sánh giữa giá trị hiện tại và giá trị nếu chọn đồ vật thứ i
+                dp[j] = max(dp[j], dp[j - a[i-1].first] + a[i-1].second);
+            }
+        }
+    }
+    // Trả về giá trị tối đa có thể đạt được cho trọng lượng w
+    return dp[w];
+}
+
+int main() {
+    int n, w;
+    // Nhập số lượng đồ vật (n) và trọng lượng tối đa có thể mang (w)
+    cin >> n >> w;
+
+    // Khởi tạo vector a để lưu trữ đồ vật, mỗi đồ vật được biểu diễn bằng một cặp (trọng lượng, giá trị)
+    vector<pair<int, int>> a(n, {0, 0});
+
+    // Nhập thông tin về trọng lượng và giá trị của từng đồ vật
+    for (int i = 0; i < n; i++) {
+        cin >> a[i].first >> a[i].second;
+    }
+
+    // Gọi hàm dp để tính giá trị tối đa có thể đạt được
+    cout << dp(n, w, a);
+}
+
+\end{lstlisting}
+\subsubsection{Ví dụ}
+\begin{lstlisting}
+Input:                                                Output:
+3 10
+4 5
+5 6                                                   12
+6 7
+\end{lstlisting}
+\begin{itemize}
+    \item 1: Khởi tạo dp: dp = vector<long long> dp(w + 1, 0): 
+\item 2: Vòng lặp chính (i = 1 -> n): 
+\begin{itemize}
+\item 2.1: Vòng lặp chính thứ 1: 
+\item 2.1.10: Vòng lặp con thứ 10: 
+\item 2.1.10.1: a[0].first <= 10 nên dp[10] = max(dp[10], dp[10 - 4] + 5): 5
+\item 2.1.9: Vòng lặp con thứ 9: 
+\item 2.1.9.1: a[0].first <= 9 nên dp[9] = max(dp[9], dp[9 - 4] + 5): 5
+\item 2.1.8: Vòng lặp con thứ 8: 
+\item 2.1.8.1: a[0].first <= 8 nên dp[8] = max(dp[8], dp[8 - 4] + 5): 5
+\item 2.1.7: Vòng lặp con thứ 7: 
+\item 2.1.7.1: a[0].first <= 7 nên dp[7] = max(dp[7], dp[7 - 4] + 5): 5
+\item 2.1.6: Vòng lặp con thứ 6: 
+\item 2.1.6.1: a[0].first <= 6 nên dp[6] = max(dp[6], dp[6 - 4] + 5): 5
+\item 2.1.5: Vòng lặp con thứ 5: 
+\item 2.1.5.1: a[0].first <= 5 nên dp[5] = max(dp[5], dp[5 - 4] + 5): 5
+\item 2.1.4: Vòng lặp con thứ 4: 
+\item 2.1.4.1: a[0].first <= 4 nên dp[4] = max(dp[4], dp[4 - 4] + 5): 5
+\item 2.1.3: Vòng lặp con thứ 3: 
+\item 2.1.2: Vòng lặp con thứ 2: 
+\item 2.1.1: Vòng lặp con thứ 1: 
+\end{itemize}
+\begin{itemize}
+\item 2.2: Vòng lặp chính thứ 2: 
+\item 2.2.10: Vòng lặp con thứ 10: 
+\item 2.2.10.1: a[1].first <= 10 nên dp[10] = max(dp[10], dp[10 - 5] + 6): 11
+\item 2.2.9: Vòng lặp con thứ 9: 
+\item 2.2.9.1: a[1].first <= 9 nên dp[9] = max(dp[9], dp[9 - 5] + 6): 11
+\item 2.2.8: Vòng lặp con thứ 8: 
+\item 2.2.8.1: a[1].first <= 8 nên dp[8] = max(dp[8], dp[8 - 5] + 6): 6
+\item 2.2.7: Vòng lặp con thứ 7: 
+\item 2.2.7.1: a[1].first <= 7 nên dp[7] = max(dp[7], dp[7 - 5] + 6): 6
+\item 2.2.6: Vòng lặp con thứ 6: 
+\item 2.2.6.1: a[1].first <= 6 nên dp[6] = max(dp[6], dp[6 - 5] + 6): 6
+\item 2.2.5: Vòng lặp con thứ 5: 
+\item 2.2.5.1: a[1].first <= 5 nên dp[5] = max(dp[5], dp[5 - 5] + 6): 6
+\item 2.2.4: Vòng lặp con thứ 4: 
+\item 2.2.3: Vòng lặp con thứ 3: 
+\item 2.2.2: Vòng lặp con thứ 2: 
+\item 2.2.1: Vòng lặp con thứ 1: 
+\end{itemize}
+\begin{itemize}
+\item 2.3: Vòng lặp chính thứ 3: 
+\item 2.3.10: Vòng lặp con thứ 10: 
+\item 2.3.10.1: a[2].first <= 10 nên dp[10] = max(dp[10], dp[10 - 6] + 7): 12
+\item 2.3.9: Vòng lặp con thứ 9: 
+\item 2.3.9.1: a[2].first <= 9 nên dp[9] = max(dp[9], dp[9 - 6] + 7): 11
+\item 2.3.8: Vòng lặp con thứ 8: 
+\item 2.3.8.1: a[2].first <= 8 nên dp[8] = max(dp[8], dp[8 - 6] + 7): 7
+\item 2.3.7: Vòng lặp con thứ 7: 
+\item 2.3.7.1: a[2].first <= 7 nên dp[7] = max(dp[7], dp[7 - 6] + 7): 7
+\item 2.3.6: Vòng lặp con thứ 6: 
+\item 2.3.6.1: a[2].first <= 6 nên dp[6] = max(dp[6], dp[6 - 6] + 7): 7
+\item 2.3.5: Vòng lặp con thứ 5: 
+\item 2.3.4: Vòng lặp con thứ 4: 
+\item 2.3.3: Vòng lặp con thứ 3: 
+\item 2.3.2: Vòng lặp con thứ 2: 
+\item 2.3.1: Vòng lặp con thứ 1: 
+\end{itemize}
+\item 3: Chạy xong vòng lặp chính, in ra kết quả: dp[w]: 12
+\end{itemize}
+\subsection{Độ phức tạp}
+\hspace*{1cm} Độ phức tạp thời gian của thuật toán này là $O(n * w)$, do duyệt qua danh sách đồ vật n lần và duyệt từ trọng lượng w xuống đến 1 w lần.
+
+
+
+
+
+%-----------------------------------------------------------------
+
+
+
+
+
+\section{Bài 12: 	
+	[D&A]Tìm phần tử lớn thứ k trong mảng (không sort mảng rồi tìm a[n-k])
+ }
+\subsection{Phân tích ý tưởng giải quyết}
+\subsubsection{Mô tả bài toán} 
+\hspace{1cm} Cho một mảng số nguyên. Tìm phần tử lớn thứ k trong mảng mà không sort mảng.
+
+\subsubsection{Mô hình hóa bài toán}
+
+\hspace*{1cm} \textbf{Input:} 
+\begin{itemize}
+    \item Dòng đầu tiên chứa hai số n và k. Trong đó n là số lượng phần tử trong mảng (n<300.000) và k là thứ hạng cần tìm
+
+    \item n dòng tiếp theo, mỗi dòng chứa một số nguyên dương, đây là các phần tử của mảng.
+
+\end{itemize}
+
+\newline
+\hspace*{1cm} \textbf{Output:}
+\begin{itemize}
+    \item Xuất ra giá trị của phần tử lớn thứ k trong mảng.
+\end{itemize}
+
+\subsection{Trình bày thuật toán}
+\subsubsection{Ý tưởng}
+\hspace*{1cm} Ý tưởng giải quyết bài toán là sử dụng thuật toán quick select. (giống quick sort nhưng không sort :v)
+\begin{itemize}
+    \item Chọn một phần tử ngẫu nhiên trong mảng A làm phần tử trục (pivot).
+    \item Chia mảng A thành hai phần: phần bên trái chứa các phần tử nhỏ hơn hoặc bằng phần tử trục, và phần bên phải chứa các phần tử lớn hơn phần tử trục.
+
+    \item Đệ quy gọi Quick Select trên phần bên trái hoặc bên phải, tùy thuộc vào vị trí của phần tử lớn thứ k so với phần tử trục.
+
+    \item Trả về phần tử lớn thứ k được tìm thấy.
+    
+    \item Trả về dp[w].
+\end{itemize}
+\subsubsection{Mã giả (Code)}
+\textbf{Mã giả}
+\begin{lstlisting}[language=C++, fontsize=\small, numbers=left]
+partition(A, pivot):
+    i = 1
+    for j = 2 to n:
+    if A[j] <= pivot:
+        swap(A[i], A[j])
+        i++
+    swap(A[i], A[pivot])
+    return i
+
+int quick_select(a,n,k,l,r) {
+    // Chia mảng a thành hai phần: phần bên trái chứa các phần tử nhỏ hơn hoặc bằng phần tử trục, và phần bên phải chứa các phần tử lớn hơn phần tử trục.
+    pivot = partition(a, l, r)
+    // Nếu k - 1 == pivot - l thì trả về a[k].
+    if pivot - l == k-1:
+        return a[k]
+    //// Nếu k - 1 > pivot - l thì phần tử lớn thứ k nằm trong phần bên trái.
+    elif pivot - l > k-1:
+        return quick_select(a, n, k ,l , pivot - 1)
+    // Nếu k > pivot thì phần tử lớn thứ k nằm trong phần bên phải.
+    else:
+        return quick_select(a, n, k - pivot +1 - 1, pivot + 1, r)
+}
+  
+
+\end{lstlisting}
+\textbf{Code}
+\begin{lstlisting}[language=C++, fontsize=\small, numbers=left]
+#include<bits/stdc++.h>
+
+using namespace std;
+
+// Phân chia mảng và đưa phần tử pivot về đúng vị trí trong mảng
+int partition(vector<int> &a, int l, int r) {
+    // Chọn phần tử cuối cùng làm pivot
+    int pivot = a[r];
+    int i = l;
+    // Duyệt qua mảng từ l đến r-1
+    for (int j = l; j < r; j++) {
+        // Nếu phần tử hiện tại nhỏ hơn hoặc bằng pivot, đổi chỗ phần tử tại i với phần tử tại j
+        if (a[j] <= pivot) {
+            swap(a[i], a[j]);
+            i++;
+        }
+    }
+    // Đưa phần tử pivot về vị trí đúng
+    swap(a[i], a[r]);
+    return i;
+}
+
+// Hàm chính sử dụng phương pháp chia để trị để tìm phần tử lớn thứ k trong mảng
+int dnc(int n, int k, vector<int> &a, int l, int r) {
+    // Lấy vị trí pivot sau khi phân chia mảng
+    int pivot = partition(a, l, r);
+
+    // Nếu vị trí pivot là k-1, thì phần tử pivot là phần tử lớn thứ k
+    if (pivot - l == k-1) {
+        return a[pivot];
+    }
+    // Nếu vị trí pivot - l > k-1, tìm trong phần đầu của mảng
+    else if (pivot - l > k-1) {
+        return dnc(n, k, a, l, pivot - 1);   
+    }
+    // Ngược lại, tìm trong phần cuối của mảng
+    else {
+        return dnc(n, k - pivot + l - 1, a, pivot + 1, r);
+    }
+}
+
+int main() {
+    int n, k;
+    
+    // Nhập số lượng phần tử của mảng (n) và phần tử lớn thứ k cần tìm
+    cin >> n >> k;
+    
+    // Khởi tạo mảng a để lưu trữ dãy số
+    vector<int> a(n, 0);
+    
+    // Nhập các phần tử của mảng
+    for (int i = 0; i < n; i++) {
+        cin >> a[i];
+    }
+    
+    // Gọi hàm dnc để tìm phần tử lớn thứ k và in kết quả
+    cout << dnc(n, n - k + 1, a, 0, n - 1);
+}
+
+\end{lstlisting}
+\subsubsection{Ví dụ}
+\begin{lstlisting}
+Input:                                                Output:
+6 2
+6
+1
+5                                                     5
+2
+4
+3
+\end{lstlisting}
+\begin{itemize}
+    \item Bắt đầu chạy quick select
+\item Mảng a từ 0 đến 5: 6 1 5 2 4 3 
+\item pivot = 2
+\item Mảng a sau khi partition:1 2 3 6 4 5 
+\item pivot - l < k-1 nên tiếp tục với bên phải của pivot: 
+\begin{itemize}
+\item Mảng a từ 3 đến 5: 1 2 3 6 4 5 
+\item pivot = 4
+\item Mảng a sau khi partition:1 2 3 4 5 6 
+\item pivot - l == k-1 nên return a[pivot]: 5
+\item Xuất kết quả: 5
+\end{itemize}
+\end{itemize}
+\subsection{Độ phức tạp}
+\hspace*{1cm} Độ phức tạp thời gian trung bình của thuật toán này là $O(n)$, do Quick Select chia mảng thành hai phần có kích thước gần bằng nhau tại mỗi bước đệ quy.
+\\
+\hspace*{1cm} Độ phức tạp thời gian tệ nhất của thuật toán này là $O(n^2)$, khi mảng đã được sắp xếp hoặc khi phần tử trục luôn là phần tử nhỏ nhất hoặc lớn nhất trong mảng.
+
+
+
+
+
+%-----------------------------------------------------------------
+
+
+
+
+
+\section{Bài 13: 	
+    [D&A] Tính toán biểu thức (dùng D&C mới hợp lệ, không tính D&C ở thao tác sort)
+ }
+ Not Done Yet
+% \subsection{Phân tích ý tưởng giải quyết}
+% \subsubsection{Mô tả bài toán} 
+% \hspace{1cm} Cho một mảng số nguyên. Tìm phần tử lớn thứ k trong mảng mà không sort mảng.
+
+% \subsubsection{Mô hình hóa bài toán}
+
+% \hspace*{1cm} \textbf{Input:} 
+% \begin{itemize}
+   
+% \end{itemize}
+
+% \newline
+% \hspace*{1cm} \textbf{Output:}
+% \begin{itemize}
+%     \item Xuất ra giá trị của phần tử lớn thứ k trong mảng.
+% \end{itemize}
+
+% \subsection{Trình bày thuật toán}
+% \subsubsection{Ý tưởng}
+% \hspace*{1cm} Ý tưởng giải quyết bài toán là sử dụng thuật toán quick select. (giống quick sort nhưng không sort :v)
+% \begin{itemize}
+   
+% \end{itemize}
+% \subsubsection{Mã giả (Code)}
+% \textbf{Mã giả}
+% \begin{lstlisting}[language=C++, fontsize=\small, numbers=left]
+
+% \end{lstlisting}
+% \textbf{Code}
+% \begin{lstlisting}[language=C++, fontsize=\small, numbers=left]
+
+% \end{lstlisting}
+% \subsubsection{Ví dụ}
+% \begin{lstlisting}
+% Input:                                                Output:
+% 6 2
+% 6
+% 1
+% 5                                                     5
+% 2
+% 4
+% 3
+% \end{lstlisting}
+% \begin{itemize}
+%     \item Bắt đầu chạy quick select
+% \item Mảng a từ 0 đến 5: 6 1 5 2 4 3 
+% \item pivot = 2
+% \item Mảng a sau khi partition:1 2 3 6 4 5 
+% \item pivot - l < k-1 nên tiếp tục với bên phải của pivot: 
+% \begin{itemize}
+% \item Mảng a từ 3 đến 5: 1 2 3 6 4 5 
+% \item pivot = 4
+% \item Mảng a sau khi partition:1 2 3 4 5 6 
+% \item pivot - l == k-1 nên return a[pivot]: 5
+% \item Xuất kết quả: 5
+% \end{itemize}
+% \end{itemize}
+% \subsection{Độ phức tạp}
+% \hspace*{1cm} Độ phức tạp thời gian trung bình của thuật toán này là $O(n)$, do Quick Select chia mảng thành hai phần có kích thước gần bằng nhau tại mỗi bước đệ quy.
+% \\
+% \hspace*{1cm} Độ phức tạp thời gian tệ nhất của thuật toán này là $O(n^2)$, khi mảng đã được sắp xếp hoặc khi phần tử trục luôn là phần tử nhỏ nhất hoặc lớn nhất trong mảng.
+
+
+
+
+
+%-----------------------------------------------------------------
+
+
+
+
+
+\section{Bài 14: 	
+    [D&A] Bóp bong bóng (bài này khó)
+ }
+\subsection{Phân tích ý tưởng giải quyết}
+\subsubsection{Mô tả bài toán} 
+\hspace{1cm} Bài toán yêu cầu tính điểm tối đa của một dãy số nguyên, được tính bằng cách nhân từng phần tử người chơi chọn với số liền trước và liền sau của phẩn tử đó trong dãy, sau khi chọn phần tử đó thì không được chọn lại và coi như phần tử đó không còn tồn tại. 
+
+\subsubsection{Mô hình hóa bài toán}
+
+\hspace*{1cm} \textbf{Input:} 
+\begin{itemize}
+   \item Dãy số nguyên a có độ dài n
+\end{itemize}
+
+\newline
+\hspace*{1cm} \textbf{Output:}
+\begin{itemize}
+    \item Điểm tối đa có thể đạt được từ dãy số.
+\end{itemize}
+
+\subsection{Trình bày thuật toán}
+\subsubsection{Ý tưởng}
+\hspace*{1cm} Ý tưởng giải quyết bài toán là sử dụng sử dụng phương pháp chia để trị (Divide and Conquer) để giải quyết bài toán.
+\begin{itemize}
+   \item Hàm đệ quy dnc nhận vào dãy số a, độ dài n, và giới hạn left và right đại diện cho phạm vi xử lý trong dãy.
+   \item Dùng vòng lặp để duyệt qua từ left đến right, tính điểm tại mỗi vị trí và chia thành hai phần trái và phải.
+   \item Gọi đệ quy cho cả hai phần và cập nhật giá trị max\_score khi có điểm mới lớn hơn.
+\end{itemize}
+\subsubsection{Mã giả (Code)}
+\textbf{Mã giả}
+\begin{lstlisting}[language=C++, fontsize=\small, numbers=left]
+dnc(a, n, left, right):
+    // điều kiện dừng: Nếu left lớn hơn right, trả về 0.
+    if left > right:
+        return 0
+    
+    // Khởi tạo điểm số tối đa.
+    max_score = 0
+    
+    // Duyệt qua từng vị trí từ left đến right.
+    for i from left to right:
+        // Tính điểm tại vị trí i.
+        // score = a[i] * (a[left - 1] nếu mảng có phần tử left - 1 không thì 1) * (a[right + 1] nếu mảng có phần tử right + 1 không thì 1)
+        score = a[i] * (left > 0 ? a[left - 1] : 1) * (right < n - 1 ? a[right + 1] : 1)
+        
+        // Gọi đệ quy cho phần bên trái của i và phần bên phải của i.
+        left_score = dnc(a, n, left, i - 1)
+        right_score = dnc(a, n, i + 1, right)
+        
+        // Cập nhật max_score nếu có điểm mới lớn hơn.
+        max_score = max(max_score, score + left_score + right_score)
+    
+    // Trả về điểm số tối đa cho phạm vi từ left đến right.
+    return max_score
+\end{lstlisting}
+\textbf{Code}
+\begin{lstlisting}[language=C++, fontsize=\small, numbers=left]
+#include<bits/stdc++.h>
+
+using namespace std;
+
+// Hàm đệ quy chia để trị để tìm điểm số lớn nhất
+int dnc(vector<int>& a, int n, int left, int right) {
+    // Nếu chỉ số bên trái lớn hơn chỉ số bên phải, không có phần tử nào để xem xét
+    if (left > right) {
+        return 0;
+    }
+    
+    // Khởi tạo biến để lưu trữ điểm số lớn nhất
+    int max_score = 0;
+
+    // Duyệt qua từng phần tử từ chỉ số bên trái đến chỉ số bên phải
+    for (int i = left; i <= right; i++) {
+        // Tính điểm số cho phần tử hiện tại với điểm số của phần tử liền trước và liền sau
+        int score = a[i] * (left > 0 ? a[left - 1] : 1) * (right < n - 1 ? a[right + 1] : 1);
+        
+        // Gọi đệ quy để tính điểm số cho các phần tử bên trái và bên phải
+        int left_score = dnc(a, n, left, i - 1);
+        int right_score = dnc(a, n, i + 1, right);
+        
+        // Cập nhật điểm số lớn nhất
+        max_score = max(max_score, score + left_score + right_score);
+    }
+    // Trả về điểm số lớn nhất tìm được từ dãy con
+    return max_score;
+}
+
+int main() {
+    int n;
+    // Nhập số lượng phần tử của dãy số
+    cin >> n;
+    // Khởi tạo vector để lưu trữ dãy số
+    vector<int> a(n);
+    // Nhập các phần tử của dãy số
+    for (int i = 0; i < n; i++) {
+        cin >> a[i];
+    }
+    // Gọi hàm dnc để tính và in ra điểm số lớn nhất
+    cout << dnc(a, n, 0, n - 1);
+    return 0;
+}
+
+\end{lstlisting}
+\subsubsection{Ví dụ}
+\begin{lstlisting}
+Input:                                                Output:
+3
+1 2 3                                                 12
+\end{lstlisting}
+\begin{itemize}
+\item Vào hàm dnc: 
+\item Vòng lặp chính (i = 0 -> 2): 
+\begin{itemize}
+\item Vòng lặp chính thứ 0: 
+\begin{itemize}
+\item 1: Tính score: 
+\item 2: Gọi đệ quy với bên trái của i: 
+\item Vào hàm dnc: 
+\item left > right nên return 0: 
+\end{itemize}
+\item 3: Gọi đệ quy với bên phải của i: 
+\item Vào hàm dnc: 
+\item Vòng lặp chính (i = 1 -> 2): 
+\begin{itemize}
+\item Vòng lặp chính thứ 1: 
+\begin{itemize}
+\item 1: Tính score: 
+\item 2: Gọi đệ quy với bên trái của i: 
+\item Vào hàm dnc: 
+\item left > right nên return 0: 
+\end{itemize}
+\item 3: Gọi đệ quy với bên phải của i: 
+\item Vào hàm dnc: 
+\item Vòng lặp chính (i = 2 -> 2): 
+\begin{itemize}
+\item Vòng lặp chính thứ 2: 
+\begin{itemize}
+\item 1: Tính score: 
+\item 2: Gọi đệ quy với bên trái của i: 
+\item Vào hàm dnc: 
+\item left > right nên return 0: 
+\end{itemize}
+\item 3: Gọi đệ quy với bên phải của i: 
+\item Vào hàm dnc: 
+\item left > right nên return 0: 
+\end{itemize}
+\item 4: Cập nhật max\_score: max\_score = max(max\_score, score + left\_score + right\_score) = 6
+\end{itemize}
+\item 4: Cập nhật max\_score: max\_score = max(max\_score, score + left\_score + right\_score) = 8
+\item Vòng lặp chính thứ 2: 
+\begin{itemize}
+\item 1: Tính score: 
+\item 2: Gọi đệ quy với bên trái của i: 
+\item Vào hàm dnc: 
+\item Vòng lặp chính (i = 1 -> 1): 
+\end{itemize}
+\end{itemize}
+\\.
+\\.
+\\.
+\item Tiếp tục cho tới khi đệ quy kết thúc, xuất kết quả : 12
+\end{itemize}
+\subsection{Độ phức tạp}
+\hspace*{1cm} Độ phức tạp của thuật toán này là khá cao vì mỗi lần gọi đệ quy, nó phải duyệt qua toàn bộ đoạn mảng, và có thể gọi đệ quy nhiều lần cho mỗi phần tử. Do đó, độ phức tạp là $O(2^n)$, vơi n là số lượng phần tử trong mảng.
+
+
+
+
+
+%-----------------------------------------------------------------
+
+
+
+
+
+\section{Bài 15: 	
+    [D&A] Tòa nhà cao tầng (bài này khó)
+ }
+  Not Done Yet
+% \subsection{Phân tích ý tưởng giải quyết}
+% \subsubsection{Mô tả bài toán} 
+% \hspace{1cm} Bài toán yêu cầu tính điểm tối đa của một dãy số nguyên, được tính bằng cách nhân từng phần tử người chơi chọn với số liền trước và liền sau của phẩn tử đó trong dãy, sau khi chọn phần tử đó thì không được chọn lại và coi như phần tử đó không còn tồn tại. 
+
+% \subsubsection{Mô hình hóa bài toán}
+
+% \hspace*{1cm} \textbf{Input:} 
+% \begin{itemize}
+%    \item Dãy số nguyên a có độ dài n
+% \end{itemize}
+
+% \newline
+% \hspace*{1cm} \textbf{Output:}
+% \begin{itemize}
+%     \item Điểm tối đa có thể đạt được từ dãy số.
+% \end{itemize}
+
+% \subsection{Trình bày thuật toán}
+% \subsubsection{Ý tưởng}
+% \hspace*{1cm} Ý tưởng giải quyết bài toán là sử dụng sử dụng phương pháp chia để trị (Divide and Conquer) để giải quyết bài toán.
+% \begin{itemize}
+%    \item Hàm đệ quy dnc nhận vào dãy số a, độ dài n, và giới hạn left và right đại diện cho phạm vi xử lý trong dãy.
+%    \item Dùng vòng lặp để duyệt qua từ left đến right, tính điểm tại mỗi vị trí và chia thành hai phần trái và phải.
+%    \item Gọi đệ quy cho cả hai phần và cập nhật giá trị max\_score khi có điểm mới lớn hơn.
+% \end{itemize}
+% \subsubsection{Mã giả (Code)}
+% \textbf{Mã giả}
+% \begin{lstlisting}[language=C++, fontsize=\small, numbers=left]
+
+% \end{lstlisting}
+% \textbf{Code}
+% \begin{lstlisting}[language=C++, fontsize=\small, numbers=left]
+
+
+% \end{lstlisting}
+% \subsubsection{Ví dụ}
+% \begin{lstlisting}
+% Input:                                                Output:
+% 3
+% 1 2 3                                                 12
+% \end{lstlisting}
+% \begin{itemize}
+
+% \end{itemize}
+% \subsection{Độ phức tạp}
+% \hspace*{1cm} Độ phức tạp của thuật toán này là khá cao vì mỗi lần gọi đệ quy, nó phải duyệt qua toàn bộ đoạn mảng, và có thể gọi đệ quy nhiều lần cho mỗi phần tử. Do đó, độ phức tạp là $O(2^n)$, vơi n là số lượng phần tử trong mảng.
+
+
+
+
+
+%-----------------------------------------------------------------
+
+
+
+
+
+\section{Bài 16: 	
+    [D&A] Kén rể	
+ }
+\subsection{Phân tích ý tưởng giải quyết}
+\subsubsection{Mô tả bài toán} 
+\hspace{1cm} Bài toán đặt ra là tìm đường đi ngắn nhất giữa hai điểm trên một ma trận 2D, trong đó một số ô có thể không thể đi qua (giá trị 1), và các ô còn lại có thể đi qua (giá trị 0). Cách di chuyển là nhu 1 quân vua trong cờ vua (8 hướng liền kề xung quanh)
+
+\subsubsection{Mô hình hóa bài toán}
+
+\hspace*{1cm} \textbf{Input:} 
+\begin{itemize}
+   \item Dòng đầu tiên của input chứa 6 con số cách nhau bởi khoảng trắng, hai con số đầu lần lượt là m, n, hai số tiếp theo là tọa độ xuất phát và còn lại là tọa độ đích.
+   \item m dòng tiếp theo trong input, mỗi dòng chứa n con số cách nhau bởi khoảng trắng. Là ma trận 2D cần duyệt.
+\end{itemize}
+
+\newline
+\hspace*{1cm} \textbf{Output:}
+\begin{itemize}
+    \item Một con số duy nhất cho biết thời gian ít nhất để đi từ điểm xuất phát đến đích, nếu không đến đích được thì con số này là -1.
+\end{itemize}
+
+\subsection{Trình bày thuật toán}
+\subsubsection{Ý tưởng}
+\hspace*{1cm} Ý tưởng giải quyết bài toán là sử dụng sử dụng thuật toán A* để tìm đường đi ngắn nhất.
+\begin{enumerate}
+   \item Khởi tạo một hàng đợi ưu tiên pq để lưu trữ các nút chưa được duyệt.
+   \item Khởi tạo các ma trận close, open, g, f, parent để lưu trữ thông tin về các nút.
+
+    \item Đưa nút bắt đầu vào hàng đợi pq.
+
+   \item Khi hàng đợi pq không rỗng, thực hiện các bước sau:
+    \begin{itemize}
+        \item Lấy nút p có giá trị f(p) nhỏ nhất ra khỏi hàng đợi pq.
+        \item Đánh dấu nút p là đã đóng (closed).
+        \item Nếu nút p là nút đích, trả về giá trị g(p).
+        \item Duyệt qua các nút xung quanh nút p (bao gồm cả các nút chéo).
+        \item Nếu một nút xung quanh nút p (Từ giờ quy ước các nút xung quanh là q) chưa được đóng và không bị chặn, thực hiện các bước sau:
+        \begin{enumerate}
+            \item Nếu $q \notin open$ \&\& $q \notin close$:
+            \begin{itemize}
+                \item $g(q)=g(p)+cost(p,q)$
+                \item $f(q)=g(q)+h(q)$
+                \item $parent(q)=p$
+                \item $open(q)=1$
+            \end{itemize}
+            \item Nếu $q \in open$:
+            \begin{itemize}
+                \item if($g(q)>g(p)+cost(p,q)$
+                \begin{itemize}
+                    \item $g(q)=g(p)+cost(p,q)$
+                \item $f(q)=g(q)+h(q)$
+                \item $parent(q)=p$
+                \end{itemize}
+            \end{itemize}
+            \item Nếu $q \in close$:
+            \begin{itemize}
+                \item if($g(q)>g(p)+cost(p,q)$
+                \begin{itemize}
+                    \item $g(q)=g(p)+cost(p,q)$
+                    \item $f(q)=g(q)+h(q)$
+                    \item $parent(q)=p$
+                    \item $open(q)=1$
+                    \item $close(q)=0$
+                \end{itemize}
+            \end{itemize}
+        \end{enumerate}
+    \end{itemize}
+
+\end{enumerate}
+\subsubsection{Mã giả (Code)}
+\textbf{Mã giả}
+\begin{lstlisting}[language=C++, fontsize=\small, numbers=left]
+// Khởi tạo các cấu trúc cần thiết
+open = {s};
+close = {};
+g(s) = 0;
+f(s) = h(s);
+// pq để lấy điểm có f(x) nhỏ nhất
+priority_queue pq;
+pq.push(s,f(s))
+g(p)=0
+flag = false
+while(open != {})
+    // Lấy p
+    p = pq.top()
+    pq.pop()
+    close(p) = 1
+    if (p = end)
+        flag = true
+        break
+    for q in move_set(p):
+        // nếu q chưa open thì tính g(q), f(q) và open q
+        if !open(q) && !close(q):
+            g(q)=g(p)+cost(p,q)
+            f(q)=g(q)+h(q)
+            parent(q)=p
+            open(q)=1
+        // nếu q đã open và có đường đi ngắn hơn, cập nhật đường đi ngắn hơn
+        if open(q):
+            if g(q)>g(p)+cost(p,q):
+                g(q)=g(p)+cost(p,q)
+                f(q)=g(q)+h(q)
+                parent(q)=p
+        // nếu q đã close và có đường đi ngắn hơn, cập nhật đường đi ngắn hơn và lan truyền
+        if close(q):
+            if g(q)>g(p)+cost(p,q):
+                g(q)=g(p)+cost(p,q)
+                f(q)=g(q)+h(q)
+                parent(q)=p
+                open(q)=1
+                close(q)=0
+
+// tìm thấy đường đi
+if flag:
+    total = 0
+    n = end
+    // trace lại đường đi từ đích tới điểm bắt đầu
+    while(n!=s)
+        total++
+        n = parent(n)
+\end{lstlisting}
+\textbf{Code}
+\begin{lstlisting}[language=C++, fontsize=\small, numbers=left]
+#include <bits/stdc++.h>
+using namespace std;
+
+// So sánh tùy chỉnh cho priority_queue
+struct compare {
+    bool operator()(pair<int, pair<int, int>> a, pair<int, pair<int, int>> b) {
+        return a.first > b.first;
+    }
+};
+
+// Vector để lưu trữ các bước di chuyển (8 hướng)
+vector<int> dx = {0, 0, 1, -1, 1, -1, 1, -1};
+vector<int> dy = {1, -1, 0, 0, 1, -1, -1, 1};
+
+// Hàm thuật toán A*
+int astar(int n, int m, pair<int, int> start, pair<int, int> end, vector<vector<int>> a) {
+    // Priority queue để lưu trữ các nút với giá trị f của chúng
+    priority_queue<pair<int, pair<int, int>>, vector<pair<int, pair<int, int>>>, compare> pq;
+    
+    // Ma trận close để theo dõi các nút đã được thăm
+    vector<vector<int>> close(m, vector<int>(n));
+    
+    // Ma trận open để theo dõi các nút đang trong hàng đợi
+    vector<vector<int>> open(m, vector<int>(n));
+    
+    // Chi phí từ nút bắt đầu đến mỗi nút trên lưới
+    vector<vector<int>> g(m, vector<int>(n, 0));
+    
+    // Tổng chi phí ước lượng từ điểm bắt đầu đến điểm kết thúc thông qua mỗi nút
+    vector<vector<int>> f(m, vector<int>(n, 0));
+    
+    // Thông tin về nút cha để tái tạo đường đi
+    vector<vector<pair<int, int>>> parent(m, vector<pair<int, int>>(n));
+    
+    // Khởi tạo chi phí của nút bắt đầu
+    g[start.first][start.second] = 0;
+    
+    // Đưa nút bắt đầu vào hàng đợi ưu tiên
+    pq.push({0, start});
+    
+    bool flag = false; // Cờ để kiểm tra xem đã đến điểm đích chưa
+    
+    while (!pq.empty()) {
+        pair<int, pair<int, int>> u = pq.top();
+        pq.pop();
+        close[u.second.first][u.second.second] = 1; // Đánh dấu nút hiện tại đã được thăm
+        
+        // Kiểm tra xem đã đến điểm đích chưa
+        if (u.second == end) {
+            flag = true;
+            break;
+        }
+        
+        // Khám phá các nút láng giềng
+        for (int i = 0; i < 8; i++) {
+            int x = u.second.first + dx[i];
+            int y = u.second.second + dy[i];
+            
+            // Kiểm tra xem nút láng giềng có trong lưới không
+            if (x < 0 || x >= m || y < 0 || y >= n) {
+                continue;
+            }
+
+            // nếu vị trí x, y của lưới là 0 thì đi được
+            int w = 0;
+            if (a[x][y] == 0) {
+                w = 1;
+            }
+            
+            if (w == 0) {
+                continue; // Bỏ qua chướng ngại vật
+            }
+            
+            // Nếu nút láng giềng chưa được thăm và không có trong hàng đợi
+            if (!close[x][y] && !open[x][y]) {
+                g[x][y] = g[u.second.first][u.second.second] + w;
+                f[x][y] = g[x][y];
+                parent[x][y] = {u.second.first, u.second.second};
+                pq.push({f[x][y], {x, y}});
+                open[x][y] = 1;
+            }
+            
+            // Nếu nút láng giềng có open cho xét và có đường đi ngắn hơn
+            if (open[x][y] && g[x][y] > g[u.second.first][u.second.second] + w) {
+                g[x][y] = g[u.second.first][u.second.second] + w;
+                f[x][y] = g[x][y];
+                parent[x][y] = {u.second.first, u.second.second};
+                pq.push({f[x][y], {x, y}});
+            }
+            
+            // Nếu nút láng giềng đã close nhưng có đường đi ngắn hơn
+            if (close[x][y] && g[x][y] > g[u.second.first][u.second.second] + w) {
+                g[x][y] = g[u.second.first][u.second.second] + w;
+                f[x][y] = g[x][y];
+                parent[x][y] = {u.second.first, u.second.second};
+                pq.push({f[x][y], {x, y}});
+                close[x][y] = 0;
+                open[x][y] = 1;
+            }
+        }
+    }
+    
+    // Nếu đến được điểm đích, trace lại đường đi và trả về chi phí tổng
+    if (flag) {
+        int total = 0;
+        pair<int, int> temp = {end.first, end.second};
+        while (temp.first != start.first || temp.second != start.second) {
+            total++;
+            temp = parent[temp.first][temp.second];
+        }
+        return total;
+    } else {
+        return -1; // Nếu không tìm thấy đường đi
+    }
+}
+
+int main() {
+    int m, n;
+    pair<int, int> start, end;
+    
+    // Nhập kích thước lưới và điểm bắt đầu/kết thúc
+    cin >> m >> n;
+    cin >> start.first >> start.second;
+    cin >> end.first >> end.second;
+    
+    // Nhập giá trị cho lưới
+    vector<vector<int>> a(m, vector<int>(n, 0));
+    for (int i = m - 1; i >= 0; i--) {
+        for (int j = 0; j < n; j++) {
+            cin >> a[i][j];
+        }
+    }
+    
+    cout << astar(n, m, start, end, a);
+    
+    return 0;
+}
+\end{lstlisting}
+\subsubsection{Ví dụ}
+\begin{lstlisting}
+Input:                                                Output:
+3 3 0 0 2 0
+0 0 0
+1 1 0                                                 4
+0 0 0
+\end{lstlisting}
+\begin{itemize}
+
+    \item Khởi tạo các ma trận: 
+    \item Gán g(start) = 0: 
+    \item Push start vào hàng đợi ưu tiên: 
+    \item Khởi tạo flag = false: 
+    \item Lấy phần tử đầu tiên trong hàng đợi ưu tiên: x = 0 y = 0
+    \item thêm x = 0 y = 0 vào close: 
+    \begin{enumerate}
+        \item Từ x = 0 y = 0 có thể đi đến x = 0 y = 1 với w = 1
+        \item x = 0 y = 1 chưa có trong open và close: 
+        \item Gán g(x,y) = g(x,y) + w = 0 + 1 = 1
+        \item Gán f(x,y) = g(x,y) = 1
+        \item Gán parent(x,y) = { x = 0 y = 0 }
+        \item Push x = 0 y = 1 vào hàng đợi ưu tiên: 
+    \item  Thêm x = 0 y = 1 vào open: 
+    \end{enumerate}
+    \item Lấy phần tử đầu tiên trong hàng đợi ưu tiên: x = 0 y = 1
+\item thêm x = 0 y = 1 vào close: 
+\begin{enumerate}
+
+    \item Từ x = 0 y = 1 có thể đi đến x = 0 y = 2 với w = 1
+    \item x = 0 y = 2 chưa có trong open và close: 
+    \item Gán g(x,y) = g(x,y) + w = 1 + 1 = 2
+\item Gán f(x,y) = g(x,y) = 2
+\item Gán parent(x,y) = { x = 0 y = 1 }
+
+\item Push x = 0 y = 2 vào hàng đợi ưu tiên: 
+\item Thêm x = 0 y = 2 vào open: 
+\end{enumerate}
+\item Từ x = 0 y = 1 có thể đi đến x = 0 y = 0 với w = 1 (pass)
+\item Từ x = 0 y = 1 có thể đi đến x = 1 y = 2 với w = 1
+\begin{enumerate}
+    \item x = 1 y = 2 chưa có trong open và close: 
+\item Gán g(x,y) = g(x,y) + w = 1 + 1 = 2
+\item Gán f(x,y) = g(x,y) = 2
+\item Gán parent(x,y) = { x = 0 y = 1 }
+\item Push x = 1 y = 2 vào hàng đợi ưu tiên: 
+\item Thêm x = 1 y = 2 vào open: 
+\end{enumerate}
+
+\item Lấy phần tử đầu tiên trong hàng đợi ưu tiên: x = 0 y = 2
+\item thêm x = 0 y = 2 vafo close: 
+\\ .
+\\ .
+\\ .
+
+\item Lấy phần tử đầu tiên trong hàng đợi ưu tiên: x = 2 y = 0
+\item thêm x = 2 y = 0 vào close: 
+\item Tìm thấy đích: 
+\item flag = true, tìm đường đi từ end đến start: 
+\begin{enumerate}
+\item Parent của x = 2 y = 0 là x = 2 y = 1
+\item Parent của x = 2 y = 1 là x = 1 y = 2
+\item Parent của x = 1 y = 2 là x = 0 y = 1
+\item Parent của x = 0 y = 1 là x = 0 y = 0
+\end{enumerate}
+\item Xuất kết quả: 4
+\end{itemize}
+\subsection{Độ phức tạp}
+\hspace*{1cm} Độ phức tạp của thuật toán trên là $O(m*n)$ với $m$, $n$ là kích thước của ma trận đầu vào. Vì thuật toán là thuật toán Astar với hàm Heuristic = 0, do đó nó duyệt qua mỗi phần tử trong ma trận 1 lần.
+
+
+
+
+
+
+%-----------------------------------------------------------------
+
+
+
+
+
+\section{Bài 17: 	
+    [D&A] Ngóng trông	
+ }
+\subsection{Phân tích ý tưởng giải quyết}
+\subsubsection{Mô tả bài toán} 
+\hspace{1cm} Bài toán đặt ra là tìm đường đi ngắn nhất giữa hai điểm trên một ma trận 2D, trong đó một số ô có thể không thể đi qua (giá trị 1), và các ô còn lại có thể đi qua (giá trị 0). Cách di chuyển là nhu 1 quân xe trong cờ vua (đi ngang, dọc)
+
+\subsubsection{Mô hình hóa bài toán}
+
+\hspace*{1cm} \textbf{Input:} 
+\begin{itemize}
+   \item Dòng đầu tiên của input chứa 6 con số cách nhau bởi khoảng trắng, hai con số đầu lần lượt là m, n, hai số tiếp theo là tọa độ xuất phát và còn lại là tọa độ đích.
+   \item m dòng tiếp theo trong input, mỗi dòng chứa n con số cách nhau bởi khoảng trắng. Là ma trận 2D cần duyệt.
+\end{itemize}
+
+\newline
+\hspace*{1cm} \textbf{Output:}
+\begin{itemize}
+    \item Một con số duy nhất cho biết số lần chuyển hướng ít nhât đi từ điểm xuất phát đến đích, nếu không đến đích được thì con số này là -1.
+\end{itemize}
+
+\subsection{Trình bày thuật toán}
+\subsubsection{Ý tưởng}
+\hspace*{1cm} Ý tưởng giải quyết bài toán là sử dụng sử dụng thuật toán A* để tìm đường đi ngắn nhất.
+\begin{enumerate}
+   \item Khởi tạo một hàng đợi ưu tiên pq để lưu trữ các nút chưa được duyệt.
+   \item Khởi tạo các ma trận close, open, g, f, parent để lưu trữ thông tin về các nút.
+
+    \item Đưa nút bắt đầu vào hàng đợi pq.
+
+   \item Khi hàng đợi pq không rỗng, thực hiện các bước sau:
+    \begin{itemize}
+        \item Lấy nút p có giá trị f(p) nhỏ nhất ra khỏi hàng đợi pq.
+        \item Đánh dấu nút p là đã đóng (closed).
+        \item Nếu nút p là nút đích, trả về giá trị g(p).
+        \item Duyệt qua các đường đi dọc hoặc ngang xung quanh nút p cho tới khi vượt chỉ số tối đa của ma trận hoặc gặp chướng ngại vật. 
+        \item Nếu một nút xung quanh nút p (Từ giờ quy ước các nút xung quanh là q) chưa được đóng và không bị chặn, thực hiện các bước sau:
+        \begin{enumerate}
+            \item Nếu $q \notin open$ \&\& $q \notin close$:
+            \begin{itemize}
+                \item $g(q)=g(p)+cost(p,q)$
+                \item $f(q)=g(q)+h(q)$
+                \item $parent(q)=p$
+                \item $open(q)=1$
+            \end{itemize}
+            \item Nếu $q \in open$:
+            \begin{itemize}
+                \item if($g(q)>g(p)+cost(p,q)$
+                \begin{itemize}
+                    \item $g(q)=g(p)+cost(p,q)$
+                \item $f(q)=g(q)+h(q)$
+                \item $parent(q)=p$
+                \end{itemize}
+            \end{itemize}
+            \item Nếu $q \in close$:
+            \begin{itemize}
+                \item if($g(q)>g(p)+cost(p,q)$
+                \begin{itemize}
+                    \item $g(q)=g(p)+cost(p,q)$
+                    \item $f(q)=g(q)+h(q)$
+                    \item $parent(q)=p$
+                    \item $open(q)=1$
+                    \item $close(q)=0$
+                \end{itemize}
+            \end{itemize}
+        \end{enumerate}
+    \end{itemize}
+
+\end{enumerate}
+\subsubsection{Mã giả (Code)}
+\textbf{Mã giả}
+\begin{lstlisting}[language=C++, fontsize=\small, numbers=left]
+// Khởi tạo các cấu trúc cần thiết
+open = {s};
+close = {};
+g(s) = 0;
+f(s) = h(s);
+// pq để lấy điểm có f(x) nhỏ nhất
+priority_queue pq;
+pq.push(s,f(s))
+g(p)=0
+flag = false
+while(open != {})
+    // Lấy p
+    p = pq.top()
+    pq.pop()
+    close(p) = 1
+    if (p = end)
+        flag = true
+        break
+    for qs in move_set(p):
+        for q in qs:
+            // nếu q chưa open thì tính g(q), f(q) và open q
+            if !open(q) && !close(q):
+                g(q)=g(p)+cost(p,q)
+                f(q)=g(q)+h(q)
+                parent(q)=p
+                open(q)=1
+            // nếu q đã open và có đường đi ngắn hơn, cập nhật đường đi ngắn hơn
+            if open(q):
+                if g(q)>g(p)+cost(p,q):
+                    g(q)=g(p)+cost(p,q)
+                    f(q)=g(q)+h(q)
+                    parent(q)=p
+            // nếu q đã close và có đường đi ngắn hơn, cập nhật đường đi ngắn hơn và lan truyền
+            if close(q):
+                if g(q)>g(p)+cost(p,q):
+                    g(q)=g(p)+cost(p,q)
+                    f(q)=g(q)+h(q)
+                    parent(q)=p
+                    open(q)=1
+                    close(q)=0
+
+// tìm thấy đường đi
+if flag:
+    total = 0
+    n = end
+    // trace lại đường đi từ đích tới điểm bắt đầu
+    while(n!=s)
+        total++
+        n = parent(n)
+\end{lstlisting}
+\textbf{Code}
+\begin{lstlisting}[language=C++, fontsize=\small, numbers=left]
+#include <bits/stdc++.h>
+using namespace std;
+
+// So sánh tùy chỉnh cho priority_queue
+struct compare {
+    bool operator()(pair<int, pair<int, int>> a, pair<int, pair<int, int>> b) {
+        return a.first > b.first;
+    }
+};
+
+// Vector để lưu trữ các bước di chuyển (8 hướng)
+vector<int> dx = {0, 0, 1, -1, 1, -1, 1, -1};
+vector<int> dy = {1, -1, 0, 0, 1, -1, -1, 1};
+
+// Hàm thuật toán A*
+int astar(int n, int m, pair<int, int> start, pair<int, int> end, vector<vector<int>> a) {
+    // Priority queue để lưu trữ các nút với giá trị f của chúng
+    priority_queue<pair<int, pair<int, int>>, vector<pair<int, pair<int, int>>>, compare> pq;
+    
+    // Ma trận close để theo dõi các nút đã được thăm
+    vector<vector<int>> close(m, vector<int>(n));
+    
+    // Ma trận open để theo dõi các nút đang trong hàng đợi
+    vector<vector<int>> open(m, vector<int>(n));
+    
+    // Chi phí từ nút bắt đầu đến mỗi nút trên lưới
+    vector<vector<int>> g(m, vector<int>(n, 0));
+    
+    // Tổng chi phí ước lượng từ điểm bắt đầu đến điểm kết thúc thông qua mỗi nút
+    vector<vector<int>> f(m, vector<int>(n, 0));
+    
+    // Thông tin về nút cha để tái tạo đường đi
+    vector<vector<pair<int, int>>> parent(m, vector<pair<int, int>>(n));
+    
+    // Khởi tạo chi phí của nút bắt đầu
+    g[start.first][start.second] = 0;
+    
+    // Đưa nút bắt đầu vào hàng đợi ưu tiên
+    pq.push({0, start});
+    
+    bool flag = false; // Cờ để kiểm tra xem đã đến điểm đích chưa
+    
+    while (!pq.empty()) {
+        pair<int, pair<int, int>> u = pq.top();
+        pq.pop();
+        close[u.second.first][u.second.second] = 1; // Đánh dấu nút hiện tại đã được thăm
+        
+        // Kiểm tra xem đã đến điểm đích chưa
+        if (u.second == end) {
+            flag = true;
+            break;
+        }
+
+        // lặp qua các hướng đi 
+        for (int i = 0; i < 4; i++) {
+            int loopCount = 0;
+            // tính số lượng step có thể đi được theo hướng đang xét
+            if (dx[i] == 0){
+                if (dy[i] == 1){
+                    loopCount = n - u.second.second;
+                } else {
+                    loopCount = u.second.second + 1;
+                }
+            } else {
+                if (dx[i] == 1){
+                    loopCount = m - u.second.first;
+                } else {
+                    loopCount = u.second.first + 1;
+                }
+            }
+            // Xét các nút có thể đi tới (nút láng giềng)
+            for (int j = 1;j < loopCount;j++) {
+                int x = u.second.first + j*dx[i];
+                int y = u.second.second + j*dy[i];
+                // Kiểm tra xem nút có thỏa mãn không
+                if (x < 0 || x >= m || y < 0 || y >= n) {
+                    break;
+                }
+
+                // Kiểm tra xem nút có phải vật cản không
+                if (a[x][y] == 1){
+                    break;
+                }
+                // thêm w cho hướng đi 
+                int w=0;
+                if(a[x][y]==0){
+                    w=1;
+                }
+                if (w == 0)
+                    continue;
+                // Nếu nút láng giềng chưa được thăm và không có trong hàng đợi
+                if (!close[x][y] && !open[x][y]) {
+                    g[x][y] = g[u.second.first][u.second.second] + w;
+                    f[x][y] = g[x][y];
+                    parent[x][y] = { u.second.first,u.second.second };
+                    pq.push({ f[x][y], {x,y} });
+                    open[x][y] = 1;
+                }
+                // Nếu nút láng giềng có open cho xét và có đường đi ngắn hơn
+                if (open[x][y] && g[x][y] > g[u.second.first][u.second.second] + w) {
+                    g[x][y] = g[u.second.first][u.second.second] + w;
+                    f[x][y] = g[x][y];
+                    parent[x][y] = { u.second.first,u.second.second };
+                    pq.push({ f[x][y], {x,y} });
+                }
+                // Nếu nút láng giềng đã close nhưng có đường đi ngắn hơn
+                if (close[x][y] && g[x][y] > g[u.second.first][u.second.second] + w) {  
+                    g[x][y] = g[u.second.first][u.second.second] + w;
+                    f[x][y] = g[x][y];
+                    parent[x][y] = { u.second.first,u.second.second };
+                    pq.push({ f[x][y], {x,y} });
+                    close[x][y] = 0;
+                    open[x][y] = 1;
+                }
+            }
+        }
+    }
+    
+    // Nếu đến được điểm đích, trace lại đường đi và trả về chi phí tổng
+    if (flag) {
+        int total = 0;
+        // điểm kết thúc
+        pair<int, int> temp = { end.first,end.second };
+        // Khởi tạo hướng đi 
+        pair<int,int > prev_move = {0,0};
+        while(temp.first!=start.first || temp.second!=start.second){
+            // trace nút cha 
+            pair<int,int> move = {temp.first-parent[temp.first][temp.second].first, temp.second-parent[temp.first][temp.second].second};
+
+            // Check xem hướng đi có khác hướng đi hiện tại không
+            if (move.first != prev_move.first || move.second != prev_move.second){
+                total++;
+            }
+            // Cập nhật hướng đi và nút đang xét
+            prev_move = move;
+            temp = parent[temp.first][temp.second];
+        }
+        return total;
+    } else {
+        return -1; // Nếu không tìm thấy đường đi
+    }
+}
+
+int main() {
+    int m, n;
+    pair<int, int> start, end;
+    
+    // Nhập kích thước lưới và điểm bắt đầu/kết thúc
+    cin >> m >> n;
+    cin >> start.first >> start.second;
+    cin >> end.first >> end.second;
+    
+    // Nhập giá trị cho lưới
+    vector<vector<int>> a(m, vector<int>(n, 0));
+    for (int i = m - 1; i >= 0; i--) {
+        for (int j = 0; j < n; j++) {
+            cin >> a[i][j];
+        }
+    }
+    
+    cout << astar(n, m, start, end, a);
+    
+    return 0;
+}
+\end{lstlisting}
+\subsubsection{Ví dụ}
+\begin{lstlisting}
+Input:                                                Output:
+3 3 0 0 2 0
+0 0 0
+1 1 0                                                 3
+0 0 0
+\end{lstlisting}
+\begin{itemize}
+    \item Khởi tạo các ma trận: 
+    \item Gán g(start) = 0: 
+    \item Push start vào hàng đợi ưu tiên: 
+    \item Khởi tạo flag = false: 
+    \item Lấy phần tử đầu tiên trong hàng đợi ưu tiên: x = 0 y = 0
+    \item thêm x = 0 y = 0 vào close: 
+    \begin{enumerate}
+\item Từ x = 0 y = 0 có thể đi đến x = 0 y = 1 với w = 1
+\item x = 0 y = 1 chưa có trong open và close: 
+\item Gán g(x,y) = g(x,y) + w = 0 + 1 = 1
+\item Gán f(x,y) = g(x,y) = 1
+\item Gán parent(x,y) = { x = 0 y = 0 }
+\item Push x = 0 y = 1 vào hàng đợi ưu tiên: 
+\item Thêm x = 0 y = 1 vào open: 
+    \end{enumerate}
+    \begin{enumerate}
+    ----------------------------------------
+    \end{enumerate}
+    \begin{enumerate}
+\item Từ x = 0 y = 0 có thể đi đến x = 0 y = 2 với w = 1
+\item x = 0 y = 2 chưa có trong open và close: 
+\item Gán g(x,y) = g(x,y) + w = 0 + 1 = 1
+\item Gán f(x,y) = g(x,y) = 1
+\item Gán parent(x,y) = { x = 0 y = 0 }
+\item Push x = 0 y = 2 vào hàng đợi ưu tiên: 
+\item Thêm x = 0 y = 2 vào open: 
+    \end{enumerate}
+    \item Lấy phần tử đầu tiên trong hàng đợi ưu tiên: x = 0 y = 1
+    \item thêm x = 0 y = 1 vào close: 
+    \begin{enumerate}
+\item Từ x = 0 y = 1 có thể đi đến x = 0 y = 2 với w = 1, không rơi vào trường hợp nào
+\item Từ x = 0 y = 1 có thể đi đến x = 0 y = 0 với w = 1, không rơi vào trường hợp nào
+    \end{enumerate}
+    \item Lấy phần tử đầu tiên trong hàng đợi ưu tiên: x = 0 y = 2
+    \item thêm x = 0 y = 2 vào close: 
+    
+    \\.
+    \\.
+    \\.
+
+    \item Lấy phần tử đầu tiên trong hàng đợi ưu tiên: x = 2 y = 1
+    \item thêm x = 2 y = 1 vào close: 
+    \begin{enumerate}
+\item Từ x = 2 y = 1có thể đi ddến x = 2 y = 2 với w = 1, không rơi vào trường hợp nào
+\end{enumerate}
+\begin{enumerate}
+    ----------------------------------------
+\end{enumerate}
+    \begin{enumerate}
+
+\item Từ x = 2 y = 1có thể đi đến x = 2 y = 0 với w = 1, không rơi vào trường hợp nào
+    \end{enumerate}
+    
+    \item Lấy phần tử đầu tiên trong hàng đợi ưu tiên: x = 2 y = 0
+    \item thêm x = 2 y = 0 vào close: 
+    \item Tìm thấy đích: 
+    \item Duyệt ngược từ end đến start: 
+    \item Khởi tạo hướng đi đầu tiên là {0,0}: 
+    \item Khởi tạo total = 0
+    \begin{enumerate}
+        \item Xét nút cha của x = 2 y = 0 là x = 2 y = 2
+\item Có sự thay đổi hướng đi từ x = 2 y = 0 sang x = 2 y = 2
+\item total++
+\item Cập nhật hướng đi mới: { dx = 0 dy = -2 }
+\item Xét nút cha của x = 2 y = 2 là x = 0 y = 2
+\item Có sự thay đổi hướng đi từ x = 2 y = 2 sang x = 0 y = 2
+\item total++
+\item Cập nhật hướng đi mới: { dx = 2 dy = 0 }
+\item Xét nút cha của x = 0 y = 2 là x = 0 y = 0
+\item Có sự thay đổi hướng đi từ x = 0 y = 2 sang x = 0 y = 0
+\item total++
+\item Cập nhật hướng đi mới: { dx = 0 dy = 2 }
+    \end{enumerate}
+    \item Xuất total: 3
+\end{itemize}
+\subsection{Độ phức tạp}
+\hspace*{1cm} Độ phức tạp của thuật toán trên là $O(m*n)$ với $m$, $n$ là kích thước của ma trận đầu vào. Vì thuật toán là thuật toán Astar với hàm Heuristic = 0, do đó nó duyệt qua mỗi phần tử trong ma trận 1 lần.
+\end{document}

@@ -1,0 +1,573 @@
+\documentclass[20pt]{article}
+\usepackage[utf8]{vietnam}
+\setlength{\baselineskip}{50pt}
+\usepackage{tocloft}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{minted}
+\usepackage{tkz-tab}
+\usepackage{listing} 
+\usepackage{subfiles} 
+\usepackage[top=3cm, bottom=3.5cm, left=3.5cm, right=2cm] {geometry} 
+\usepackage{fancybox} 
+\usepackage{latexsym,amsfonts,amssymb,amsthm}
+\usepackage{setspace}
+
+\setlength{\cftbeforesecskip}{3em} 
+\usepackage{hyperref}
+\setlength{\parindent}{0pt}
+
+\usepackage{setspace}
+% {\itshape\large Some text\par}
+\usepackage[a4paper,left=20mm,right=20mm,top=20mm,bottom=20mm]{geometry}
+\vspace{1cm}
+\renewcommand{\thesubsection}{\thesection.\alph{subsection}}
+
+
+\begin{document}
+\newgeometry{top=2cm, bottom=2cm, left=2cm, right=2cm}
+\subfile{cover}
+% \begin{center}
+% \emph{\Large{}CS112 - Phân tích và thiết kế thuật toán }
+% \par\end{center}{\large \par}
+% \vspace{2cm}
+% \linespread{1.3} 
+% \begin{center}
+%     \includegraphics[width = 7cm]{logo-uit.png}
+% \end{center}\\
+% \vspace{1.2cm}
+
+% \begin{center}
+% {\Huge Assignment 1\\[0.5em] Homework 1} \vspace{1in}
+% \end{center}
+
+% \begin{center}
+% {\Large Sinh viên : \textit{Bùi Công Khánh Tường} \\
+% \large MSSV : 22521624}
+% \end{center}
+
+% \begin{center}
+% {\Large Sinh viên : \textit{Trần Gia Bảo}} \\
+% \large MSSV : 22520121}
+% \end{center}
+
+%  \begin{center}
+% \par\end{center}{\large \par}
+
+% \begin{center}
+% {\large{} 10 - 2023}
+% \par\end{center}{\large \par}
+ 
+% \clearpage
+
+\tableofcontents
+\Large
+\section{Tính tổng hữu hạn}
+\subsection{
+    $1+3+5+7+...+999$
+    }
+Ta có: 
+
+    ${ n=\frac{a_n-a_1}{d}+1} = \frac{999-1}{2} +1 = 500$
+    \\
+Ta có:\\
+\rightarrow
+    $ _n = \frac{n[2a_1+(n-1)d]}{2} $\\
+\Rightarrow
+    $1+3+5+7+...+999 = S_{500} = \frac{500[2.1+(500-1)2]}{2} = 250000$
+
+\subsection{$2+4+8+16+...+1024$}
+Ta có: 
+$2+4+8+16+...+1024=\sum_{i=1}^{10}2^i =2^{10+1}-1-1 =2046 $
+\subsection{$\sum_{i=3}^{n+1}i$}
+\Rightarrow 
+$\sum_{i=3}^{n+1}i = (n+1)-3+1=n-1$
+\subsection{$\sum_{i=3}^{n+1}i$}
+\Rightarrow
+$\sum_{i=3}^{n+1}i=\frac{(n+2)(n+1)}{2}-1-2=\frac{n^2+3n-4}{2}$
+\subsection{$\sum_{i=0}^{n-1}i(i+1)$}
+\Rightarrow
+$\sum_{i=0}^{n-1}i(i+1) = \sum_{i=0}^{n-1}i^2 + \sum_{i=0}^{n-1}i = \frac{n(n-1)(2n-1)}{6} + \frac{(n-1)n}{2} = \frac{n^2-n}{3}$
+\subsection{$\sum_{j=1}^{n}3^{j+1}$}
+\Rightarrow
+$\sum_{j=1}^{n}3^{j+1} = 3\sum_{j=1}^{n}3^j=3(\frac{3^{n+1}-1}{3-1}-1)= \frac{3^{n+2}-9}{2}$
+\subsection{$\sum_{i=1}^{n}\sum_{j=1}^{n}ij$}
+\Rightarrow
+$\sum_{i=1}^{n}\sum_{j=1}^{n}ij = \sum_{i=1}^{n}i\sum_{j=1}^{n}j=(\frac{n(n+1)}{2})^2= \frac{n^4+2n^3+n^2}{4}$
+\subsection{$\sum_{i=1}^{n}\frac{1}{i(i+1)}$}
+\Rightarrow
+$\sum_{i=1}^{n}\frac{1}{i(i+1)}=\sum_{i=1}^{n}\frac{1}{i}-\sum_{i=1}^{n}\frac{1}{i+1} = (\ln(n)+\gamma) - (\ln(n)+\gamma-1-\frac{1}{n+1})=\frac{n+2}{n+1}$
+\subsection{$\sum\limits_{j\in \{2,3,5\}}(j^2+j)$}
+\Rightarrow
+$\sum\limits_{j\in\{2,3,5\}}(j^2+j)=2^2+2+3^2+3+5^2+5=48$
+\subsection{$\sum_{i=1}^{m}\sum_{j=0}^{n}\sum_{k=0}^{100}(i+j)$}
+\begin{align*}
+    \Rightarrow \sum_{i=1}^{m}\sum_{j=0}^{n}\sum_{k=0}^{100}(i+j)
+    &= 101\sum_{i=1}^{m}\sum_{j=0}^{n}(i+j)\\
+    &= 101((1+n)\frac{m(m+1)}{2}+m\frac{n(n+1)}{2})\\
+    & =\frac{101m(n+1)}{2}(m+n+1) 
+\end{align*}
+
+\section{Đếm số phép gán, so sánh}
+\renewcommand{\thesubsection}{\thesection.\arabic{subsection}}
+\subsection{Bài 2}
+\begin{center}
+    \includegraphics[width=10cm]{bai1.png} \\
+\end{center}
+
+{
+Ta có:
+\begin{align*}
+    G(n) &= 2 + 2n + 2\sum_{i=1}^{n}\alpha_i\\
+SS(n) &= n+1 + \sum_{i=1}^{n}(\alpha_i+1)
+\end{align*}
+
+Với $\alpha_i$ là số con $j$ chạy từ $1 \Rightarrow x$ với $x=i^2$\\
+Vòng while trong chỉ thực hiện khi $j \le i^2$. Vậy mỗi lần while trong sẽ thực hiện $i^2$ lần lặp  $\Rightarrow \alpha_i = i^2 $\\
+Vậy ta có, biểu thức gán:
+\begin{align*}
+    \Rightarrow G(n) &= 2 + 2n + 2\sum_{i=1}^{n}i^2\\ &= 2 + 2n+2(\frac{n(n+1)(2n+1)}{6})
+\end{align*}
+Vậy ta có, biểu thức so sánh:
+
+\begin{align*}
+    \Rightarrow SS(n) &= n+1 + \sum_{i=1}^{n}(i^2+1)\\&=2n+1+\frac{n(n+1)(2n+1)}{6}  
+\end{align*}
+
+}
+\subsection{Bài 3}
+\begin{center}
+\includegraphics[width=10cm]{bai2.png}\\  
+\end{center}
+
+{
+Ta có:
+\begin{align*}
+    G(n) &= 2 + 2n + 2\sum_{i=1}^{n}\alpha_i\\
+    SS(n) &= n+1 + \sum_{i=1}^{n}(\alpha_i+1)
+\end{align*}
+
+Với $\alpha_i$ là số lần lặp của while trong \Rightarrow $\alpha_i=$ số con j với j chạy từ $n-i^2 \Rightarrow i^2$.\\
+while trong chỉ chạy khi $j \le i^2$
+\begin{align*}
+    \rightarrow n-i^2 \le i^2 \iff \frac{n}{2} \le i^2 \iff i \ge \sqrt{\frac{n}{2}}\\
+    \Rightarrow \alpha_i = \left\{\begin{array}{l} 2i^2 -n+1 , i \ge \sqrt{\frac{n}{2}} \\ 0,i < \sqrt{\frac{n}{2}}\end{array} \right
+\end{align*}
+Vậy, ta có biểu thức gán:\\
+\Rightarrow $G(n) = 2 + 2n + 2\sum_{i=\lceil\sqrt{\frac{n}{2}}\rceil}^{n}(2i^2 -n+1) \\= 2+2n+2(\sum_{i=1}^{n}i^2-\sum_{1}^{\lfloor\sqrt{\frac{n}{2}}\rfloor}i^2-\sum_{\lceil\sqrt{\frac{n}{2}}\rceil}^{n}n+\sum_{\lceil\sqrt{\frac{n}{2}}\rceil}^{n}1)\\ = 2 + 2n+2(\frac{n(n+1)(2n+1)}{6}-\frac{\lfloor\sqrt{\frac{n}{2}}\rfloor(\lfloor\sqrt{\frac{n}{2}}\rfloor+1)(2\lfloor\sqrt{\frac{n}{2}}\rfloor+1)}{6}+(n-\lceil\sqrt{\frac{n}{2}}\rceil+1)(1-n))$\\
+Vậy, ta có biểu thức so sánh:\\
+\Rightarrow $SS(n) = n+1 + \sum_{i=1}^{n}\sum_{i=\lceil\sqrt{\frac{n}{2}}\rceil}^{n}(2i^2 -n+1)+\sum_{i=1}^{n}1\\ = 2n+1+(\frac{n(n+1)(2n+1)}{6}-\frac{\lfloor\sqrt{\frac{n}{2}}\rfloor(\lfloor\sqrt{\frac{n}{2}}\rfloor+1)(2\lfloor\sqrt{\frac{n}{2}}\rfloor+1)}{6}+(n-\lceil\sqrt{\frac{n}{2}}\rceil+1)(1-n))$ \\
+}
+\subsection{Bài 4}
+\begin{center}
+\includegraphics[width=10cm]{bai4.png}
+\end{center}
+Ta có:
+\begin{align*}
+    G(n) &= 5 + 4n + 2\sum_{i=1}^{n}\alpha_i\\
+SS(n) &= n+1 + \sum_{i=1}^{n}(\alpha_i+1)
+\end{align*}
+Với $\alpha_i$ là số lần lặp của while trong\\
+$\Rightarrow \alpha_i$ là số con $j$ với $j$ chạy từ $j\Rightarrow i$ bước tăng là $2j$\\
+$\Rightarrow j:\{1,2,4,...,2^{\lfloor\log_2{i}\rfloor\}}$ \\
+$\Rightarrow \alpha_i=\{k \in N | 2^k \le i\}=\log_2{i}+1$\\
+Vậy, ta có biểu thức gán:
+\begin{align*}
+\Rightarrow G(n) &= 5 + 4n + 2\sum_{i=1}^{n}(\lfloor\log_2{i}\rfloor+1)\\
+&=5+4n+2(\sum_{i=1}^{n}(\lfloor\log_2{i}\rfloor + n) \\
+&=5+4n+2+2((0+1+1+2+2+2+...+\lfloor\log_2{n}\rfloor)+n)\\
+&=5+4n+2+2(\sum_{k=1}^{\lfloor\log_2{n}\rfloor}k2^k +n)\\
+&=5+4n+2+2((\lfloor\log_2{n}\rfloor-1).2^{\lfloor\log_2{n}\rfloor+1}+2+n)
+\end{align*}
+Vậy, ta có biểu thức so sánh:
+\noin
+\begin{align*}
+\Rightarrow SS(n)  &= n+1 + \sum_{i=1}^{n}(\lfloor\log_2{i}\rfloor+2)\\
+&=3n+1+(\lfloor\log_2{n}\rfloor-1).2^{\lfloor\log_2{n}\rfloor+1}+2    
+\end{align*}
+
+\subsection{Bài 5}
+\begin{center}
+\includegraphics[width=10cm]{bai5.png}
+\end{center}
+Ta có:
+\begin{align*}
+    G(n) &= 2 + 3n + 2\sum_{i=1}^{n}\alpha_i +2\sum_{i=1}^{n}\beta_i\\
+SS(n) &= n+1 + \sum_{i=1}^{n}(\alpha_i+1) + \sum_{i=1}^{n}(\beta_i+1)
+\end{align*}
+Với $\alpha_i$ là số lần lặp của while trong thứ nhất $(j \le 2*i)$ \Rightarrow $\alpha_i$ là số con j với j chạy từ $n-i \Rightarrow 2*i$, bước tăng là 2\\
+Với $\beta_i$ là số lần lặp của while trong thứ hai$(k>0)$ \Rightarrow $\beta_i$ là số con k với k chạy từ $i \Rightarrow 0$, bước giảm là $k/2$ \\
+while trong thứ nhất chỉ chạy khi
+$j \le 2*i \iff n-i \le 2*i \iff i \ge \frac{n}{3}$
+\begin{align*}
+\Rightarrow \alpha_i = \left\{\begin{array}{l} 3i-n+1 , i \ge \frac{n}{3} \\ 0,i < \frac{n}{3}\end{array} \right    
+\end{align*}
+
+\\
+{while trong thứ hai chỉ chạy khi 
+$k>0 \Rightarrow \beta_i =$ số con p thuộc $\{p \in N | \frac{i}{2^p} \ge 1\}$}
+\begin{align*}
+    \Rightarrow \beta_i=\lfloor\log_2{i}\rfloor+1
+\end{align*}
+Vậy, ta có biểu thức gán:
+\begin{align*}
+    \Rightarrow G(n) &= 2 + 3n + 2\sum_{i=\lceil\frac{n}{3}\rceil}^{n}(3i-n+1) +2\sum_{i=1}^{n}(\lfloor\log_2{i}\rfloor+1)\\
+    &= 2 +5n +2(\frac{3(n+\lceil\frac{n}{3}\rceil)(n-\lceil\frac{n}{3}\rceil+1)}{2})+2((\lfloor\log_2{n}\rfloor-1).2^{\lfloor\log_2{n}\rfloor+1}+2)
+\end{align*}
+% \Rightarrow $G(n) = 2 + 3n + 2\sum_{i=\lceil\frac{n}{3}\rceil}^{n}(3i-n+1) +2\sum_{i=1}^{n}(\lfloor\log_2{i}\rfloor+1)\\
+% = 2 +5n +2(\frac{3(n+\lceil\frac{n}{3}\rceil)(n-\lceil\frac{n}{3}\rceil+1)}{2})+2((\lfloor\log_2{n}\rfloor-1).2^{\lfloor\log_2{n}\rfloor+1}+2)$\\
+Vậy, ta có biểu so sánh:
+\begin{align*}
+    \Rightarrow SS(n) &= 3n+1 + \sum_{i=\lceil\frac{n}{3}\rceil}^{n}(3i-n+1) + \sum_{i=1}^{n}(\lfloor\log_2{i}\rfloor+1)\\
+&= 5n+1+
+\frac{3(n+\lceil\frac{n}{3}\rceil)(n-\lceil\frac{n}{3}\rceil+1)}{2}
++(\lfloor\log_2{n}\rfloor-1).2^{\lfloor\log_2{n}\rfloor+1}+2
+\end{align*}
+% $\Rightarrow SS(n) = 3n+1 + \sum_{i=\lceil\frac{n}{3}\rceil}^{n}(3i-n+1) + \sum_{i=1}^{n}(\lfloor\log_2{i}\rfloor+1)\\
+% = 5n+1+
+% \frac{3(n+\lceil\frac{n}{3}\rceil)(n-\lceil\frac{n}{3}\rceil+1)}{2}
+% +(\lfloor\log_2{n}\rfloor-1).2^{\lfloor\log_2{n}\rfloor+1}+2
+% $\\
+
+\subsection{Bài 6}
+\begin{center}
+\includegraphics[width=10cm]{bai6.png}
+\end{center}
+Ta có:
+\begin{align*}
+  G(n) &= 2 + 4.4n + 2\sum_{i=1}^{4n}\alpha_i +\beta\\
+SS(n) &= 4n+1 + \sum_{i=1}^{4n}(\alpha_i+1) + 4n + \theta  
+\end{align*}
+% $G(n) = 2 + 4.4n + 2\sum_{i=1}^{4n}\alpha_i +\beta$\\
+% $SS(n) = 4n+1 + \sum_{i=1}^{4n}(\alpha_i+1) + 4n + \theta$\\
+Với $\alpha_i$ là số con $j$ chạy từ $1\Rightarrow x$, với $x=(n-i)(i-3n)$ và bước tăng là 2. \\
+Với $\beta$ là số lần lệnh count = count + 1 chạy.\\
+Với $\theta$ là số lần lệnh if $(y>0)$ chạy.
+\begin{align*}
+  \Rightarrow \alpha_i = 
+\left\{\begin{array}{l} \frac{(n-i)(i-3n)}{2} , (n-i)(i-3n) > 0 \\ 
+0,(n-i)(i-3n) \le 0\end{array} \right
+\end{align*}
+% \Rightarrow $\alpha_i = 
+% \left\{\begin{array}{l} \frac{(n-i)(i-3n)}{2} , (n-i)(i-3n) > 0 \\ 
+% 0,(n-i)(i-3n) \le 0\end{array} \right$\\
+Ta có bảng xét dấu:\\
+
+\begin{center}
+\begin{tikzpicture}
+\tkzTabInit[nocadre=false,lgt=6,espcl=2]
+{$i$ /1,$n-i$ /1,$i-3n$ /1,$y=i-2n$ /1,$x=(n-i)(i-3n)$ /1}
+{$1$,$n$,$2n$,$3n$,$4n$}
+\tkzTabLine{,+,$0$,-,$|$,-,$|$,-,}
+\tkzTabLine{,-,$|$,-,$|$,-,$0$,+,}
+\tkzTabLine{,-,$|$,-,$0$,+,$|$,+,}
+\tkzTabLine{,-,$0$,+,$|$,+,$0$,-,}
+\end{tikzpicture}
+\end{center}
+Ta có, count = count + 1 chạy khi $x>0$ và $y>0$
+\begin{align*}
+  &\Rightarrow 2n+1 \le i \le 3n-1\\
+&\Rightarrow \beta = n-1
+\end{align*}
+% \Rightarrow $2n+1 \le i \le 3n-1$\\
+% \Rightarrow $\beta = n-1$\\
+Ta có, if $(y>0)$ chạy khi $x>0$ 
+\begin{align*}
+    &\Rightarrow n+1 \le i \le 3n-1\\
+&\Rightarrow \theta = 2n-1
+\end{align*}
+Vậy, ta có biểu thức gán:
+\begin{align*}
+\Rightarrow G(n) = 2 + 4.4n + \sum_{i=n}^{3n}((n-i)(i-3n)) +n-1
+\end{align*}
+Vậy, ta có biểu thức so sánh:
+\begin{align*}
+SS(n)  &= 8n+1 + \sum_{i=n}^{3n}(\frac{(n-i)(i-3n)}{2}) + 4n + 2n-1\\&= 14n+ \sum_{i=n}^{3n}(\frac{(n-i)(i-3n)}{2})
+\end{align*}
+
+% BAI 7
+\subsection{Bài 7}
+\begin{center}
+    \includegraphics[width=10cm]{bai7.png}
+\end{center}
+Ta có:
+\begin{align*}
+G(n) &= 2 + 4.4n + \sum_{i=1}^{4n}(\alpha_i + \beta_i)\\
+SS(n) &= 4n + 1 + \sum_{i=1}^{4n} (2\alpha_i + 1)
+\end{align*}
+Với $\alpha_i$ là số con $j$ chạy từ $1\Rightarrow x$, với $x=(n-i)(i-3n)$ và bước tăng là 1. \\
+Với $\beta_i$ là số lần lệnh count = count - 2 chạy.
+\begin{align*}
+\Rightarrow \alpha_i = 
+\left\{\begin{array}{l} (n-i)(i-3n) , (n-i)(i-3n) > 0 \\ 
+0,(n-i)(i-3n) \le 0\end{array} \right
+\end{align*}
+Ta có bảng xét dấu:\\
+
+\begin{tikzpicture}
+\tkzTabInit[nocadre=false,lgt=8,espcl=2]
+{$i$ /1,$n-i$ /1,$i-3n$ /1,$y=i-2n$ /1,$x=(n-i)(i-3n)$ /1}
+{$1$,$n$,$2n$,$3n$,$4n$}
+\tkzTabLine{,+,$0$,-,$|$,-,$|$,-,}
+\tkzTabLine{,-,$|$,-,$|$,-,$0$,+,}
+\tkzTabLine{,-,$|$,-,$0$,+,$|$,+,}
+\tkzTabLine{,-,$0$,+,$|$,+,$0$,-,}
+\end{tikzpicture}\\
+
+Ta có, $count = count - 2$ chạy khi $i \geq 2y$ 
+\iff $i \geq 2(i - 2n)$ 
+\iff $i \leq 4n$ 
+
+Luôn thực hiện khi vòng while trong chạy
+\Rightarrow $\beta_{i} = \alpha_{i}$\\
+Vậy, ta có biểu thức gán:
+\begin{align*}
+\Rightarrow G(n) = 2 + 16n + 2\sum_{i=n}^{3n} (n - i)(i - 3n)
+\end{align*}
+Vậy, ta có biểu thức so sánh:
+\begin{align*}
+\Rightarrow SS(n) = 8n + 1 + 2\sum_{i=n}^{3n} (n - i)(i - 3n)
+\end{align*}
+
+% Testcase:
+% n = 10 => G = 2822 (đúng)
+% n = 5 => G = 412 (đúng)
+
+\subsection{Bài 8}
+\begin{center}
+    \includegraphics[width=10cm]{bai8.png}
+\end{center}
+Ta có:
+\begin{align*}
+G(n) &= 2 + 3.4n + \sum_{i=1}^{3n}(\alpha_i + \beta_i)+\theta\\
+SS(n) &= 3n + 1 +  \sum_{i=1}^{3n} (2\alpha_i + 1) + 3n + \gamma
+\end{align*}
+Với $\alpha_i$ là số con $j$ chạy từ $1\Rightarrow x$, với $x=2n-i$ và bước tăng là 1. \\
+Với $\beta_i$ là số lần lệnh count = count - 1 chạy.\\
+Với $\theta$ là số lần lệnh count = count + 1 chạy \\
+với $\gamma$ là số lần lệnh if (x>0) chạy.
+\begin{align*}
+\Rightarrow \alpha_i = \left\{\begin{array}{l} 2n-i, i \le 2n-1 \\ 
+0,i > 2n-i\end{array} \right
+\end{align*}
+Lệnh count = count - 1 chạy khi $j \ge n$ 
+\begin{align*}
+\Rightarrow \beta_i = \left\{\begin{array}{l} 2n-i-n+1, i \le n \\
+0,i > n\end{array} \right \Rightarrow \left\{\begin{array}{l} n-i+1, i \le n \\ 
+0,i > n\end{array} \right
+\end{align*}
+Ta có bảng xét dấu:\\
+\begin{center}
+\begin{tikzpicture}
+\tkzTabInit[nocadre=false,lgt=8,espcl=2]
+{$i$ /1,$x=2n-i$ /1,$y=i-n$ /1}
+{$1$,$n$,$2n$,$3n$}
+\tkzTabLine{,+,$|$,+,$0$,-,}
+\tkzTabLine{,-,$0$,+,$|$,+,}
+\end{tikzpicture}\\
+\end{center}
+Từ bảng xét dấu, ta có: \\
+Khi $y>0 \Rightarrow i-n \ge n+1 \Rightarrow i \ge 2n+1$
+\begin{align*}
+\Rightarrow \gamma = n
+\end{align*}
+Lệnh count = count + 1 chạy khi $y>0$ và $x>0$\\
+\begin{align*}
+\Rightarrow \theta = n-1 
+\end{align*}
+Vậy, ta có biểu thức gán:
+\begin{align*}
+\Rightarrow G(n) = 2 + 12n + \sum_{i=1}^{2n-1}(2n-i) + \sum_{i=1}^{n}(n-i+1)+n-1
+\end{align*}
+Vậy, ta có biểu thức so sánh:
+\begin{align*}
+\Rightarrow SS(n) = 6n + 1 +  \sum_{i=1}^{2n-1} (2(2n-i) + 1) + n
+\end{align*}
+
+% Testcase:
+% n = 10 => G = 376 (đúng)
+% n = 5 => G = 126 (đúng)
+
+\subsection{Bài 9}
+\begin{center}
+    \includegraphics[width=10cm]{bai9.png}
+\end{center}
+Ta có: 
+\begin{align*}
+    G(n) &= 2 + 3n + \sum_{i=1}^{n}(3\alpha_i)\\
+    SS(n) &= n + 1 +  \sum_{i=1}^{n} (\alpha_i + 1)
+\end{align*}
+
+Với $\alpha_i$ là số con j chạy từ $1 \Rightarrow i$\\
+Ta có: $k:\{1,3,5,7,...,2\lfloor{\sqrt{i}}\rfloor+1\}$\\
+Ta có: $j:\{1,4,9,16,...,(\lfloor{\sqrt{i}}\rfloor+1)^2\} \\ \Rightarrow j:\{1^2,2^2,3^2,...,(\lfloor{\sqrt{i}}\rfloor+1)^2\}$
+\Rightarrow $\alpha_i = $ số con j thuộc $\{j\in N | 
+1\le j^2 \le i\}$
+Xét:
+\begin{align*}
+     \left\{
+    \begin{array}{l} 
+      j^2 \le i \\
+      j \ge 1
+    \end{array}
+    \right
+    \Rightarrow
+    \left\{
+    \begin{array}{l} 
+      j \le \lfloor{\sqrt{i}}\rfloor \\
+      j \ge 1
+    \end{array} 
+    \Rightarrow
+    $1 \le j \le \lfloor{\sqrt{i}}\rfloor $ 
+    \right.
+\end{align*}
+
+\Rightarrow $\alpha_i=\lfloor{\sqrt{i}}\rfloor$
+\\
+Ta đặt $m=\lfloor{\sqrt{n}}\rfloor$
+, xét: 
+\begin{align*}
+\sum_{i=1}^{n}( \lfloor{\sqrt{i}}\rfloor) &= 1+1+1+2+2+2+2+2+3+...+m\\
+&=1(2^2-1^2) + 2(3^2-2^2) +...+(m-1)((m-1)^2-(m-2)^2) \\
+& + m(n-m^2+1)\\
+&=\sum_{x=1}^{m-1}(x((x+1)^2-x^2)) + (n-m^2+1)m\\
+&=\sum_{x=1}^{m-1}(2x^2+x) + (n-m^2+1)m\\
+&=2.\frac{m(m-1)(2m-1)}{6}+\frac{m(m-1)}{2}+(n-m^2+1)m\\
+&=\frac{m(m-1)(4m+1)}{6}+(n-m^2+1)m\\
+&=\frac{-2m^{3}-3m^{2}+6mn+5m}{6}
+\end{align*}
+
+% \sum_{i=1}^{n}( \lfloor{\sqrt{i}}\rfloor) = 1+1+1+2+2+2+2+2+3+...+m\\
+% =1(2^2-1^2) + 2(3^2-2^2) +...+(m-1)((m-1)^2-(m-2)^2) + m(n-m^2+1)\\
+% =\sum_{x=1}^{m-1}(x((x+1)^2-x^2)) + (n-m^2+1)m\\
+% =\sum_{x=1}^{m-1}(2x^2+x) + (n-m^2+1)m\\
+% =2.\frac{m(m-1)(2m-1)}{6}+\frac{m(m-1)}{2}+(n-m^2+1)m\\
+% =\frac{m(m-1)(4m+1)}{6}+(n-m^2+1)m\\
+% =\frac{-2m^{3}-3m^{2}+6mn+5m}{6}
+% $\\
+% Vậy ta có, biểu thức gán:
+% $G(n) = 2 + 3n + \sum_{i=1}^{n}(3\alpha_i)\\
+% = 2 + 3n + 3\sum_{i=1}^{n}(\lfloor{\sqrt{i}}\rfloor)
+% $\\
+
+
+Vậy ta có, biểu thức gán:
+\begin{align*}
+    G(n) &= 2+3n+ 3(\frac{-2m^{3}-3m^{2}+6mn+5m}{6}) \\
+     &= 2+3n-m^3-\frac{3}{2}m^2+3mn+\frac{15}{6}m
+\end{align*}
+Và biểu thức so sánh:
+\begin{align*}
+    SS(n) &= n + 1 + \frac{-2m^{3}-3m^{2}+6mn+5m}{6} +n\\
+    &=2n+1 + \frac{-2m^{3}-3m^{2}+6mn+5m}{6}
+\end{align*}
+
+
+
+% SAU NÀY THỬ DÙNG MATHCHA đi, viết toán cho dễ, export ra latex được  
+% MẤT CH?
+% https://www.mathcha.io/
+  
+%  j = 1 + k + 2 + k + 4 + k + 6 + ... + xx <= i
+%  j = 1 + a + a(a + 1) <= i
+%  j = (a + 1) ^ 2 > i
+%  j = a <= sqrt(i)
+%  => a = a max = floor(sqrt(i)) 
+% OKE ĐÚNG GÒI :v 
+% :v
+% ngồi khử sigma mệt nghỉ
+
+
+% Test case: 
+% G(20) = 224
+% G(30) = 392
+
+
+\subsection{Bài 10}
+\begin{center}
+    \includegraphics[width=10cm]{bai10.png}
+\end{center}
+Với $\alpha_{i}$ là số phép gán $idx = i$  \\
+Với $\beta_{i}$ số phép so sánh $if\;((i == j)\;\&\&\;(i + j == n + 1))$ \\
+Với $\gamma$ là số phép gán $sum = sum - a[idx][idx]$  \\
+
+Ta có: \\
+\begin{align*}
+G(n) &= 3 + 2n + \sum_{i=1}^{n} (2n + \alpha_{i}) + \gamma\\
+SS(n) &= n + 1 +  \sum_{i=1}^{n} (n + 1 + \beta_{i}) + 1  
+\end{align*}
+
+
+Quy ước có thể bỏ qua các phép so sánh tiềm ẩn của 2 phép so sánh, do đó phép so sánh $(i == j)\;\&\&\;(i + j == n + 1)$ có tối đa 2 phép só sánh:
+
+\begin{eqnarray*}
+  \left\{
+  \begin{aligned}
+      i &= j \\      
+  i + j &= n + 1
+  \end{aligned}
+  \right.
+  \Rightarrow
+  \left\{
+  \begin{aligned}
+      i &= j \\      
+  i &= \frac{n + 1}{2}
+  \end{aligned}
+  \right.
+\end{eqnarray*}
+
+Chỉ có thể xảy ra khi $n$ là một số lẻ, vì $i$ không thể nhận giá trị thực. Khi $i$ chạy từ $1 \Rightarrow n$, chỉ có một giá trị $i$ thỏa $i = \frac{n + 1}{2}$, và khi đó, câu lệnh sẽ được thực thi khi $j$ ở vòng while trong thỏa $j = i$, do đó
+
+\begin{eqnarray*}
+    \sum_{i=1}^{n} \alpha_{i}
+  &=
+  \left\{
+  \begin{aligned}
+      1 &\; \text{khi n lẻ} \\
+      0 &\; \text{khi n chẵn}
+  \end{aligned}
+  \right.
+\end{eqnarray*}
+
+Câu lệnh $sum = sum - a[idx][idx]$ chỉ thực hiện khi thỏa điều kiện $idx \neq -1$. Và điều đó chỉ xảy ra khi và chỉ khi câu lệnh $idx = i$ được thực hiện (ta luôn có $i >= 1$). Ta có:
+
+\begin{align*}
+    \gamma = \sum_{i=1}^{n} \alpha_{i}
+\end{align*}
+
+Với mỗi vòng while trong, chỉ tồn tại một giá trị $j = i$ khi đó $\beta_{i} = 2$ và trong $n - 1$ trường hợp còn lại $\beta_{i} = 1$, hay $\beta_{i} = n + 1$ 
+
+Vậy ta có, biểu thức gán:
+
+\begin{align*}
+G(n) &= 3 + 2n + \sum_{i=1}^{n} (2n + \alpha_{i}) + \gamma \\
+     &= 2n^{2} + 2n + 3 + 2\sum_{i=1}^n \alpha_{i}
+\end{align*}
+
+\begin{eqnarray*}
+  G(n) &=
+  \left\{
+  \begin{aligned}
+      2n^{2} + 2n + 5 &\; \text{khi n lẻ} \\
+      2n^{2} + 2n + 3 &\; \text{khi n chẵn}
+  \end{aligned}
+  \right.
+\end{eqnarray*}
+
+% Testcase:
+% n = 5 => 65
+% n = 10 => 233
+
+Và biểu thức so sánh:
+
+\begin{align*}
+    SS(n) &= n + 1 +  \sum_{i=1}^{n} (n + 1 + \beta_{i}) + 1\\
+          &= n + 1 +  2\sum_{i=1}^{n} (n + 1) + 1\\
+          &= 2n^{2} + 3n + 2
+\end{align*}
+
+% Testcase
+% N = 5 => 67
+% N = 10 => 232
+    
+\end{document}

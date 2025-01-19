@@ -1,0 +1,40 @@
+gọi omega là không gian mẫu của 1 phép thử.
+Biến ngẫu nhiên là phép gán kết quả của 1 không gian mẫu với 1 số
+ví dụ như khi tung 3 đồng xu lên và tính số mặt sấp xuất hiện thì ta có thể gán cho X các giá trị 0, 1, 2, 3
+
+Biến ngẫu nhiên thì có 2 loại là rời rạc và liên tục
+
+Biến ngẫu nhiên rời rạc có tập giá trị là hữu hạn hoặc vô hạn đếm dc các phần tử
+VD: gieo xúc xắc thì có thể có tập giá trị của X là {1,2,3,4,5,6}
+
+Biến ngẫu nhiên liên tục có tập giá trị liên tục trong 1 khoảng ( giá trị của nó lấp kín 1 khoảng trên trục số )
+VD: nhiệt độ phòng dao động từ 24-30 độ C thì tập giá trị X từ 24 dến 30;
+
+Phân phối xác suất là bảng liệt kê xác suất xảy ra của từng trường hợp trong tập giá trị của X
+VD: gieo xúc xắc, gọi X là số lần gieo để gặp dc mặt 6 chấm, thì có tập giá trị X là {1,2,3,....} (tiến đến vô hạn)
+-> Ta sẽ có bảng phân phối xác suất như sau: ( với pi là xác suất xảy ra của xi )
+	khi X = x1 = 1 -> p1 = 1/6
+	khi X = x2 = 2 -> p2 = 5/6 * 1/6
+	khi X = x3 = 3 -> p3 = 5/6 * 5/6 * 1/6
+	khi X = xn = n -> pn = (5/6)^(n-1) * 1/6
+Vậy từ định nghĩa trên ta rút ra dc HÀM PHÂN PHỐI của biến ngẫu nhiên X, kí hiệu là F(X) được xác định như sau:
+	F(X) = P(X<=x) 
+ nếu X là 1 biến ngẫu nhiên rời rạc thì F(Xn) = <for int i = 1; i < n; i++> P += P(X = xi)
+ (đơn giản là nó bằng tổng các biến cố trước đó )
+==> nếu tập gtri có n giá trị thì F(xn) = P(X <= xn) = 1 (tổng xác suất của all biến cố = 1)
+
+HÀM PHẦN PHỐI của biến ngẫu nhiên liên tục cũng có dạng tương tự, nhưng ta quan tâm nhiều đến HÀM MẬT ĐỘ hơn 
+HÀM MẬT ĐỘ XÁC SUẤT biểu diễn khả năng xảy ra của 1 khoảng biến cố nhiều hay ít, từ đó nhận định được khả năng xuất hiện của chúng
+(hàm mật độ là dạng tích phân của đạo hàm của hàm phân phối trên khoảng (a,b) bất kì thuộc X, nên nó dc kí hiệu là f(x))
+
+Nghĩa là từ hàm mđxs f(x), ta tìm được hàm ppxs
+ F(x) = P(X<=x)
+ = <tp -vc  đến x>f(x)dx
+Từ hàm ppxs F(x), ta dc hàm mđxs f(x) = F(x)'
+
+
+Hàm mật độ phải thỏa mãn 3 điều kiện:
+- f(x) >= 0 (vì xác suất xảy ra ko bao giờ âm)
+- <tp từ -vc -> +vc> f(x)dx = 1 (vì tổng tất cả các xác suất của các biến cố là bằng 1)
+- P(a<= x <= b) = <tp a->b> f(x)dx (đây là dạng thường thấy của 1 hàm mật độ)
+

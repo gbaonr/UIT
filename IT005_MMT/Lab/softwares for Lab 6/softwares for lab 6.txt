@@ -1,0 +1,3 @@
+Balena Etcher
+Rufus
+Kali rom

@@ -1,0 +1,47 @@
+v, n = map(int, input().split())
+c2i = {}
+i2c = {}
+G = {}
+
+for i, t in enumerate(input().split()):
+    c2i[t] = i
+    i2c[i] = t
+
+print(c2i)
+
+for i in range(v):
+    G[i2c[i]] = []
+    w = map(int, input().split())
+
+    for j, t in enumerate(w):
+        if t != 0:
+            G[i2c[i]].append((i2c[j], t))
+
+for i in range(n):
+    a, b = input().split()
+
+    # bfs with save path and total weight
+    vis = {}
+    path = {}
+    weight = {}
+
+    for i in range(v):
+        vis[i2c[i]] = False
+        path[i2c[i]] = []
+        weight[i2c[i]] = 0
+        
+    q = []
+    q.append(a)
+    vis[a] = True
+
+    while len(q) > 0:
+        t = q.pop(0)
+
+        for c, w in G[t]:
+            if not vis[c]:
+                vis[c] = True
+                path[c] = path[t] + [t]
+                weight[c] = weight[t] + w
+                q.append(c)
+
+    print(path[b])
