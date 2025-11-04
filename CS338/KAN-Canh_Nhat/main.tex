@@ -1,0 +1,1043 @@
+\documentclass{beamer}
+\usepackage[T1]{fontenc}
+\usetheme{Madrid}
+\usecolortheme{default} % dolphin
+\usepackage{unicode-math}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{animate}
+\usepackage[backend=biber, style=ieee]{biblatex}
+\addbibresource{references.bib}
+\setbeamertemplate{bibliography item}[text]
+\setbeamertemplate{caption}[numbered]
+%------------------------------------------------------------
+%This block of code defines the information to appear in the
+%Title page
+\title[KANs for Image Classification] %optional
+{Kolmogorov-Arnold Network \\ for Image Classification}
+
+\subtitle{CS338.P22}
+
+\author[T. Nhat, L.C.Nhat] % (optional)
+{\textbf{Presented by:} \break T.~Nhat\inst{1} \and L.~C.~Nhat\inst{1} \break \textbf{Instructor}: PhD. Duong~Viet~Hang\inst{1}}
+\institute[VNU-UIT] % (optional)
+{
+  \inst{1}%
+  Department of Computer Science\\
+  University of Information Technology
+}
+
+\date[March 26th 2025] % (optional)
+{CS338 Seminar Presentation, March 26th 2025}
+
+\logo{\includegraphics[height=1cm]{assets/images/uit-logo.png}}
+
+%End of title page configuration block
+%------------------------------------------------------------
+
+
+
+%------------------------------------------------------------
+%The next block of commands puts the table of contents at the 
+%beginning of each section and highlights the current section:
+
+\AtBeginSection[]
+{
+  \begin{frame}
+    \frametitle{Table of Contents}
+    \tableofcontents[currentsection]
+  \end{frame}
+}
+%------------------------------------------------------------
+
+
+\begin{document}
+
+%The next statement creates the title page.
+\frame{\titlepage}
+
+
+%---------------------------------------------------------
+%This block of code is for the table of contents after
+%the title page
+\begin{frame}
+\frametitle{Table of Contents}
+\tableofcontents
+\end{frame}
+%---------------------------------------------------------
+
+
+\section{Overview of MLPs}
+
+%---------------------------------------------------------
+%Changing visivility of the text
+\begin{frame}
+\frametitle{Overview of MLPs}
+
+\begin{itemize}
+    \item<1->Multi-layer Perceptrons (MLPs)~\cite{hornik1989multilayer} are foundational building blocks of today’s deep learning models.
+    \item<2->MLPs are crucial in machine learning as the standard model for approximating non-linear functions, proven by the \textbf{universal approximation theorem}.
+\end{itemize}
+\end{frame}
+
+%---------------------------------------------------------
+%---------------------------------------------------------
+\begin{frame}
+\frametitle{Overview of MLPs - Universal Approximation Theorem}
+\begin{itemize}
+    \item<1->Think of neural networks as functions approximators. The goal of training a neural network is to approximate a previous unknown function. \\
+    \item[]<2->\begin{block}{Universal Approximation Theorem}
+    Given a function $f$ and error tolerance $\epsilon>0$, a two-layer network with $k>N(\epsilon)$ neurons can approximate the function within error $\epsilon$. \\ However, the UAT guarantees no bound for how $N(\epsilon)$ scales with $\epsilon$.
+\end{block}
+    \item<3->\alert{UAT suffers from the curse of dimensionality (COD)}, and $N$ has been shown to grow exponentially with $d$ in some cases~\cite{Lin_2017}.
+\end{itemize}
+
+\end{frame}
+%---------------------------------------------------------
+%---------------------------------------------------------
+
+\section{Kolmogorov-Arnold Networks}
+
+%---------------------------------------------------------
+
+%---------------------------------------------------------
+
+\subsection{Bézier Curves - B-Splines}
+
+%---------------------------------------------------------
+%---------------------------------------------------------
+\begin{frame}
+\frametitle{Bézier Curves}
+\begin{itemize}
+    \item<1-> A Bézier curves is a parametric curve (which means that all the coordinates of the curve depend on an independent variable $t$, between $0$ and $1$).
+\end{itemize}
+\begin{examples}
+    Given two points, we can calculate the linear Bézier curve as the following interpolation:
+    $$
+        B(t) = P_0 + t (P_1 - P_0) = (1 - t) P_0 + t P_1
+    $$
+\end{examples}
+\centering{\animategraphics[loop, autoplay, width=7cm]{10}{assets/gifs/bezier1/Bezier_1-}{0}{50}}
+\end{frame}
+%---------------------------------------------------------
+
+%---------------------------------------------------------
+\begin{frame}
+\frametitle{Bézier Curves}
+\begin{itemize}
+    \item For quadratic Bézier curves one can construct intermediate points $Q_0$ and $Q_1$ such that as $t$ varies from $0$ to $1$:
+    \begin{itemize}
+        \item<1->Point $Q_0(t)$ varies from $P_0$ to $P_1$ and describes a linear Bézier curve.
+        $$
+            Q_0(t) = (1-t)P_0 + tP_1
+        $$
+        \item<2->Point $Q_1(t)$ varies from $P_1$ to $P_2$ and describes a linear Bézier curve.
+        $$
+            Q_1(t) = (1-t)P_1 + tP_2
+        $$
+        \item<3->Point $B(t)$ is interpolated linearly between $Q_0(t)$ to $Q_1(t)$ and describes a quadratic Bézier curve.
+        $$\begin{aligned}
+            B(t)&=(1-t)Q_0+tQ_1 \\ &=(1-t)[(1-t)P_0+tP_1]+t[(1-t)P_1+tP_2] \\ &=(1-t)^2P_0+2(1-t)tP_1+t^2P_2
+        \end{aligned}$$
+    \end{itemize}
+\end{itemize}
+
+\end{frame}
+%---------------------------------------------------------
+%---------------------------------------------------------
+\begin{frame}
+\frametitle{Degree $n$ Bézier curves}
+\begin{itemize}
+    \item<1-> The general form of a degree $n$ Bézier curves defined by $n + 1$ control points $P_i$
+    $$
+        B(t) = \sum_{i=0}^{n} \binom{n}{i} (1 - t)^{n - i} t^i P_i = \sum_{i=0}^{n} b_{i,n}(t) P_i
+    $$
+    \item<2-> Bernstein basis polynomials of degree n:
+    $$
+        b_{i,n}(t) = \binom{n}{i} t^i (1 - t)^{n - i}, \quad i = 0, \dots, n
+    $$
+    \item<2-> Binomial coefficients:
+    $$
+        \binom{n}{i} = \frac{n!}{i!(n - i)!}
+    $$
+\end{itemize}
+
+\end{frame}
+%---------------------------------------------------------
+%---------------------------------------------------------
+\begin{frame}
+    \frametitle{Bézier Curves}
+    \begin{itemize}
+        \item A cubic Bézier curves is defined by 4 control points: $P_0, P_1, P_2, P_3$
+        \item[] \hfill
+        \item[] \centering{\animategraphics[loop, autoplay, width=8cm]{10}{assets/gifs/bezier3/Bezier_3-}{0}{50}}
+    \end{itemize}
+\end{frame}
+%---------------------------------------------------------
+%---------------------------------------------------------
+
+\begin{frame}
+    \frametitle{B-Splines}
+\begin{itemize}
+    \item B-Splines (short for Basis Splines) use several Bézier curves joined end to end.
+    \item A $k$ degree B-Spline curve defined by $n + 1$ control points will consist of $n - k + 1$ Bezier curves.
+    \begin{examples}
+        A cubic B-Spline defined by 6 control points $P_0, P_1, ..., P_5$ consists of $n - k + 1 = 5 - 3 + 1 = 3$ Bezier curves.
+    \end{examples}
+\end{itemize}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{assets/images/spline-example.png}
+    \label{fig:bspline-example}
+\end{figure}
+\end{frame}
+%---------------------------------------------------------
+%---------------------------------------------------------
+\begin{frame}
+    \frametitle{B-Splines - Knot Vectors (cont.)}
+    \begin{itemize}
+        \item The values of $t_i$ are taken from a sequence called a knot vector
+        $$
+        \mathbf{T} = (t_0, t_1, \dots, t_m).
+        $$
+        \item Values of $ t $ are in the range $ t \in [t_0, t_m] $.
+        \item The knots that $ t $ lies between determine the basis function that affects the shape of the B-spline.
+        \item The number of knots in $ \mathbf{T} $, $ m+1 $ is related to the degree $ k $ and the number of control points $ n+1 $ by
+        $$
+        m = k + n + 1.
+        $$
+        \item For example, a cubic B-spline defined using control points $ P_0, P_1, \dots, P_4 $ requires $ m = 3 + 4 + 1 = 8 $,
+        $$
+        \mathbf{T} = (0,1,2,3,4,5,6,7,8).
+        $$
+    \end{itemize}
+\end{frame}
+%---------------------------------------------------------
+%---------------------------------------------------------
+\begin{frame}
+\frametitle{B-Splines - Basis Functions}
+\begin{itemize}
+    \item The equation for a B-Spline curve of degree k defined by
+    $$
+        S(t) = \sum_{i=0}^{n} N_{i,k}(t) P_{i},
+    $$
+    \item where $(P_0, P_1, ..., P_n)$  are control points and $N_{i,k}(t)$ are the basis functions defines using \textbf{the Cox-de Boor Recursion formula}:
+    $$
+    N_{i,0}(t) =
+    \begin{cases} 
+    1, & \text{if } t_i \leq t \leq t_{i+1} \\
+    0, & \text{otherwise}
+    \end{cases}
+    $$
+    $$
+    N_{i,j}(t) =
+    \frac{t - t_i}{t_{i+j} - t_i} N_{i,j-1}(t)
+    + \frac{t_{i+j+1} - t}{t_{i+j+1} - t_{i+1}} N_{i+1,j-1}(t)
+    $$
+\end{itemize}
+\end{frame}
+%---------------------------------------------------------
+%---------------------------------------------------------
+\begin{frame}
+    \frametitle{B-Splines - Basis Functions}
+    \begin{itemize}
+        \item[]
+        $$
+        N_{i,0}(t) =
+        \begin{cases} 
+        1, & \text{if } t_i \leq t \leq t_{i+1} \\
+        0, & \text{otherwise}
+        \end{cases}
+        $$
+        $$
+        N_{i,j}(t) =
+        \frac{t - t_i}{t_{i+j} - t_i} N_{i,j-1}(t)
+        + \frac{t_{i+j+1} - t}{t_{i+j+1} - t_{i+1}} N_{i+1,j-1}(t)
+        $$
+        \item The basis functions can be written as a triangular scheme
+        $$
+        \begin{array}{ccccccc}
+            N_{0,0}(t) & \rightarrow & N_{0,1}(t) & \cdots & N_{0,k-1}(t) & \rightarrow & N_{0,k}(t) \\
+             & \nearrow &  &  &  & \nearrow &  \\
+            N_{1,0}(t) & \rightarrow & N_{1,1}(t) & \cdots & N_{1,k-1}(t) &  &  \\
+             & \ddots & \vdots &  & \vdots &  &  \\
+            N_{n-1,0}(t) & \rightarrow & N_{n-1,1}(t) &  &  &  &  \\
+             & \nearrow &  &  &  &  &  \\
+            N_{n,0}(t) &  &  &  &  &  &  
+        \end{array}
+        $$
+    \end{itemize}
+\end{frame}
+%---------------------------------------------------------
+%---------------------------------------------------------
+\begin{frame}
+    \frametitle{B-Splines - Basis Functions}
+    \begin{figure}
+        \centering
+        \includegraphics[width=.8\textwidth]{assets/images/basis-functions.png}
+    \end{figure}
+\end{frame}
+%---------------------------------------------------------
+%---------------------------------------------------------
+\begin{frame}
+    \frametitle{B-Splines - Local Control}
+    \centering{\animategraphics[loop, autoplay, width=12cm]{10}{assets/gifs/locally-controlled/locally-controlled-}{1}{121}}
+    \url{https://youtu.be/jvPPXbo87ds?si=Ti13nWR93BoIDb4h&t=760}
+\end{frame}
+
+%---------------------------------------------------------
+%---------------------------------------------------------
+\begin{frame}
+    \frametitle{B-Splines - Takeaways}
+    Some characteristics of B-Splines that we need to focus:
+    \begin{itemize}
+        \item B-Splines are \textbf{piecewise polynomial curves} composed of \textbf{a sequence of lower-order polynomial segments}.
+        \item B-Splines are defined by a control grid or control polygon, consisting of \textbf{a set of control points}.
+        \item B-Splines are \textbf{flexible} and \textbf{highly accurate at low dimensions}.
+        \item B-Splines are \textbf{continuous} and \textbf{differentiable}
+        \item B-Splines have \textbf{local control}, meaning that changing control points \alert{only impact a local area of the curve}.
+    \end{itemize}
+\end{frame}
+%---------------------------------------------------------
+%---------------------------------------------------------
+
+\subsection{Kolmogorov-Arnold Networks}
+
+%---------------------------------------------------------
+%---------------------------------------------------------
+\begin{frame}
+\frametitle{Kolmogorov-Arnold Networks - KAT}
+\begin{block}{Kolmogorov-Arnold Representation Theorem~\cite{Kolmogorov1961}}
+If $f$ is a multivariate continuous function on a \alert{bounded domain}, then it can be \alert{written as a finite composition of continuous functions of a single variable and the binary operation of addition}. \pause More specifically, for a smooth $f:[0,1]^n\to \mathbb{R}$
+
+\begin{equation*}f(x)=f(x_1,\ldots,x_n)=\sum_{q}^{2n+1}\mathbf{\Phi}_q(\sum_{p=1}^{n}\phi_{q,p}(x_p))
+\label{eq:KAT}
+\end{equation*}
+\hspace{0.5cm} where $\phi_{q,p}:[0,1]\to\mathbb{R}$ and $\Phi_q:\mathbb{R}\to\mathbb{R}$ are continuous univariate functions.
+\end{block}
+
+\end{frame}
+%---------------------------------------------------------
+%---------------------------------------------------------
+\begin{frame}
+\begin{figure}
+    \centering
+    \frametitle{Kolmogorov-Arnold Networks - KAT (cont.)}
+    \includegraphics[width=0.8\textwidth]{assets/images/kat.png}
+    \label{fig:kat}
+\end{figure}    
+\begin{itemize}
+    \item KAT have a certain condition, it works inside a \alert{closed, bounded domain}.  This is always work in Machine Learning, the data are always inside a bounded region.
+\end{itemize}
+\end{frame}
+%---------------------------------------------------------
+%---------------------------------------------------------
+\begin{frame}
+    \frametitle{Kolmogorov-Arnold Networks - Architecture}
+    \begin{itemize}
+        \item[]<1-> $$f(x)=\sum_{q}^{2n+1}\mathbf{\Phi}_q(\sum_{p=1}^{n}\phi_{q,p}(x_p))$$
+        \item<1-> Suppose we have a supervised learning task consisting of input-output pairs $\{x_i, y_i\}$, where we want to find $f$ such that $y_i \approx f(x_i)$ for all data points. We are done if we can find appropriate univariate functions $\phi_{q,p}$ and $\mathbf{\Phi}_q$.
+        \item<2-> Since all functions to be learned are univariate functions, we can parametrize each 1D function as a B-spline curve, with learnable coefficients of local B-spline basis functions.
+        \item<3-> \alert{Such a network is known to be too simple to approximate any function arbitrarily well in practice with smooth splines!}
+    \end{itemize}
+    \end{frame}
+%---------------------------------------------------------
+%---------------------------------------------------------
+\begin{frame}
+\frametitle{Kolmogorov-Arnold Networks - Architecture}
+\begin{itemize}
+    \item<1-> A KAN layer with $n_{\text{in}}$-dimensional inputs and $n_{\text{out}}$-dimensional outputs can be defined as a matrix of 1D functions
+    $$
+    \mathbf{\Phi}=\{\phi_{q,p}\},\;p=1,2,\ldots,n_{in},\;q=1,2,\ldots,n_{\text{out}}
+    $$
+    \;\;\;where \alert{the function $\phi_{q,p}$ have trainable parameters}.
+    \item<2-> So KAN with $L$ layers will have the form of
+    $$
+        \text{KAN}(x)=(\mathbf{\Phi}_{L-1}\circ\mathbf{\Phi}_{L-2}\circ\ldots\circ\mathbf{\Phi}_{1}\circ\mathbf{\Phi}_{0})x
+    $$
+    \;\;\;Assuming out dimension $n_L=1$, and define $f(x)\equiv\text{KAN}(x)$
+    $$
+    f(x)=\sum_{i_{L-1}=1}^{n_{L-1}}{\phi_{L-1,i_L,i_{L-1}}}(\sum_{i_{L-1}=1}^{n_{1}}{\phi_{1,i_2,i_1}}(\sum_{i_{0}=1}^{n_{0}}{\phi_{0,i_1,i_0}(x_{i_o})})\ldots)
+    $$
+\end{itemize}
+\end{frame}
+%---------------------------------------------------------
+%---------------------------------------------------------
+\begin{frame}
+\frametitle{Kolmogorov-Arnold Networks - Key Steps}
+\begin{enumerate}
+    \item<1->\textbf{Univariate Transformations}: Each input $x_p$ undergoes transformation through a univariate function $\phi_{q,p}(x_p)$ producing intermediate values $h_q$.
+    $$
+        h_q=\sum_{p=1}^n\phi_{q,p}(x_p)
+    $$
+    \item<2-> \textbf{Nonlinear Activation with B-splines}: Each summation result $h_q$ is then passed through a nonlinear activation, formulated as a combination of one \textbf{basis function $\mathbf{b(x)}$} ($\text{SiLU}$ was used in the paper) and a \textbf{B-spline function} $\text{spline}(x)=\sum_i{c_iB_i(x)}$.
+    $$\begin{aligned}
+        h'_q=\mathbf{\Phi}_q(h_q)&=w_b\cdot b(h_q)+w_s\cdot\text{Spline}(h_q) \\ &= w_b\cdot\text{SiLU}(h_q)+w_s\cdot\sum_i{c_iB_i(h_q)}
+    \end{aligned}
+    $$
+\end{enumerate}
+\end{frame}
+%---------------------------------------------------------
+\begin{frame}
+\frametitle{Kolmogorov-Arnold Networks - Key Steps}
+\begin{enumerate}
+    \setcounter{enumi}{2}
+    \item\textbf{Final Output Computation}: The network aggregates the transformed hidden layer output to yield the final function approximation.
+    $$\begin{aligned}
+        f(x)&=\sum_{q=1}^{2n+1}h'_q\\&=\sum_{q=1}^{2n+1}\mathbf{\Phi}_q(\sum_{p=1}^n\phi_{q,p}(x_p))
+    \end{aligned}$$
+\end{enumerate}
+\end{frame}
+%---------------------------------------------------------
+%---------------------------------------------------------
+\begin{frame}
+    \frametitle{Kolmogorov-Arnold Networks - Hyperparameters}
+    \begin{itemize}
+    \item KANs introduce two additional hyperparameters that govern the complexity and flexibility of the univariate functions: \textbf{grid} and \textbf{order}.
+    \begin{itemize}
+        \item \textbf{Grid}: refers to the number of intervals into which the input space of the univariate function is divided. For a given grid $G$, the function is defined over $G + 1$ control points, which determine the piecewise segments of the B-spline.
+        \item \textbf{Order}: refers to the degree of the polynomial used in each piecewise segment. For example, $k = 2$ corresponds to a quadratic spline, and $k = 3$ corresponds to a cubic spline.
+    \end{itemize}
+\end{itemize}
+\end{frame}
+%---------------------------------------------------------
+%---------------------------------------------------------
+\begin{frame}
+\frametitle{Kolmogorov-Arnold Networks - Parameter Counts}
+\begin{itemize}
+    \item An MLP with depth $L$ and width $N$ have a total of \alert{$O(N^2L)$ parameters}.
+    \item A KAN with depth $L$ and layers of equal width $n_0, n_1,\ldots, n_L=N$, each spline of order $k$  on $G$ intervals (for $G+1$ grid points) will have in total \alert{$O(N^2L(G+k))\sim O(N^2L)$ parameters}.
+    \item \textbf{Compared to MLPs, KANs have $\mathbf{G+k}$ parameters for each activation, because we need to learn where to put the control points for the B-Splines}.
+\end{itemize}
+\end{frame}
+%---------------------------------------------------------
+%---------------------------------------------------------
+\begin{frame}
+\frametitle{Kolmogorov-Arnold Networks - Grid Extension}
+\begin{itemize}
+    \item<1-> If we want to increasing the width and depth of MLPs, we need to retrained the whole model $\Rightarrow$ \alert{Need more computational resources}.
+    \item<2-> With KANs, we can increase the number of “control points” in the B-Spline to give it more “degrees of freedom” to better approximate more complex functions, meaning that we can extend the grid of an existing pre-trained network.
+    \item[]<2->\begin{figure}
+        \centering
+        \includegraphics[width=0.8\linewidth]{assets/images/grid-extension.png}
+        \caption{KAN - Grid Extension}
+        \label{fig:grid-extension}
+    \end{figure}
+\end{itemize}
+\end{frame}
+%---------------------------------------------------------
+%---------------------------------------------------------
+\begin{frame}
+    \frametitle{KAN - Grid Extension in depth}
+    \begin{itemize}
+        \item<1-> Grid Extension is basically \textbf{fitting a new fine-grained spline to an old coarse-grained spline}. Suppose we want to approximate a 1D function $f$ in a bounded region $[a, b]$ with B-splines of order $k$.
+        \item<2-> \textbf{Coarse-Grained Grid}
+        \begin{itemize}
+            \item Defined with $G_1$ intervals having grid points: \\ $$ \{t_0 = a, t_1, \ldots, t_{G_1} = b\} $$
+            \item Augmented to: \\ $$ \{t_{-k}, \ldots, t_{-1}, t_0, \ldots, t_{G_1}, t_{G_1+1}, \ldots, t_{G_1+k}\} $$
+            \item $G_1 + k$ B-spline basis functions $B_i(x)$, non-zero only on $[t_{k-i}, t_{i+1}]$.
+            \item Function approximation:
+            $$
+                f_{\text{coarse}}(x) = \sum_{i=0}^{G_1+k-1} c_i B_i(x)
+            $$
+    \end{itemize}
+\end{itemize}
+\end{frame}
+%---------------------------------------------------------
+%---------------------------------------------------------
+\begin{frame}
+    \frametitle{KAN - Grid Extension In Depth (cont.)}
+    \textbf{Fine-Grained Grid}
+    \begin{itemize}
+        \item<1->Given a finer grid with $G_2$ intervals, $f$ on the fine grid is correspondingly:
+        $$
+            f_{\text{fine}}(x) = \sum_{j=0}^{G_2+k-1} c_j' B_j'(x)
+        $$
+        \item<1->Parameters $c_j'$ are initialized by minimizing the distance between $f_{\text{fine}}(x)$ and $f_{\text{coarse}}(x)$:
+        $$
+            \{ c_j' \} = \arg \min_{\{c_j'\}} \mathbb{E}_{x \sim p(x)} \left( \sum_{j=0}^{G_2+k-1} c_j' B_j'(x) - \sum_{i=0}^{G_1+k-1} c_i B_i(x) \right)^2
+        $$
+        \item<2->This can be implemented via the \textbf{least squares algorithm}.
+    \end{itemize}
+    
+\end{frame}
+%---------------------------------------------------------
+%---------------------------------------------------------
+\subsection{Comparison of MLPs And KANs}
+%---------------------------------------------------------
+%---------------------------------------------------------
+\begin{frame}
+\frametitle{Comparison of MLPs and KANs}
+\begin{itemize}
+    \item MLPs:
+    \begin{itemize}
+        \item<1-> \textbf{Universal Approximation Theorem} - Can approximate any continuous function with enough neurons and layers.
+        \item<2-> Layers consist of linear transformations (\alert{learnable weight matrices}) and fixed activation functions (e.g., ReLU, Sigmoid).
+        \item<3-> \textbf{$\mathbf{O(N^2L)}$} parameters
+    \end{itemize}
+    \item KANs:
+    \begin{itemize}
+        \item<1-> \textbf{Kolmogorov-Arnold Representation Theorem} - Decomposes high-dimensional functions into compositions of univariate functions and sums.
+        \item<2-> \alert{Learnable activation functions are placed on edges} (weights replaced by univariate functions parameterized as splines).
+        \item<2-> No linear weights, only learnable 1D functions (splines).
+        \item<3-> \textbf{$\mathbf{O(N^2L(G + k)) \sim O(N^2LG)}$ parameters}.
+    \end{itemize}
+\end{itemize}
+\end{frame}
+%---------------------------------------------------------
+%---------------------------------------------------------
+\begin{frame}
+\frametitle{Comparison of MLPs and KANs (cont.)}
+\begin{center}
+% \begin{itemize}
+%     \item MLPs:
+%     \begin{itemize}
+%         \item[]\includegraphics[width=0.5\textwidth, height=0.22\textwidth]{assets/images/mlps.png} 
+%         \item[]$\text{MLP}(\mathbf{x})=(\mathbf{W}_3\circ\sigma_2\circ\mathbf{W}_2\circ\sigma_1\circ\mathbf{W}_1)(\mathbf{x})$
+%     \end{itemize}
+%     \vspace{0.2cm}
+%     \item KANs:
+%     \begin{itemize}
+%         \item[]\includegraphics[width=0.5\textwidth, height=0.22\textwidth]{assets/images/kans.png}
+%         \item[]$\text{KAN}(\mathbf{x})=(\mathbf{\Phi}_3\circ\mathbf{\Phi}_2\circ\mathbf{\Phi}_1)(\mathbf{x})$
+%     \end{itemize}
+% \end{itemize}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.9\textwidth]{assets/images/mlp-vs-kan.png}
+    \label{fig:mlp-vs-kan}
+    \caption{Comparison of MLPs and KANs}
+\end{figure}
+\end{center}
+\end{frame}
+%---------------------------------------------------------
+%---------------------------------------------------------
+\begin{frame}
+    \frametitle{Comparison of MLPs and KANs (cont.)}
+    \begin{center}
+    % \begin{itemize}
+    %     \item MLPs:
+    %     \begin{itemize}
+    %         \item[]\includegraphics[width=0.5\textwidth, height=0.22\textwidth]{assets/images/mlps.png} 
+    %         \item[]$\text{MLP}(\mathbf{x})=(\mathbf{W}_3\circ\sigma_2\circ\mathbf{W}_2\circ\sigma_1\circ\mathbf{W}_1)(\mathbf{x})$
+    %     \end{itemize}
+    %     \vspace{0.2cm}
+    %     \item KANs:
+    %     \begin{itemize}
+    %         \item[]\includegraphics[width=0.5\textwidth, height=0.22\textwidth]{assets/images/kans.png}
+    %         \item[]$\text{KAN}(\mathbf{x})=(\mathbf{\Phi}_3\circ\mathbf{\Phi}_2\circ\mathbf{\Phi}_1)(\mathbf{x})$
+    %     \end{itemize}
+    % \end{itemize}
+    \begin{figure}
+        \centering
+        \includegraphics[width=1.02\textwidth]{assets/images/mlp-or-kan.png}
+        \label{fig:mlp-or-kan}
+        \caption{Comparison of MLPs and KANs}
+    \end{figure}
+    \end{center}
+\end{frame}
+%---------------------------------------------------------
+%---------------------------------------------------------
+% %---------------------------------------------------------
+% \subsection{KANs Variations}
+% %---------------------------------------------------------
+% %---------------------------------------------------------
+% \begin{frame}
+%     \frametitle{KANs Variations}
+%     \begin{itemize}
+%         \item temp
+%     \end{itemize}
+% \end{frame}
+% %---------------------------------------------------------
+%---------------------------------------------------------
+
+\section{KANs In Image Classification Task}
+
+%---------------------------------------------------------
+%---------------------------------------------------------
+\begin{frame}
+\frametitle{KANs In Image Classification Task}
+\begin{itemize}
+    \item<1-> MLPs are often challenged by the demands of high dimensional data, such as images~\cite{LeCun1998Gradient}.
+    \item<2-> KANs can address some of the intrinsic limitations of MLPs, particularly in handling complex functional mappings in high-dimensional spaces and lower parameters need to achieve higher performance, faster convergence and better recognitions~\cite{liu2024kan}.
+    \item<3-> KANs are expected to be promising alternatives for MLPs, which motivated us to carefully examine it.
+\end{itemize}
+\end{frame}
+%---------------------------------------------------------
+%---------------------------------------------------------
+\begin{frame}
+\frametitle{KANs In Image Classification Task}
+
+\begin{itemize}
+    \item<1-> This project investigates the potential of KANs as an approach to image classification. We aim to understand how KANs perform in this domain, focusing on their ability to learn complex image features and patterns.
+    \item<2-> We will first evaluate the performance of standalone KAN architectures on image classification tasks. We will then explore strategies to combine the feature extraction power of CNNs with the adaptive capabilities of KANs. 
+    \item<3-> Specifically, we will investigate replacing specific CNN layers with KAN layers to potentially improve model performance. Finally, we will discuss the practical considerations of using KANs for image classification. 
+\end{itemize}
+\end{frame}
+%---------------------------------------------------------
+%---------------------------------------------------------
+\section{Convolutional Kolmogorov-Arnold Networks}
+%---------------------------------------------------------
+%---------------------------------------------------------
+\begin{frame}
+\frametitle{Convolutional Neural Networks}
+\begin{itemize}
+    \item Convolutional Neural Networks (CNNs)~\cite{le1998CNN} have emerged as a powerful class of neural networks that are particularly suited for analyzing visual imagery. CNNs are designed to automatically and adaptively learn spatial hierarchies of features through backpropagation~\cite{HeZRS16, SzegedyLJSRAEVR15}. This capability makes them effective for image classification task~\cite{KrizhevskySH17, KrizhevskySH12}.
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.7\linewidth]{assets/images/cnn.png}
+        \caption{CNN Architecture}
+        \label{fig:cnn-architecture}
+    \end{figure}
+\end{itemize}
+\end{frame}
+%---------------------------------------------------------
+%---------------------------------------------------------
+\begin{frame}
+\frametitle{Convolutional Neural Networks - Convolution Operator} 
+\begin{itemize}
+    \item<1-> The convolutional layer applies a set of learnable filters (kernels) $K$ that slides over the image and applies the corresponding weights $k_{i,j}$ to the corresponding pixel $a_{k, l}$ and calculates the output pixel as the sum of $k_{i,j}(a_{k,l})$.
+    \item<1-> Let $K$ be a standard convolution kernel $\in R^{N\times M}$, and an image as a matrix we have:
+    $$
+    \text{Image} =
+    \begin{bmatrix}
+        a_{11} & a_{12} & \cdots & a_{1p} \\
+        a_{21} & a_{22} & \cdots & a_{2p} \\
+        \vdots & \vdots & \ddots & \vdots \\
+        a_{m1} & a_{m2} & \cdots & a_{mp}
+    \end{bmatrix}
+    $$
+    \item<2-> Then the result of the convolution operation is defined as follow: $$(Image\times K)_{i,j}=\sum_{k=1}^{N}\sum_{l=1}^{M}k_{kl}(a_{i+k, j+l})$$
+\end{itemize}
+\end{frame}
+%---------------------------------------------------------
+%---------------------------------------------------------
+\begin{frame}
+    \frametitle{Convolutional Neural Networks - Convolution Operator}
+    \begin{itemize}
+        \item<1-> We can define the convolutional kernel implemented as:$$
+        K = 
+        \begin{bmatrix}
+            k_{11} & k_{12} \\
+            k_{21} & k_{22} 
+        \end{bmatrix}
+        $$
+        \item<2-> The output of Standard Convolutions is given by:
+        \begin{equation*}
+            \resizebox{0.85\textwidth}{!}{$
+            \begin{aligned}
+            &\text{Output} = 
+            \begin{bmatrix}
+                k_{11}(a_{11}) + k_{12}(a_{12}) + k_{21}(a_{21}) + k_{22}(a_{22}) & \cdots & r_{1(p-1)} \\
+                k_{11}(a_{21}) + k_{12}(a_{22}) + k_{21}(a_{31}) + k_{22}(a_{32}) & \cdots & r_{2(p-1)} \\
+                \vdots & \ddots & \vdots \\
+                k_{11}(a_{m1}) + k_{12}(a_{m2}) + k_{21}(a_{(m+1)1}) + k_{22}(a_{(m+1)2}) & \cdots & r_{m(p-1)}
+            \end{bmatrix}
+            \end{aligned}
+            $}
+        \end{equation*}
+        \item[]<2-> \begin{figure}
+            \centering
+            \includegraphics[width=0.4\textwidth]{assets/images/convolution-operator.png}
+            \caption{Convolution Operation}
+            \label{fig:convolution-operation}
+        \end{figure}
+    \end{itemize}
+\end{frame}
+%---------------------------------------------------------
+%---------------------------------------------------------
+\begin{frame}
+\frametitle{Convolutional Kolmogorov-Arnold Networks}
+\begin{itemize}
+    \item<1->Convolutional Kolmogorov-Arnold Networks (CKAN)~\cite{CKAN} are similar to CNNs. The difference is that the Convolutional Layers are replaced by KAN Convolutional Layers and after flattening, one can either have a KAN or a MLP. 
+    \item<2->The main strength of the Convolutional KANs is its requirement for significantly fewer parameters compared to other architectures~\cite{azamSuitabilityKANsComputer2024, bodnerConvolutionalKolmogorovArnoldNetworks2024, cangCanKANWork2024}. This
+    is given by the construction of this networks, because \alert{B-Splines are able to smoothly represent arbitrary activation function}.
+\end{itemize}
+\end{frame}
+%---------------------------------------------------------
+%---------------------------------------------------------
+\begin{frame}
+\frametitle{Convolutional Kolmogorov-Arnold Networks}
+\begin{itemize}
+    \item<1->The idea is to propose an alternative implementation of this mathematical operation utilizing the approach of Kolmogorov-Arnold Networks. 
+    \item<2->The main difference between KAN Convolutions and the convolutions
+used in CNNs lies in the \alert{kernel}. In CNNs the kernel is made of weights whereas in Convolutional KANs, \alert{each element of the kernel, $\phi$, is a learnable non-linear functions} that utilizes B-Splines.
+    $$\phi = w_1 \cdot \text{Spline}(x) + w_2 \cdot \text{SiLU}(x) $$
+\end{itemize}
+\end{frame}
+%---------------------------------------------------------
+\begin{frame}
+\frametitle{Convolutional Kolmogorov-Arnold Networks}
+    \begin{itemize}
+    \item<1->In a KAN Convolution, the kernel slides over the image and applies the corresponding activation function, $\phi_{i,j}$ to the corresponding pixel, $a_{k,l}$ and calculates the output pixel as the sum of $\phi_{i,j}$ $(a_{k,l})$.  
+    \item<2->Let $K$ be a KAN kernel $\in \mathbb{R}^{N \times M},$ and an image as a matrix as:
+    $$
+        \text{Image} =
+    \begin{bmatrix}
+    a_{11} & a_{12} & \cdots & a_{1p} \\
+    a_{21} & a_{22} & \cdots & a_{2p} \\
+    \vdots & \vdots & \ddots & \vdots \\
+    a_{m1} & a_{m2} & \cdots & a_{mp}
+    \end{bmatrix}
+    $$
+    \item<3-> Then a KAN Convolutions is defined as follows:
+    $$
+    (\text{Image} * K)_{i,j} = \sum_{k=1}^{N} \sum_{l=1}^{M} \phi_{kl} \left( a_{i+k, j+l} \right)
+    $$
+\end{itemize}
+\end{frame}
+%---------------------------------------------------------
+%---------------------------------------------------------
+\begin{frame}
+    \frametitle{Convolutional Kolmogorov-Arnold Networks}
+    \begin{itemize}
+    \item<1->We can define the convolutional kernel implemented for ConvKANs as:
+    $$
+    \text{ConvKAN Kernel} = 
+    \begin{bmatrix}
+    \phi_{11} & \phi_{12} \\
+    \phi_{21} & \phi_{22}
+    \end{bmatrix}
+    $$
+    \item<2->The result of KAN Convolution is given by:
+    \begin{equation*}
+    \resizebox{0.98\textwidth}{!}{$
+    \begin{aligned}
+    &\text{Image} \times \text{KAN Kernel} = 
+    \begin{bmatrix}
+    \phi_{11}(a_{11}) + \phi_{12}(a_{12}) + \phi_{21}(a_{21}) + \phi_{22}(a_{22}) & \cdots & r_{1(p-1)} \\
+    \phi_{11}(a_{21}) + \phi_{12}(a_{22}) + \phi_{21}(a_{31}) + \phi_{22}(a_{32}) & \cdots & r_{2(p-1)} \\
+    \vdots & \ddots & \vdots \\
+    \phi_{11}(a_{m1}) + \phi_{12}(a_{m2}) + \phi_{21}(a_{(m+1)1}) + \phi_{22}(a_{(m+1)2}) & \cdots & r_{m(p-1)}
+    \end{bmatrix}
+    \end{aligned}
+    $}
+    \end{equation*}
+    \end{itemize}
+\end{frame}
+    
+    
+%---------------------------------------------------------
+
+%---------------------------------------------------------
+\begin{frame}
+    \frametitle{Convolutional KANs - Grid Extension}
+        \begin{itemize}
+            \item<1-> However, the output variables of a KAN Convolutional Layer weren't bounded to the default grid range of $[-1, 1]$~\cite{bodnerConvolutionalKolmogorovArnoldNetworks2024}. This is a problem, The input of a convolutional layer should be in the range that the B-Spline operates in so that the "learning" is done by the splines and not the weight that modifies the activation function (i.e., SiLU).
+            \item<2-> During training each time an input falls outside the grid range, the grid is updated (via Grid Extension). This consists of maintaining spline shape between the original grid size and maintaining the same amount of control points, and extending the spline to a range that contains the input.
+        \end{itemize}
+    \end{frame}
+%---------------------------------------------------------
+%---------------------------------------------------------
+\begin{frame}
+    \frametitle{Convolutional KANs - Grid Extension}
+    \begin{figure}
+        \centering
+        \includegraphics[width=1.\textwidth]{assets/images/ckan-grid-extension.png}
+        \caption{Splines learned by the first convolution at the first position for different ranges. The left plot shows the spline learned within the range $[-1, 1]$, while the right plot shows the spline learned within the range $[-10, 10]$.}
+        \label{fig:ckan-grid-extension}
+    \end{figure}
+\end{frame}
+%---------------------------------------------------------
+%---------------------------------------------------------
+\begin{frame}
+\frametitle{Convolutional KANs - Grid Extension}
+    \begin{itemize}
+    \item<1-> When an input value falls outside the range of the spline grid, the model extends the grid to cover the entire range of the data.
+    \item<2-> The extension is based on an optimization problem, where the existing spline is maintained while expanding its range without changing the number of control points.
+    \item<3-> Again, the optimization formula is as follows:
+    $$
+        \{ c'_j \} = \arg\min_{c'_j} \mathbb{E}_{x \sim p(x)}
+    \left[ \sum_{j=0}^{G_2+k-1} c'_j B(x')_j - \sum_{j=0}^{G_1+k-1} c_j B(x)_j \right]
+    $$
+    where:
+    \begin{itemize}
+        \item $G_1$ is the previous grid size
+        \item $G_2$ is the new grid size
+        \item $k$ is the B Spline degree
+    \end{itemize}
+\end{itemize}
+
+\end{frame}
+%---------------------------------------------------------
+%---------------------------------------------------------
+\begin{frame}
+\frametitle{Convolutional KANs - Parameters}
+\begin{itemize}
+    \item<1-> With $\phi$ defined as $\phi = w_1 \cdot \text{spline}(x) + w_2 \cdot \text{SiLU}(x) $. The parameters for each $\phi$ are the two weights $w_1$ and $w_2$, together with the control points which can be adjusted to change the shape of each spline. Therefore there are $\text{gridsize} + 2$ parameters for each $\phi$.
+    \item<2-> Let the convolution kernel be of size $K\times K$, in total we have \alert{$K^2(gridsize + 2)$ parameters for each Convolutional KAN layer, compared to only $K^2$ for a CNN convolutional layer}. 
+    \item<3->Compare to CNNs, Convolutional KANs have more parameters, but  KAN convolutions capture richer spatial features at an earlier stage, they reduce the need for fully connected layers, which typically contribute the most parameters.    
+
+\end{itemize}
+
+\end{frame}
+%---------------------------------------------------------
+%---------------------------------------------------------
+\begin{frame}
+    \frametitle{Convolutional Kolmogorov-Arnold Networks}
+    \begin{columns}
+        \column{0.5\textwidth}
+        \textbf{Conventional Network}
+        \begin{itemize}
+            \item Use Convolutional layers for feature extraction.
+            \item Use Linear layer to process and transform extracted features into final output.
+        \end{itemize}
+        \column{0.5\textwidth}
+        \textbf{KAN-based Network}
+        \begin{itemize}
+            \item Use KANConv layers as an alternative to standard Convolutional layers.
+            \item Use KConv and KAN Linear layers as replacements for Conventional layers.
+        \end{itemize}
+    \end{columns}
+\end{frame}
+%---------------------------------------------------------
+%---------------------------------------------------------
+\begin{frame}
+    \frametitle{Convolutional Kolmogorov-Arnold Networks}
+    \begin{figure}
+            \centering
+            \includegraphics[width=.8\linewidth]{assets/images/ckan.png}
+            \caption{CNN and CKAN}
+            \label{fig:enter-label}
+        \end{figure}
+    \end{frame}
+%---------------------------------------------------------
+%---------------------------------------------------------
+\begin{frame}
+    \frametitle{Convolutional Kolmogorov-Arnold Networks}
+    \centering
+    \begin{table}
+        \footnotesize  
+        \setlength\tabcolsep{3pt} % Reduce column separation
+        \begin{tabular}{lcc}
+            \toprule
+            \textbf{Feature} & \textbf{CNN} & \textbf{Convolutional KAN} \\
+            \midrule
+            Filters & Fixed-weight kernels & Learnable B-Spline functions \\
+            Activation Function & Fixed (ReLU, Sigmoid) & Learnable splines \\
+            Parameter & More parameters & Fewer parameters \\
+            Training Time & Faster training & Slower due to spline updates \\
+            Interpretability & Filters can be visualized easily & Hard to interpret learned splines \\
+            \bottomrule
+        \end{tabular}
+        \caption{Comparison of CNNs and Convolutional KANs}
+    \end{table}
+\end{frame}
+%---------------------------------------------------------
+%---------------------------------------------------------
+\section{Experiments}
+%---------------------------------------------------------
+%---------------------------------------------------------
+\begin{frame}
+    \frametitle{Experiments - Architecture}
+    % x: Not decided
+    We experiment with the following architectures:
+
+    \begin{table}[]
+        \centering
+        \footnotesize 
+        \begin{tabular}{@{}ll@{}}
+            \toprule
+            \textbf{Architecture} & \textbf{Key Features} \\ \midrule
+            MLP Baseline          & x FC (x, x, x), ReLU \\
+            CNN Baseline          & x Conv2D (x, x, 3x3), ReLU, MaxPool, x FC \\
+            Standalone KAN       & x KAN layers, Grid=x, SiLU \\
+            KAN-CNN & Use all KAN-based components (Grid=x) \\ 
+            ConvKANLinear & Convolutional Layers \& KAN Linear Layer \\
+            KConvLinear & KConv Layers \& Fully Connected Layers \\ \bottomrule
+        \end{tabular}
+        \caption{List of architectures to be experimented}
+        \bigskip
+    \end{table}
+    \textit{Where KANConv denotes a convolutional layer using KAN-based kernels, and KConv is a simplified representation following KANConv. \\
+    x mean that we didn't decide what would be used in the experiments.}
+    \medskip
+\end{frame}
+%---------------------------------------------------------
+%---------------------------------------------------------
+\begin{frame}
+    \frametitle{Experiments - Architecture}
+
+    We also experimented KANs with the following famous MLP baselines:
+
+    \begin{table}[]
+        \centering
+        \footnotesize 
+        \begin{tabular}{@{}ll@{}}
+            \toprule
+            \textbf{Baseline} & \textbf{Experiments} \\ \midrule
+            VGG-16/19~\cite{simonyan2015deepconvolutionalnetworkslargescale}         & Fine-tuning/Retraining with KAN as FC; CNN $\rightarrow$ CKAN \\
+            AlexNet~\cite{KrizhevskySH17}          & Fine-tuning/Retraining with KAN as FC; CNN $\rightarrow$ CKAN \\
+            MobileNet~\cite{howard2017mobilenetsefficientconvolutionalneural}          & Fine-tuning/Retraining with KAN as FC; CNN $\rightarrow$ CKAN \\
+            MobileNetv2~\cite{sandler2019mobilenetv2invertedresidualslinear}       & Fine-tuning/Retraining with KAN as FC; CNN $\rightarrow$ CKAN \\
+            \bottomrule
+        \end{tabular}
+        \caption{List of MLP baselines to be experimented}
+        \bigskip
+    \end{table}
+    \medskip
+\end{frame}
+%---------------------------------------------------------
+%---------------------------------------------------------
+\begin{frame}
+    \frametitle{Experiments (Optional) - Architecture}
+
+    \begin{itemize}
+        \item Combining Vision Transformers~\cite{dosovitskiy2021imageworth16x16words} (ViTs) with KANs (\textbf{Vision-KAN}~\cite{VisionKAN2024}) is a promising and developing research avenue.
+        \item ViTs excel at capturing long-range dependencies in images, allowing them to understand the relationships between distant parts of an image. This is achieved through the self-attention~\cite{vaswani2023attentionneed} mechanism, enabling them to weigh the importance of different image patches when processing each patch.
+    \end{itemize}
+\textit{This is a \alert{resource-intensive area, requiring substantial computational power for training.} We only explore this only if time and resources allow.}
+\end{frame}
+%---------------------------------------------------------
+%---------------------------------------------------------
+\begin{frame}
+    \frametitle{Experiments - Datasets}
+    \begin{itemize}
+        \item We selected the following famous datasets, which represent a spectrum of challenges in image classification:
+            \begin{itemize}
+                \item \textbf{MNIST}~\cite{lecun1998mnist}: A classic benchmark for basic digit recognition.
+                \item \textbf{SVHN}~\cite{netzer2011reading}: A more complex digit recognition task with real-world images.
+                \item \textbf{CIFAR-10}, \textbf{CIFAR100}~\cite{krizhevsky2009learning}: Two standard datasets for multi-class object recognition.
+            \end{itemize}
+        \item These datasets provide a diverse set of challenges for image recognition, allowing us to thoroughly assess the performance of our approach.
+    \end{itemize}
+\end{frame}
+%---------------------------------------------------------
+%---------------------------------------------------------
+\begin{frame}
+\frametitle{Experiments - Datasets(MINIST)}
+
+\begin{columns}
+\column{0.5\textwidth}
+
+\begin{itemize}
+    \item \textbf{MNIST}~\cite{lecun1998mnist} dataset is a collection of \textbf{$\mathbf{70,000}$ grayscale images} of handwritten digits from $0$ to $9$, each sized at $28\times28$ pixels. 
+    \item It includes \textbf{$\mathbf{60,000}$ training images} and \textbf{$\mathbf{10,000}$ test images}, serving as a foundational benchmark for image processing systems in machine learning and computer vision.
+\end{itemize}
+\column{0.5\textwidth}
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth, height=0.8\linewidth]{assets/images/mnist.png}
+    \caption{MNIST Dataset}
+    \label{fig:mnist-dataset}
+\end{figure}
+\end{columns}
+\end{frame}
+%---------------------------------------------------------
+%---------------------------------------------------------
+\begin{frame}
+\frametitle{Experiments - Datasets(SVHN)}
+\begin{columns}
+\column{0.5\textwidth}
+\begin{itemize}
+    \item \textbf{SVHN}~\cite{netzer2011reading} dataset designed for developing robust digit recognition models. It contains over \textbf{$\mathbf{600,000}$ full-color digit images} that are derived from real-world, varied backgrounds.
+
+    \item \textbf{SVHN} offers two formats: the first has digits centered in $32\times 32$ pixel images, and the second provides images of full house number sequences with each digit boxed and labeled.
+\end{itemize}
+\column{0.5\textwidth}
+    \begin{figure}
+        \centering
+        \includegraphics[width=1.0\linewidth, height=0.8\linewidth]{assets/images/svhn.png}
+        \caption{SVHN Dataset}
+        \label{fig:svhn-dataset}
+    \end{figure}
+\end{columns}
+\end{frame}
+%---------------------------------------------------------
+%---------------------------------------------------------
+\begin{frame}
+\frametitle{Experiments - Datasets(CIFAR-10)}
+\begin{columns}
+\column{0.5\textwidth}
+\begin{itemize}
+    \item The \textbf{CIFAR-10}~\cite{krizhevsky2009learning} dataset is an established collection of \textbf{$\mathbf{60,000} \;32\times 32$ color images} split into $10$ different classes, each containing $6,000$ images.  
+    \item The dataset is divided into a training set of \textbf{$\mathbf{50,000}$ images} and \textbf{a test set of $\mathbf{10,000}$ images}, facilitating the development and evaluation of machine learning models in image classification tasks.
+\end{itemize}
+    \column{0.5\textwidth}
+    \begin{figure}
+        \centering
+        \includegraphics[width=1.0\linewidth, height=0.8\linewidth]{assets/images/cifar10.png}
+        \caption{CIFAR10 Dataset}
+        \label{fig:cifar10-dataset}
+    \end{figure}
+\end{columns}
+\end{frame}
+%---------------------------------------------------------
+
+%---------------------------------------------------------
+\begin{frame}
+\frametitle{Experiments - Datasets(CIFAR-100)}
+\begin{columns}
+    \column{0.5\textwidth}
+\begin{itemize}
+    \item \textbf{CIFAR-100}~\cite{krizhevsky2009learning} is just like the CIFAR-10, except it has $100$ classes containing \textbf{$\mathbf{600}$ images each}. There are \textbf{$\mathbf{500}$ training images} and \textbf{$\mathbf{100}$ testing images} per class. 
+    \item The $100$ classes in the \textbf{CIFAR-100} are grouped into $20$ superclasses. Each image comes with a "fine" label (the class to which it belongs) and a "coarse" label (the superclass to which it belongs).
+\end{itemize}
+    \column{0.5\textwidth}
+    \begin{figure}
+        \centering
+        \includegraphics[width=1.0\linewidth, height=0.8\linewidth]{assets/images/cifar100.png}
+        \caption{CIFAR100 Dataset}
+        \label{fig:cifar100-dataset}
+    \end{figure}
+\end{columns}
+\end{frame}
+
+%---------------------------------------------------------
+
+%---------------------------------------------------------
+% CHƯA HIỂU LÝ DO TRÌNH BÀY PHẦN NÀY
+% %---------------------------------------------------------
+% \begin{frame}
+% \frametitle{Experiments - Cross Entropy Loss(CCE)}
+% \begin{itemize}
+%     \item The primary loss function used is Categorical Cross-Entropy (CCE), which is standard for multi-class classification tasks. It measures the difference between the predicted probability distribution and the true labels.
+%     \item The formula for CCE is:
+%     $$
+%     L_{ce} = - \sum_{i=1}^{N} \sum_{c=1}^{C} y_{i,c} \log(p_{i,c})
+%     $$
+% \end{itemize}
+
+% \end{frame}
+% %---------------------------------------------------------
+
+% %---------------------------------------------------------
+% \begin{frame}
+% \frametitle{Experiments - Regularization Loss for KAN Models}
+% \begin{itemize}
+%     \item Since Convolutional KANs use learnable B-Splines, additional regularization terms are added to prevent overfitting and improve generalization.
+%     \item KAN loss with regularization is defined as:
+%     $$
+%     L_{reg} = L_{ce} + \lambda \left( \mu_1 \sum_{l=1}^{L-1} |\Phi_l|_1 + \mu_2 \sum_{l=1}^{L-1} S(\Phi_l) \right)
+%     $$
+% \end{itemize}
+
+% \end{frame}
+%---------------------------------------------------------
+%---------------------------------------------------------
+\begin{frame}
+    \frametitle{Conclusion}
+    \begin{itemize}
+        \item KANs provide an interesting alternative to MLPs, offering potential benefits in function approximation and interpretability.
+        \item Convolutional KANs are a promising approach to image classification, with the potential to reduce parameter counts.
+        \item This project is to explore the capabilities of KANs in complex image recognition tasks and and try to optimize their training and architecture.
+    \end{itemize}
+\end{frame}
+%---------------------------------------------------------
+%---------------------------------------------------------
+\begin{frame}
+    \centering \LARGE
+    \emph{THANK YOU FOR LISTENING!}
+\end{frame}
+%---------------------------------------------------------
+\begin{frame}[allowframebreaks]
+\frametitle{References}
+\nocite{mohan2024kanscomputervisionexperimental}
+\nocite{b-splines}
+\printbibliography
+
+\end{frame}
+%---------------------------------------------------------
+
+
+\end{document}
